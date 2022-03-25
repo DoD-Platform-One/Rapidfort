@@ -7,30 +7,29 @@ replicaCount: 1
 image:
   repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/iso-master
   tag: stable
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
-tunnelStubendabled: false
 env:
-  #Tunnel Stub variables. - START
   ami_image_id: "ami-06fb837f38439836e"
+  debug: off
+  s3bucket: "rapidfort"
   vm_scheduler_port: 80
   vm_server_addr: vm-scheduler
-  vmpool_server_addr: ""
+  redis_host: redis
   security_group_id: "sg-0cb2f23f1b8da8468"
   vpc_subnet_id: "subnet-0f8c9a907f6bb6c94"
-  #Tunnel Stub variables. - END
   backend_service_name: "backend"
-  deployment_mode: "PRODUCTION" # this has to be upper case as per the code standard
-  on_premise: 0
-  debug: off
-  rf_debug: false
-  redis_host: "redis"
-  redis_port: "6379"
-  redis_pwd: "" 
-  redis_host_ha: "redis"
-  redis_port_ha: "6379"
-  redis_pwd_ha: ""
-  redis_db_ha: 4  
+  vul_redis_host: "redis"
+  vul_redis_port: "6379"
+  vul_redis_db: 4
+  auth_server_base_url: "http://keycloak"
+  vul_redis_password: ""
+  deployment_mode: "STANDALONE" # this has to be upper case as per the code standard
+  control_plane_host: ""
+  rf_app_host: ""
+  data_plane_host: ""
+  aws_default_region: us-east-1
+  rf_role_arn: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -45,8 +44,6 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podAnnotations: {}
-
 podSecurityContext:
   fsGroup: 412
 
@@ -54,7 +51,6 @@ securityContext:
   privileged: true
   capabilities:
     add:
-    #TODO: confirm the permission.
     - SYS_ADMIN
 
 service:
@@ -62,17 +58,19 @@ service:
   port: 80
 
 ingress:
-  enabled: true
-  className: "rf-ingress-class"
+  enabled: false
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
   hosts:
     - host: 
       paths:
-        - path: /iso-master/.*
-          pathType: ImplementationSpecific
+        - /iso-master/.*
   tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -86,13 +84,6 @@ resources:
     cpu: 600m
     memory: 1024Mi
 
-autoscaling:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
 tolerations: []
 
 affinity: {}
@@ -100,8 +91,8 @@ affinity: {}
 nodeSelector: {}
 
 pvc:
-  image_db: ""
-  package_analyzer_db: ""
+  image_db: "image-db-pvc"
+  package_analyzer_db: "package-analyzer-db-pvc"
 
 #TODO: use this in template.
 livenessProbe:
@@ -116,67 +107,4 @@ readinessProbe:
   timeoutSeconds: 10
   failureThreshold: 1
 
-keycloak:
-  serviceName: keycloak-http
-
-secret:
-  name: "rf-secret"
-  keys:
-    - AWS_DEFAULT_REGION
-    - DB_URL
-    - RF_S3_BUCKET
-    - KEYCLOAK_JWT_PUB_KEY
-    - KEYCLOAK_REALM
-    - KEYCLOAK_CLIENT_ID
-    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID
-    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET
-    - ADMIN_ROLE_ID
-    - MEMBER_ROLE_ID
-    - GUEST_ROLE_ID
-    - RF_APP_HOST
-    # - RF_APP_ADMIN
-    - SERVICE_TYPE
-    - STS_ACCESS_ID
-    - AWS_ACCESS_KEY_ID
-    - AWS_SECRET_ACCESS_KEY
-    - STS_ROLE_ARN
-    - STS_SECRET_KEY
-
-volumes:
-  - name: fuse
-    hostPath:
-      path: /dev/fuse
-  - name: dockersock
-    hostPath:
-      path: /var/run/docker.sock
-  - name: imgs-work-dir
-    hostPath:
-      path: /imgs-work-dir
-      type: DirectoryOrCreate
-  - name: package-analyzer-db-pvc
-    persistentVolumeClaim:
-      claimName: "{{ .Values.pvc.package_analyzer_db }}"
-  - name: image-db-pvc
-    persistentVolumeClaim:
-      claimName: "{{ .Values.pvc.image_db }}"
-  - name: vulns-db
-    hostPath:
-      path: /opt/rapidfort/data/iso-master/vulns_db
-  # - name: env
-  #   configMap:
-  #     name: rf-version-info
-volumeMounts:
-  - name: fuse
-    mountPath: "/dev/fuse"
-  - name: dockersock
-    mountPath: "/var/run/docker.sock"
-  - name: imgs-work-dir
-    mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
-  - name: package-analyzer-db-pvc
-    mountPath: "/opt/rapidfort/iso-master/app/package-analyzer-db"
-  - name: image-db-pvc
-    mountPath: "/opt/rapidfort/iso-master/app/image_db"
-  - name: vulns-db
-    mountPath: "/opt/rapidfort/iso-master/app/db"
-  # - name: env
-  #   mountPath: "/opt/rapidfort/.env"
+secretName: "rf-secret"

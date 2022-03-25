@@ -38,10 +38,10 @@ service:
   port: 80
 
 ingress:
-  enabled: true
-  className: "rf-ingress-class"
+  enabled: false
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
+    kubernetes.io/ingress.class: nginx
   hosts:
     - host:
       paths:
@@ -76,18 +76,20 @@ volumes:
   - name: config-volume
     configMap:
       name: keycloak-config
+  # - name: env
+  #   configMap:
+  #     name: rf-version-info
+  # TODO
 volumeMounts:
   - mountPath: "/usr/share/nginx/html/app/keycloak.json"
     name: config-volume
     subPath: "keycloak.json"
+  # - name: env
+  #   mountPath: "/opt/rapidfort/.env"
+  #   subPath: ".env"
+  # TODO
 
-authUrl: ""
+authUrl: "https://frontrow.rapidfort.io/auth/"
 
 env:
-  rf_debug: false
-  deploy_mode: "PRODUCTION"
-
-secret:
-  name: "rf-secret"
-  keys:
-    - RF_APP_HOST
+  control_plane_host: "*.rapidfort.io"

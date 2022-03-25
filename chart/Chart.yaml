@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+name: rapidfort
+version: 0.1.0-bb.0
+appVersion: 0.1.0
+description: Automated container hardening
+keywords:
+- rapidfort
+home: https://www.rapidfort.com
+icon: https://assets.website-files.com/6102f7f1589f985b19197b3d/61aa9e3a88ad48dd3c03f4d3_favicon-256x256.png
+sources:
+- https://repo1.dso.mil/platform-one/big-bang/apps/third-party/rapidfort
+# maintainers:
+# - name: GitLab Inc.
+#   email: support@gitlab.com
+annotations:
+  bigbang.dev/applicationVersions: |
+    - RapidFort: 0.1.0

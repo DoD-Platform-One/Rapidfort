@@ -36,9 +36,10 @@ spec:
         - name: rf-data
           hostPath:
             path: /opt/rapidfort/data/.rapidfort
-        - name: env
-          hostPath:
-            path: /opt/rapidfort/data/.env
+        # - name: env
+        #   hostPath:
+        #     path: /opt/rapidfort/data/.env
+        # TODO
         - name: dockersock
           hostPath:
             path: /var/run/docker.sock
@@ -80,8 +81,9 @@ spec:
             {{ end }}
             - name: rf-data
               mountPath: "/root/.rapidfort"
-            - name: env
-              mountPath: "/opt/rapidfort/.env"
+            # - name: env
+            #   mountPath: "/opt/rapidfort/.env"
+            # TODO
             - name: dockersock
               mountPath: "/var/run/docker.sock"
           ports:

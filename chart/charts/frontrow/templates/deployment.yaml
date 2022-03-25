@@ -22,13 +22,6 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
-      {{ if eq .Values.env.rf_debug true }}
-      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
-      - name: code
-        hostPath:
-          path: /root/rapidfort
-      {{ end }}          
-      {{ end }}         
       {{ if .Values.volumes }}
       {{ tpl (toYaml (index .Values.volumes )) . | nindent 6 }}
       {{ end }}
@@ -38,31 +31,18 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{ if eq .Values.env.rf_debug true }}
-          workingDir: /root/rapidfort/frontrow
-          command: ["/bin/sh", "-c", "sleep infinity"]
-          {{ end }}          
           env:
-            {{ if .Values.secret.name }}
-            {{- $secretName := .Values.secret.name }}
-            {{- range .Values.secret.keys }}
-            - name: {{ . | quote}}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $secretName }}
-                  key: {{ . | quote}}
-            {{- end }}
-            {{- end }}           
+            {{ if .Values.env.control_plane_host }}
+            - name: "RF_APP_HOST"
+              value: "{{ .Values.env.control_plane_host }}"
+            {{ else }}
+            - name: "RF_APP_HOST"
+              value: "{{ .Values.env.rf_app_host }}"
+            {{ end }}
           volumeMounts:
-          {{- if eq .Values.env.rf_debug true }}
-          {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
-          - name: code
-            mountPath: "/root/rapidfort"
-          {{ end }}
-          {{ end }}             
-          {{ if .Values.volumeMounts }}
-          {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
-          {{ end }}
+            {{ if .Values.volumeMounts }}
+            {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
+            {{ end }}
           ports:
             - name: http
               containerPort: 80

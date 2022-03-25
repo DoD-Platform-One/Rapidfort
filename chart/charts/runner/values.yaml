@@ -33,7 +33,7 @@ podSecurityContext: {}
   # fsGroup: 2000
 
 ingress:
-  enabled: true
+  enabled: false
   className: rf-ingress-class
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"

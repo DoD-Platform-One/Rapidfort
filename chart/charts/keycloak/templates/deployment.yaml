@@ -42,19 +42,19 @@ spec:
               mountPath: "/opt/jboss/keycloak/themes/rapidfort"
           env:
           - name: "DB_VENDOR"
-            value: "{{ .Values.db.vendor }}"
+            value: "MYSQL"
           - name: "DB_ADDR"
-            value: "{{ .Values.db.addr }}"
+            value: "mysql"
           - name: "DB_USER"
-            value: "{{ .Values.db.user }}"
+            value: "keycloak"
           - name: "DB_PASSWORD"
-            value: "{{ .Values.db.password }}"
+            value: "RF-123579"
           - name: "JDBC_PARAMS"
-            value: "{{ .Values.db.jdbc_params }}"
+            value: "useSSL=false"
           - name: "PROXY_ADDRESS_FORWARDING"
-            value: "{{ .Values.db.proxy_address_forwarding }}"
+            value: "true"
           - name: "JAVA_OPTS_APPEND"
-            value: "{{ .Values.db.java_opts_append }}"
+            value: "-Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled"
           ports:
             - name: http
               containerPort: 8080
@@ -89,3 +89,11 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      - name: init-mysql
+        image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init:1.1.0-271e065-19
+        command:
+          - "/bin/ash"
+          - "-c"
+          - "until mysql --host=mysql.default.svc.cluster.local --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
+

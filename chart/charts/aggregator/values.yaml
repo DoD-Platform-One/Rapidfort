@@ -62,18 +62,9 @@ tolerations: []
 affinity: {}
 
 env:
-  rf_debug: false
+  deploy_mode: standalone
   rf_api_server: iso-master
   redis_host: redis
-  deploy_mode: ""
+  rf_s3_bucket: standalone-rf
 
-secret:
-  name: "rf-secret"
-  keys:
-    - STS_ACCESS_ID
-    - AWS_ACCESS_KEY_ID
-    - AWS_DEFAULT_REGION
-    - AWS_SECRET_ACCESS_KEY
-    - STS_ROLE_ARN
-    - STS_SECRET_KEY
-    - RF_S3_BUCKET
+secretName: "rf-secret"

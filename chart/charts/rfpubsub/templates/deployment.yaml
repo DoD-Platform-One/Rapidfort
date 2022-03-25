@@ -27,76 +27,65 @@ spec:
       serviceAccountName: {{ include "rfpubsub.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      volumes:
-      {{ if eq .Values.env.rf_debug  true }}
-      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
-      - name: code
-        hostPath:
-          path: /root/rapidfort
-      {{ end }}          
-      {{ end }}
-      {{ if .Values.volumes }}
-      {{ tpl (toYaml (index .Values.volumes )) . | nindent 6 }}
-      {{ end }}           
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{ if eq .Values.env.rf_debug  true }}
-          workingDir: /root/rapidfort/file_access
-          command: ["/bin/sh", "-c", "sleep infinity"]
-          {{ end }}          
           env:
-            - name: RF_REDIS_HOST_NAME_HA
-              value: "{{ .Values.env.redis_host_ha }}"                     
-            - name: RF_REDIS_PORT_HA
-              value: "{{ .Values.env.redis_port_ha }}"
-            - name: RF_REDIS_PWD_HA
-              value: "{{ .Values.env.redis_pwd_ha }}"
-            - name: RF_REDIS_DB_HA
-              value: "{{ .Values.env.redis_db_ha }}"
-            - name: RF_REDIS_HOST_NAME
-              value: "{{ .Values.env.redis_host }}"
-            - name: RF_REDIS_PORT
-              value: "{{ .Values.env.redis_port }}"
-            - name: RF_REDIS_PWD
-              value: "{{ .Values.env.redis_pwd }}"                 
-            - name: "RF_DEBUG"
-              value:  "{{ .Values.env.rf_debug }}"
             - name: "DEPLOY_MODE"
               value: {{ .Values.env.deploy_mode }}
             - name: "RF_API_SERVER"
               value:  "{{ .Values.env.rf_api_server }}"
+            - name: "REDIS_HOST_NAME"
+              value:  "{{ .Values.env.redis_host }}"
             - name: "API_KEY"
-              value: "{{ .Values.env.api_key }}" #TODO: confirm new api key - 03f4b34739f506f88c9bbc3410b5d070
-            #inject create values as env variable.
-            {{ if .Values.secret.name }}
-            {{- $secretName := .Values.secret.name }}
-            {{- range .Values.secret.keys }}
-            - name: {{ . | quote}}
+              value: "woogiepockie"
+            - name: "RF_S3_BUCKET"
+              value: "{{ .Values.env.s3_bucket }}"
+            {{ if .Values.secretName }}
+            - name: "STS_ACCESS_ID"
               valueFrom:
                 secretKeyRef:
-                  name: {{ $secretName }}
-                  key: {{ . | quote}}
-            {{- end }}
-            - name: DATA_PLANE_HOST
+                  name: {{ .Values.secretName }}
+                  key: STS_ACCESS_ID
+            - name: "AWS_ACCESS_KEY_ID"
               valueFrom:
                 secretKeyRef:
-                  name: {{ $secretName }}
-                  key: RF_APP_HOST                
+                  name: {{ .Values.secretName }}
+                  key: AWS_ACCESS_KEY_ID
+            - name: "AWS_DEFAULT_REGION"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: AWS_DEFAULT_REGION
+            - name: "AWS_SECRET_ACCESS_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: "STS_ROLE_ARN"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: STS_ROLE_ARN
+            - name: "STS_SECRET_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: STS_SECRET_KEY
+            {{ else }}
+            - name: RF_ROLE_ARN
+              value: "{{ .Values.env.rf_role_arn }}"
             {{ end }}
-          volumeMounts:
-            {{- if eq .Values.env.rf_debug true }}
-            {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
-            - name: code
-              mountPath: "/root/rapidfort"
+            {{ if .Values.env.data_plane_host }}
+            - name: "RF_APP_HOST"
+              value: "{{ .Values.env.data_plane_host }}"
+            {{ else }}
+            - name: "RF_APP_HOST"
+              value: "{{ .Values.env.rf_app_host }}"
             {{ end }}
-            {{ end }}
-            {{ if .Values.volumeMounts }}
-            {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
-            {{ end }}            
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

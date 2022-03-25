@@ -43,7 +43,7 @@ service:
 ingress:
   websocket:
     enabled: true
-    className: rf-ingress-class
+    className: "nginx"
     annotations:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
@@ -51,7 +51,7 @@ ingress:
         proxy_set_header Upgrade "websocket";
         proxy_set_header Connection "Upgrade";
       nginx.ingress.kubernetes.io/server-snippets: |
-        location /rfapi/events {
+        location / {
           proxy_set_header X-Forwarded-Host $http_host;
           proxy_set_header X-Forwarded-Proto $scheme;
           proxy_set_header X-Forwarded-For $remote_addr;
@@ -65,7 +65,7 @@ ingress:
     tls: []
   http:
     enabled: true
-    className: rf-ingress-class
+    className: "nginx"
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
@@ -98,5 +98,4 @@ tolerations: []
 affinity: {}
 
 env:
-  rf_debug: false
-  deploy_mode: PRODUCTION
+  control_plane_host: ""
