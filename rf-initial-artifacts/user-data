@@ -1,0 +1,5 @@
+RF_APP_HOST=
+RF_APP_ADMIN=<admin_email_address>
+RF_APP_ADMIN_PASSWD=<admin_password>
+RF_ROLE_ARN=<rapidfort_role_arn>
+RF_S3_BUCKET=<rapidfort_s3_bucket>

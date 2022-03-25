@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "runner.fullname" . }}
+  labels:
+    {{- include "runner.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "runner.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "runner.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "runner.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        {{ if eq .Values.env.rf_debug  true }}
+        - name: code
+          hostPath:
+            path: /root/rapidfort
+        {{ end }}
+        - name: rf-data
+          hostPath:
+            path: /opt/rapidfort/data/.rapidfort
+        - name: env
+          hostPath:
+            path: /opt/rapidfort/data/.env
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{ if eq .Values.env.rf_debug  true }}
+          workingDir: /root/rapidfort/standalone/runner
+          command: ["/bin/sh", "-c", "sleep infinity"]
+          {{ end }}
+          env:
+            - name: "RF_DEBUG"
+              valueFrom:
+                secretKeyRef:
+                  name: test 
+                  key: RF_DEBUG
+            {{ if .Values.env.control_plane_host }}
+            - name: "RF_APP_HOST"
+              value: "{{ .Values.env.control_plane_host }}"
+            {{ else }}
+            - name: "RF_APP_HOST"
+              value: "{{ .Values.env.rf_app_host }}"
+            {{ end }}
+            - name: "AWS_DEFAULT_REGION"
+              value: "{{ .Values.env.aws_default_region }}"
+            - name: "RF_APP_ADMIN"
+              value: "{{ .Values.env.rf_app_admin }}"
+            - name: "RF_APP_ADMIN_PASSWD"
+              value: "{{ .Values.env.rf_app_admin_passwd }}"
+            - name: "RF_ROOT_URL"
+              value: "https://{{ .Values.env.rf_app_host }}"
+          volumeMounts:
+            {{- if eq .Values.env.rf_debug true }}
+            - name: code
+              mountPath: "/root/rapidfort"
+            {{ end }}
+            - name: rf-data
+              mountPath: "/root/.rapidfort"
+            - name: env
+              mountPath: "/opt/rapidfort/.env"
+            - name: dockersock
+              mountPath: "/var/run/docker.sock"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            {{- if eq .Values.env.rf_debug true }}
+            exec:
+              command:
+              - /bin/true
+            {{ else }}
+            httpGet:
+              path: /
+              port: http
+            {{ end }}
+          readinessProbe:
+            {{- if eq .Values.env.rf_debug true }}
+            exec:
+              command:
+              - /bin/true
+            {{ else }}
+            httpGet:
+              path: /
+              port: http
+            {{ end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+      - name: init
+        image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init:1.1.0-271e065-19
+        command:
+          - "/bin/bash"
+          - "-c"
+          - "until [ $(curl -sw '%{http_code}' http://backend.default.svc.cluster.local -o /dev/null) -eq 200 ]; do echo backend not ready; sleep 1; done"

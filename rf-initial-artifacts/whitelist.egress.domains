@@ -1,0 +1,2 @@
+1. domain: api.rapidfort.com	port:443
+2. domain: email-smtp.<aws-region>.amazonaws.com	port:587

@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rfpubsub.fullname" . }}
+  labels:
+    {{- include "rfpubsub.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "rfpubsub.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rfpubsub.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rfpubsub.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: "DEPLOY_MODE"
+              value: {{ .Values.env.deploy_mode }}
+            - name: "RF_API_SERVER"
+              value:  "{{ .Values.env.rf_api_server }}"
+            - name: "REDIS_HOST_NAME"
+              value:  "{{ .Values.env.redis_host }}"
+            - name: "API_KEY"
+              value: "woogiepockie"
+            - name: "RF_S3_BUCKET"
+              value: "{{ .Values.env.s3_bucket }}"
+            {{ if .Values.secretName }}
+            - name: "STS_ACCESS_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: STS_ACCESS_ID
+            - name: "AWS_ACCESS_KEY_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: AWS_ACCESS_KEY_ID
+            - name: "AWS_DEFAULT_REGION"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: AWS_DEFAULT_REGION
+            - name: "AWS_SECRET_ACCESS_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: "STS_ROLE_ARN"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: STS_ROLE_ARN
+            - name: "STS_SECRET_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretName }}
+                  key: STS_SECRET_KEY
+            {{ else }}
+            - name: RF_ROLE_ARN
+              value: "{{ .Values.env.rf_role_arn }}"
+            {{ end }}
+            {{ if .Values.env.data_plane_host }}
+            - name: "RF_APP_HOST"
+              value: "{{ .Values.env.data_plane_host }}"
+            {{ else }}
+            - name: "RF_APP_HOST"
+              value: "{{ .Values.env.rf_app_host }}"
+            {{ end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - "pgrep websocketd"
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - "pgrep websocketd"
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
