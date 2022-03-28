@@ -29,10 +29,9 @@ spec:
           hostPath:
             path: /imgs-work-dir
             type: DirectoryOrCreate
-        # - name: env
-        #   configMap:
-        #     name: rf-version-info
-        # TODO
+        - name: env
+          configMap:
+            name: rf-version-info
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -126,9 +125,8 @@ spec:
               mountPath: "/opt/rapidfort/backend/app/s3fs"
             - name: imgs-work-dir
               mountPath: "/opt/rapidfort/backend/app/imgs_work_dir"
-            # - name: env
-            #   mountPath: "/opt/rapidfort/env-config/"
-            # TODO
+            - name: env
+              mountPath: "/opt/rapidfort/env-config/"
           ports:
             - name: http
               containerPort: 80
