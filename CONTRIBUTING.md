@@ -1,7 +1,3 @@
-TODO
-
-!! EXAMPLE BELOW !!
-
 # Contributing
 
 This repository uses the following conventions:
