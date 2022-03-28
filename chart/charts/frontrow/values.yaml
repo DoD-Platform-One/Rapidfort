@@ -76,18 +76,16 @@ volumes:
   - name: config-volume
     configMap:
       name: keycloak-config
-  # - name: env
-  #   configMap:
-  #     name: rf-version-info
-  # TODO
+  - name: env
+    configMap:
+      name: rf-version-info
 volumeMounts:
   - mountPath: "/usr/share/nginx/html/app/keycloak.json"
     name: config-volume
     subPath: "keycloak.json"
-  # - name: env
-  #   mountPath: "/opt/rapidfort/.env"
-  #   subPath: ".env"
-  # TODO
+  - name: env
+    mountPath: "/opt/rapidfort/.env"
+    subPath: ".env"
 
 authUrl: "https://frontrow.rapidfort.io/auth/"
 
