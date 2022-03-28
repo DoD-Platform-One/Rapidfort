@@ -45,10 +45,9 @@ spec:
         - name: vulns-db
           hostPath:
             path: /opt/rapidfort/data/iso-master/vulns_db
-        # - name: env
-        #   configMap:
-        #     name: rf-version-info
-        # TODO
+        - name: env
+          configMap:
+            name: rf-version-info
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -205,9 +204,8 @@ spec:
               mountPath: "/opt/rapidfort/iso-master/app/image_db"
             - name: vulns-db
               mountPath: "/opt/rapidfort/iso-master/app/db"
-            # - name: env
-            #   mountPath: "/opt/rapidfort/.env"
-            # TODO
+            - name: env
+              mountPath: "/opt/rapidfort/.env"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
