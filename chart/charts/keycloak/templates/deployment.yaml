@@ -91,7 +91,7 @@ spec:
       {{- end }}
       initContainers:
       - name: init-mysql
-        image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init:1.1.0-271e065-19
+        image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
         command:
           - "/bin/ash"
           - "-c"

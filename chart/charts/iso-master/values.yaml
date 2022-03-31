@@ -108,3 +108,8 @@ readinessProbe:
   failureThreshold: 1
 
 secretName: "rf-secret"
+
+initContainer:
+  image:
+    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfstub.alp.base
+    tag: latest

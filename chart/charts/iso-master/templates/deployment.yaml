@@ -23,8 +23,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: rfstub-alp-base
-          image: "274057717848.dkr.ecr.us-east-1.amazonaws.com/rfstub.alp.base:latest"
-          command: ['sh', '-c', 'echo loaded 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfstub.alp.base']
+          image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
+          command: ['sh', '-c', "echo loaded {{ .Values.initContainer.image.repository }}"]
       volumes:
         - name: fuse
           hostPath:
