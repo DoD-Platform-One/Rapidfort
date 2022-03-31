@@ -86,3 +86,8 @@ env:
   rf_app_passwd: ""
   control_plane_host: ""
   rf_debug: false
+
+initContainer:
+  image:
+    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init
+    tag: 1.1.0-271e065-19

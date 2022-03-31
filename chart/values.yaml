@@ -1,0 +1,82 @@
+aggregator:
+  image:
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/aggregator
+    tag: latest
+
+backend:
+  image:
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/backend
+    tag: latest
+
+frontrow:
+  image:
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow
+    tag: latest
+
+iso-master:
+  image:
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/iso-master
+    tag: latest
+  initContainer:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfstub.alp.base
+      tag: latest
+
+keycloak:
+  image:
+    repository: registry1.dso.mil/ironbank/opensource/keycloak/keycloak
+    tag: 15.0.2 # This is the closest IB tag to what RF requests (15.1.1)
+  connectionTest:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
+      tag: latest
+  initContainer:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      tag: latest
+
+redis:
+  image:
+    repository: registry1.dso.mil/ironbank/opensource/redis/redis6
+    tag: latest
+    # At time of writing rf is asking for the latest from dockerhub which is redis6
+  connectionTest:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
+      tag: latest
+
+rfapi:
+  image:
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi
+    tag: latest
+  connectionTest:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
+      tag: latest
+
+rfpubsub:
+  image:
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfpubsub
+    tag: latest
+
+rfvdb:
+  image:
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfvdb
+    tag: latest
+  initContainer:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      tag: latest
+  connectionTest:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
+      tag: latest
+
+runner:
+  image:
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner
+    tag: latest
+  initContainer:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      tag: latest

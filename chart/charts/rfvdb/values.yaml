@@ -91,3 +91,13 @@ env:
   rf_pkgdb_redis_host: redis
   rf_imgdb_redis_host: redis
   rf_debug: false
+
+connectionTest:
+  image:
+    repository: busybox
+    tag: latest # I know this is bad but I'm just trying to mirror initial behavior
+
+initContainer:
+  image:
+    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init
+    tag: 1.1.0-271e065-19

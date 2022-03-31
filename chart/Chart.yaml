@@ -1,7 +1,7 @@
 ---
-apiVersion: v1
+apiVersion: v2
 name: rapidfort
-version: 0.1.0-bb.0
+version: 0.1.0-bb.1
 appVersion: 0.1.0
 description: Automated container hardening
 keywords:
@@ -16,3 +16,24 @@ sources:
 annotations:
   bigbang.dev/applicationVersions: |
     - RapidFort: 0.1.0
+dependencies:
+  - name: aggregator
+    version: 0.1.0
+  - name: backend
+    version: 0.1.0
+  - name: frontrow
+    version: 0.1.0
+  - name: iso-master
+    version: 0.1.0
+  - name: keycloak
+    version: 0.1.0
+  - name: redis
+    version: 0.1.0
+  - name: rfapi
+    version: 0.1.0
+  - name: rfpubsub
+    version: 0.1.0
+  - name: rfvdb
+    version: 0.1.0
+  - name: runner
+    version: 0.1.0
