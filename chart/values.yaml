@@ -80,3 +80,14 @@ runner:
     image:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
       tag: latest
+
+# Bigbang helm test values default disabled
+bbtests:
+  enabled: false
+  cypress:
+    artifacts: true
+    envs:
+      cypress_url: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
+  scripts:
+    envs:
+      URL: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
