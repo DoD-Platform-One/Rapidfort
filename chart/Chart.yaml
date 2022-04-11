@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
 name: rapidfort
-version: 0.1.0-bb.1
+version: 0.1.0-bb.2
 appVersion: 0.1.0
 description: Automated container hardening
 keywords:
@@ -27,7 +27,11 @@ dependencies:
     version: 0.1.0
   - name: keycloak
     version: 0.1.0
+  - name: mysql
+    version: 0.1.0
   - name: redis
+    version: 0.1.0
+  - name: rf-scan
     version: 0.1.0
   - name: rfapi
     version: 0.1.0

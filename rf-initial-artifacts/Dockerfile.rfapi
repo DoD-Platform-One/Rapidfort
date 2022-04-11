@@ -1,0 +1,7 @@
+# 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi:1.1.0-9233cfa-1980-rfhardened sha256:01774a721ae56b7f9ed2a33bec35f901595b672c4b2aa34961c762b20fc2270d
+# FROM sha256:01774a721ae56b7f9ed2a33bec35f901595b672c4b2aa34961c762b20fc2270d
+FROM 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi:1.1.0-9233cfa-1980-rfhardened
+ADD  file:3656015afa1f8424f3a74c3c455a25acd1c15c9b0974b0ea7a824a6df76cd68d / 
+LABEL "rf.2e7e2863-dba7-4a5e-ba43-06cd8a966323"="274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi:1.1.0-9233cfa-1980" "rf_image_guid.e1d62946-ea10-4908-8830-828f18bdf6b4"="e1d62946-ea10-4908-8830-828f18bdf6b4"
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" 
+CMD ["/bin/sh", "-c", "/init.sh"]

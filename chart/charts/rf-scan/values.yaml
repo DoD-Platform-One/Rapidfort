@@ -180,3 +180,8 @@ volumeMounts:
     mountPath: "/opt/rapidfort/iso-master/app/db"
   # - name: env
   #   mountPath: "/opt/rapidfort/.env"
+
+connectionTest:
+  image:
+    repository: busybox
+    tag: latest # I know this is bad but I'm just trying to mirror initial behavior

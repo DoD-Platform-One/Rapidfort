@@ -9,7 +9,7 @@ metadata:
 spec:
   containers:
     - name: wget
-      image: busybox
+      image: "{{ .Values.connectionTest.image.repository }}:{{ .Values.connectionTest.image.tag | default .Chart.AppVersion }}"
       command: ['wget']
       args: ['{{ include "mysql.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never

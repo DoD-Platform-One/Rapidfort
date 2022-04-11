@@ -1,0 +1,20 @@
+# 274057717848.dkr.ecr.us-east-1.amazonaws.com/frontrow:1.1.353-22fc3ee-1980 sha256:748b89ce97c4a97a4bec7eaf89c0992fd3d058aa50a6112690196a699c495499
+# FROM sha256:748b89ce97c4a97a4bec7eaf89c0992fd3d058aa50a6112690196a699c495499
+FROM 274057717848.dkr.ecr.us-east-1.amazonaws.com/frontrow:1.1.353-22fc3ee-1980
+ADD  file:3b5a33c96fd3c10d0c438d907ce172903f7b2bde0f4e5107831e135ddf111b19 / 
+COPY  file:65504f71f5855ca017fb64d502ce873a31b2e0decd75297a8fb0a287f97acf92 / 
+COPY  file:0b866ff3fc1ef5b03c4e6c8c513ae014f691fb05d530257dfffd07035c1b75da /docker-entrypoint.d 
+COPY  file:0fd5fca330dcd6a7de297435e32af634f29f7132ed0550d342cad9fd20158258 /docker-entrypoint.d 
+COPY  file:09a214a3e07c919af2fb2d7c749ccbc446b8c10eb217366e5a65640ee9edcc25 /docker-entrypoint.d 
+COPY  file:b9c09872392d3fd4ba19f6027be5d001b4a0c066e2599dc3bd89a721338da041 /docker-entrypoint.sh 
+COPY --chown=nginx:nginx file:d3990e7cd0290a8860892c745525dc6de79a7789da2c3a1f331f4b7391f89511 /etc/nginx/conf.d/default.conf 
+COPY --chown=nginx:nginx file:2d45a48faccd911da5edbe5fdb75f9670cf73f397c4fc3cce9444f6c1f6448c1 /usr/share/nginx/html/licenses/index.csv 
+COPY --chown=nginx:nginx file:e6fb8c916e975c3d7fc13651c72302bf2fc1f8d7f3d7a39c9798491d543ecec0 /usr/share/nginx/html/ 
+COPY --chown=nginx:nginxdir:a976eb804b12f7a26edf0cf371bf305ae95cc4c8c6ab2f55034759809f60e50c /usr/share/nginx/html/app 
+COPY --chown=nginx:nginxdir:56e67d3584aa2c10b024cb4d85dfa81a526af3dd75a31632b977104732feaa50 /usr/share/nginx/html/cli 
+EXPOSE  80/tcp
+STOPSIGNAL SIGQUIT
+LABEL "maintainer"="NGINX Docker Maintainers <docker-maint@nginx.com>"
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" NGINX_VERSION="1.21.6" NJS_VERSION="0.7.2" PKG_RELEASE="1" 
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]

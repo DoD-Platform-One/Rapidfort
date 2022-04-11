@@ -8,7 +8,7 @@ image:
   repository: jboss/keycloak
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "15.1.1"
+  tag: "16.1.1"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -41,7 +41,7 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
   hosts:
@@ -79,10 +79,13 @@ tolerations: []
 affinity: {}
 
 db:
-  username: ""
-  password: ""
-  host: ""
-  dbName: ""
+  vendor: "MYSQL"
+  addr: "mysql"
+  user: "keycloak"
+  password: "RF-123579"
+  jdbc_params: "useSSL=false"
+  proxy_address_forwarding: "true"
+  java_opts_append: "-Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled"
 
 env:
   public_ingress_class: true
