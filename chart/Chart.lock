@@ -1,0 +1,36 @@
+dependencies:
+- name: aggregator
+  repository: ""
+  version: 0.1.0
+- name: backend
+  repository: ""
+  version: 0.1.0
+- name: frontrow
+  repository: ""
+  version: 0.1.0
+- name: iso-master
+  repository: ""
+  version: 0.1.0
+- name: keycloak
+  repository: ""
+  version: 0.1.0
+- name: redis
+  repository: ""
+  version: 0.1.0
+- name: rfapi
+  repository: ""
+  version: 0.1.0
+- name: rfpubsub
+  repository: ""
+  version: 0.1.0
+- name: rfvdb
+  repository: ""
+  version: 0.1.0
+- name: runner
+  repository: ""
+  version: 0.1.0
+- name: gluon
+  repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
+  version: 0.2.9
+digest: sha256:d0651534493488b9a66f8aa633aad7dc424f7ce421632fed594717749fbd954a
+generated: "2022-04-06T11:31:08.741321-05:00"
