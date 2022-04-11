@@ -1,0 +1,7 @@
+# 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub:1.1.0-a22490b-1980-rfhardened sha256:0d5e95814ca5eecc40c86d5e969af18a68ea15b463d564f8024d04525c9fa116
+# FROM sha256:0d5e95814ca5eecc40c86d5e969af18a68ea15b463d564f8024d04525c9fa116
+FROM 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub:1.1.0-a22490b-1980-rfhardened
+ADD  file:a32275978da3dc506f8866f5ba1f90f1b8679a126b362b7c7a652023caeaabc3 / 
+LABEL "COMMON_COMMIT"="" "rf.697edc59-ae71-423a-b7e9-eff534d323bf"="274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub:1.1.0-a22490b-1980" "rf_image_guid.f1e42a7d-8970-4813-8b4e-87fa2ca73249"="f1e42a7d-8970-4813-8b4e-87fa2ca73249"
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" 
+CMD ["/bin/sh", "-c", "/init.sh"]

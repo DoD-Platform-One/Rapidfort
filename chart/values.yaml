@@ -35,6 +35,15 @@ keycloak:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
       tag: latest
 
+mysql:
+  image:
+    repository: registry1.dso.mil/ironbank/opensource/mysql/mysql8
+    tag: latest
+  connectionTest:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
+      tag: latest
+
 redis:
   image:
     repository: registry1.dso.mil/ironbank/opensource/redis/redis6
@@ -45,10 +54,23 @@ redis:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
       tag: latest
 
+rf-scan:
+  image:
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rf-scan-exe
+    tag: 1.1.0-fe0398f-01
+  connectionTest:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
+      tag: latest
+
 rfapi:
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi
     tag: latest
+  initContainer:
+    image:
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      tag: latest
   connectionTest:
     image:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
@@ -87,7 +109,10 @@ bbtests:
   cypress:
     artifacts: true
     envs:
-      cypress_url: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
+      # dummy values for now
+      # cypress_url: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
+      cypress_url: 'http://test.test'
   scripts:
     envs:
-      URL: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
+      URL: 'http://test.test'
+      # URL: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'

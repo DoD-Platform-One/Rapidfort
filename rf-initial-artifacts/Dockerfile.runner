@@ -1,0 +1,9 @@
+# 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.0-3fac88a-2611-rfhardened sha256:ad910e0d8273db7dab4a9617017969d6f09b2ec179f8816116b00f76296de1f2
+# FROM sha256:ad910e0d8273db7dab4a9617017969d6f09b2ec179f8816116b00f76296de1f2
+FROM 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.0-3fac88a-2611-rfhardened
+ADD  file:23bf4904b68eabaaaf116bdb33de0ce9d1dee2791f5a843cf41965ac03d8abaa / 
+EXPOSE  80/tcp
+WORKDIR /opt/rapidfort/runner/app
+LABEL "COMMON_COMMIT"="db491f0" "RAPIDFORT_COMMIT"="560a860" "rf.92195846-3499-421e-8cef-34c84f5f5b70"="274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.0-3fac88a-2611" "rf_image_guid.a34ae866-87ee-4c16-8e5a-ad245564da93"="a34ae866-87ee-4c16-8e5a-ad245564da93"
+ENV PATH="/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" LANG="C.UTF-8" GPG_KEY="E3FF2839C048B25C084DEBE9B26995E310250568" PYTHON_VERSION="3.9.1" PYTHON_PIP_VERSION="20.3.3" PYTHON_GET_PIP_URL="https://github.com/pypa/get-pip/raw/5f38681f7f5872e4032860b54e9cc11cf0374932/get-pip.py" PYTHON_GET_PIP_SHA256="6a0b13826862f33c13b614a921d36253bfa1ae779c5fbf569876f3585057e9d2" 
+CMD ["/bin/sh", "-c", "PYTHONPATH=../../common python3 main.py"]

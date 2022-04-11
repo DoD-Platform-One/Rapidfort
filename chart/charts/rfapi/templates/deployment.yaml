@@ -24,19 +24,51 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+      {{ if eq .Values.env.rf_debug  true }}
+      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
+      - name: code
+        hostPath:
+          path: /root/rapidfort
+      {{ end }}          
+      {{ end }}  
       serviceAccountName: {{ include "rfapi.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init
+          image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
+          command:
+            - "/bin/bash"
+            - "-c"
+            - "until [ $(redis-cli -h redis.default.svc.cluster.local ping) == 'PONG' ]; do echo redis not ready; sleep 1; done"
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{ if eq .Values.env.rf_debug  true }}
+          workingDir: /root/rapidfort/rfapi
+          command: ["/bin/sh", "-c", "sleep infinity"]
+          volumeMounts:
+            - name: code
+              mountPath: "/root/rapidfort"
+          {{ end }}          
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
+          volumeMounts:
+            {{- if eq .Values.env.rf_debug true }}
+            {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
+            - name: code
+              mountPath: "/root/rapidfort"
+            {{ end }}
+            {{ end }}          
+          env:
+            - name: "RF_DEBUG"
+              value: "{{ .Values.env.rf_debug }}"
           # livenessProbe:
           #   httpGet:
           #     path: /rfapi

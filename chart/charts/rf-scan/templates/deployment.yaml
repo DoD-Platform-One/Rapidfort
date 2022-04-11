@@ -1,41 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "iso-master.fullname" . }}
+  name: {{ include "rf-scan.fullname" . }}
   labels:
-    {{- include "iso-master.labels" . | nindent 4 }}
+    {{- include "rf-scan.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      {{- include "iso-master.selectorLabels" . | nindent 6 }}
+      {{- include "rf-scan.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        {{- include "iso-master.selectorLabels" . | nindent 8 }}
+        {{- include "rf-scan.selectorLabels" . | nindent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-      serviceAccountName: {{ include "iso-master.serviceAccountName" . }}
+      {{- end }}
+      serviceAccountName: {{ include "rf-scan.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      initContainers:
-        # - name: init
-        #   image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init:1.1.0-271e065-19
-        #   command:
-        #     - "/bin/bash"
-        #     - "-c"
-        #     - "until [ $(curl --connect-timeout 10 -sw '%{http_code}' http://backend.default.svc.cluster.local -o /dev/null) -eq 200 ]; do echo backend not ready; sleep 1; done"      
-        - name: rfstub-alp-base
-          image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
-          command: ['sh', '-c', "echo loaded {{ .Values.initContainer.image.repository }}"]
       volumes:
       {{ if eq .Values.env.rf_debug  true }}
       {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
       - name: code
-          hostPath:
+        hostPath:
           path: /root/rapidfort
       {{ end }}          
       {{ end }}      
@@ -46,12 +42,8 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{ if eq .Values.env.rf_debug  true }}
-          workingDir: /root/rapidfort/iso-master
-          command: ["/bin/sh", "-c", "sleep infinity"]
-          {{ end }}          
           ports:
             - name: http
               containerPort: 80
@@ -72,6 +64,8 @@ spec:
             httpGet:
               path: /
               port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           env:
             - name: RF_DEBUG
               value: "{{ .Values.env.debug }}"
@@ -105,7 +99,7 @@ spec:
                 secretKeyRef:
                   name: {{ $secretName }}
                   key: RF_APP_HOST      
-            {{ end }}                       
+            {{ end }}
             - name: "BACKEND_SERVICE_NAME"
               value: "{{ .Values.env.backend_service_name}}"
             - name: DEPLOY_MODE
@@ -133,7 +127,7 @@ spec:
             - name: RF_REDIS_PORT
               value: "{{ .Values.env.redis_port }}"
             - name: RF_REDIS_PWD
-              value: "{{ .Values.env.redis_pwd }}"              
+              value: "{{ .Values.env.redis_pwd }}"                
           volumeMounts:
             {{- if eq .Values.env.rf_debug true }}
             {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
@@ -144,18 +138,15 @@ spec:
             {{ if .Values.volumeMounts }}
             {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
             {{ end }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-
+      {{- end }}

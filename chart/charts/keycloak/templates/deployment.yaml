@@ -42,19 +42,19 @@ spec:
               mountPath: "/opt/jboss/keycloak/themes/rapidfort"
           env:
           - name: "DB_VENDOR"
-            value: "MYSQL"
+            value: "{{ .Values.db.vendor }}"
           - name: "DB_ADDR"
-            value: "mysql"
+            value: "{{ .Values.db.addr }}"
           - name: "DB_USER"
-            value: "keycloak"
+            value: "{{ .Values.db.user }}"
           - name: "DB_PASSWORD"
-            value: "RF-123579"
+            value: "{{ .Values.db.password }}"
           - name: "JDBC_PARAMS"
-            value: "useSSL=false"
+            value: "{{ .Values.db.jdbc_params }}"
           - name: "PROXY_ADDRESS_FORWARDING"
-            value: "true"
+            value: "{{ .Values.db.proxy_address_forwarding }}"
           - name: "JAVA_OPTS_APPEND"
-            value: "-Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled"
+            value: "{{ .Values.db.java_opts_append }}"
           ports:
             - name: http
               containerPort: 8080
@@ -89,11 +89,12 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      initContainers:
-      - name: init-mysql
-        image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
-        command:
-          - "/bin/ash"
-          - "-c"
-          - "until mysql --host=mysql.default.svc.cluster.local --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
+      # Below was removed, unsure it that's the best course
+      # initContainers:
+      # - name: init-mysql
+      #   image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
+      #   command:
+      #     - "/bin/ash"
+      #     - "-c"
+      #     - "until mysql --host=mysql.default.svc.cluster.local --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
 

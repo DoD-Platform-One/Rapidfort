@@ -4,6 +4,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Changed
+- Updated to latest charts from RF (Apr 7 2022)
+
 ### Added
 - Support for BB pipelines
 - Updated all `hpa`s to `v2beta2` from `v2beta1`
