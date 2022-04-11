@@ -1,0 +1,9 @@
+# 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend:1.1.0-12b88d2-1980-rfhardened sha256:b9000d225f3774651009ef0c1bafe1abdf81a6ff7a033ac79dda7b8d8a9f3cdf
+# FROM sha256:b9000d225f3774651009ef0c1bafe1abdf81a6ff7a033ac79dda7b8d8a9f3cdf
+FROM 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend:1.1.0-12b88d2-1980-rfhardened
+ADD  file:0df136ec9c3cb4b6b932b7d12066604f8e7d05e84096ec93f7fd3b6e3b0f04e2 / 
+EXPOSE  8080/tcp
+WORKDIR /opt/rapidfort/backend/app
+LABEL "COMMON_COMMIT"="5c3c1a4" "rf.724d8d6f-26a1-443f-9abd-e522147018cc"="274057717848.dkr.ecr.us-east-1.amazonaws.com/backend:1.1.0-12b88d2-1980" "rf_image_guid.a5dccf01-7997-41be-a559-77e62af08471"="a5dccf01-7997-41be-a559-77e62af08471"
+ENV PATH="/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" LANG="C.UTF-8" GPG_KEY="E3FF2839C048B25C084DEBE9B26995E310250568" PYTHON_VERSION="3.9.1" PYTHON_PIP_VERSION="20.3.3" PYTHON_GET_PIP_URL="https://github.com/pypa/get-pip/raw/5f38681f7f5872e4032860b54e9cc11cf0374932/get-pip.py" PYTHON_GET_PIP_SHA256="6a0b13826862f33c13b614a921d36253bfa1ae779c5fbf569876f3585057e9d2" 
+CMD ["/bin/sh", "-c", "/bin/bash -c \" python3 main.py\""]

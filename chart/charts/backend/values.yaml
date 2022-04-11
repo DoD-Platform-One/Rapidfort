@@ -7,20 +7,23 @@ replicaCount: 1
 image:
   repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend
   tag: stable
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
+
+tunnelStubendabled: false
 
 env:
+  #Tuneel stub params
   ami_image_id: "ami-0524144a423a3cff5"
   security_group_id: ""
   vpc_subnet_id: ""
   vmpool_server_addr: ""
-  auth_server_base_url: ""
-  deployment_mode: ""
-  s3bucket: ""
+  #End  
+  redis_host: redis
   backend_service_name: "backend"
   debug: "off"
-  control_plane_host: ""
-  rf_role_arn: ""
+  rf_debug: false 
+  on_premise: 0
+  deployment_mode: ""  
 
 imagePullSecrets: []
 nameOverride: ""
@@ -52,11 +55,10 @@ service:
   port: 80
 
 ingress:
-  enabled: false
-  className: "nginx"
+  enabled: true
+  className: "rf-ingress-class"
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
-    kubernetes.io/ingress.class: nginx
   hosts:
     - host: 
       paths:
@@ -79,32 +81,54 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-# nodeSelector:
-#   node-type: "computeOptimized"
-# TODO
-
 tolerations: []
 
 affinity: {}
 
-db:
-  username: ""
-  password: ""
-  host: ""
-  dbName: "dev"
-
-# pvc:
-#   image_db: ""
-#   package_analyzer_db: ""
-
 keycloak:
-  jwt_pub_key: ""
+  serviceName: keycloak-http
 
-secretName: "rf-secret"
-
+secret:
+  name: "rf-secret"
+  keys:
+    - USERNAME_SMTP
+    - SOURCE_ARN
+    - PASSWORD_SMTP
+    - STS_ACCESS_ID
+    - AWS_ACCESS_KEY_ID
+    - AWS_DEFAULT_REGION
+    - AWS_SECRET_ACCESS_KEY
+    - STS_ROLE_ARN
+    - STS_SECRET_KEY
+    - DB_URL
+    - KEYCLOAK_JWT_PUB_KEY
+    - KEYCLOAK_REALM
+    - KEYCLOAK_CLIENT_ID
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET
+    - ADMIN_ROLE_ID
+    - MEMBER_ROLE_ID
+    - GUEST_ROLE_ID
+    - RF_APP_HOST
+    - RF_S3_BUCKET
+    
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
-  # targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+volumes:
+  - name: mntdatas3fs
+    hostPath:
+      path: /mnt/s3data
+  - name: imgs-work-dir
+    hostPath:
+      path: /imgs-work-dir
+      type: DirectoryOrCreate
+volumeMounts:
+  - name: mntdatas3fs
+    mountPath: "/opt/rapidfort/backend/app/s3fs"
+  - name: imgs-work-dir
+    mountPath: "/opt/rapidfort/backend/app/imgs_work_dir"

@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: rf-version-info
-  namespace: {{ .Release.Namespace }}
-  labels:
-    {{- include "frontrow.selectorLabels" . | nindent 4 }}
-data:
-  {{ (tpl (.Files.Glob "resources/.env").AsConfig $ ) | nindent 2 }}

@@ -1,23 +1,23 @@
-# Default values for iso-master.
+# Default values for rf-scan.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
 
 replicaCount: 1
 
 image:
-  repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/iso-master
+  repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan
   tag: stable
   pullPolicy: IfNotPresent
 
-tunnelStubendabled: false
 env:
   #Tunnel Stub variables. - START
-  ami_image_id: "ami-06fb837f38439836e"
+  ami_image_id: ""
   vm_scheduler_port: 80
   vm_server_addr: vm-scheduler
   vmpool_server_addr: ""
-  security_group_id: "sg-0cb2f23f1b8da8468"
-  vpc_subnet_id: "subnet-0f8c9a907f6bb6c94"
+  security_group_id: ""
+  vpc_subnet_id: ""
   #Tunnel Stub variables. - END
   backend_service_name: "backend"
   deployment_mode: "PRODUCTION" # this has to be upper case as per the code standard
@@ -30,7 +30,7 @@ env:
   redis_host_ha: "redis"
   redis_port_ha: "6379"
   redis_pwd_ha: ""
-  redis_db_ha: 4  
+  redis_db_ha: 4   
 
 imagePullSecrets: []
 nameOverride: ""
@@ -38,12 +38,12 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""
 
 podAnnotations: {}
 
@@ -70,7 +70,7 @@ ingress:
   hosts:
     - host: 
       paths:
-        - path: /iso-master/.*
+        - path: /rf-scan/.*
           pathType: ImplementationSpecific
   tls: []
 
@@ -79,29 +79,28 @@ resources:
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 512Mi
   requests:
-    cpu: 600m
-    memory: 1024Mi
+    cpu: 250m
+    memory: 512Mi
 
 autoscaling:
   enabled: true
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 100
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
 
-nodeSelector: {}
-
-pvc:
-  image_db: ""
-  package_analyzer_db: ""
+keycloak:
+  serviceName: keycloak-http
 
 #TODO: use this in template.
 livenessProbe:
@@ -115,9 +114,6 @@ readinessProbe:
   initialDelaySeconds: 15
   timeoutSeconds: 10
   failureThreshold: 1
-
-keycloak:
-  serviceName: keycloak-http
 
 secret:
   name: "rf-secret"
@@ -142,10 +138,9 @@ secret:
     - STS_ROLE_ARN
     - STS_SECRET_KEY
 
-initContainer:
-  image:
-    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfstub.alp.base
-    tag: latest
+pvc:
+  image_db: ""
+  package_analyzer_db: ""
 
 volumes:
   - name: fuse
@@ -185,3 +180,8 @@ volumeMounts:
     mountPath: "/opt/rapidfort/iso-master/app/db"
   # - name: env
   #   mountPath: "/opt/rapidfort/.env"
+
+connectionTest:
+  image:
+    repository: busybox
+    tag: latest # I know this is bad but I'm just trying to mirror initial behavior
