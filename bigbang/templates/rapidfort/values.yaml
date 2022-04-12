@@ -1,0 +1,9 @@
+{{- $pkg := "rapidfort" }}
+{{- define "bigbang.defaults.rapidfort" -}}
+
+{{- end }}
+
+{{- /* Create secret */ -}}
+{{- if (get .Values $pkg).enabled }}
+{{- include "values-secret" (dict "root" $ "package" (get .Values $pkg) "name" $pkg "defaults" (include (printf "bigbang.defaults.%s" $pkg) .)) }}
+{{- end }}

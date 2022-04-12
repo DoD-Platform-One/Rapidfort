@@ -1,0 +1,44 @@
+rapidfort:
+  enabled: true 
+  git:
+    repo: https://repo1.dso.mil/platform-one/big-bang/apps/third-party/rapidfort
+    branch: main
+    path: chart
+  flux: {}
+
+# Big Bang Core - toggle to enable/disable
+networkPolicies:
+  enabled: false
+
+istiooperator:
+  enabled: false
+
+istio:
+  enabled: false
+
+gatekeeper:
+  enabled: false
+
+clusterAuditor:
+  enabled: false
+
+eckoperator:
+  enabled: false
+
+logging:
+  enabled: false
+
+fluentbit:
+  enabled: false
+
+monitoring:
+  enabled: false
+
+jaeger:
+  enabled: false
+
+kiali:
+  enabled: false
+
+twistlock:
+  enabled: false
