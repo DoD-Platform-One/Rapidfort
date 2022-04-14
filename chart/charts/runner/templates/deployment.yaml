@@ -53,11 +53,13 @@ spec:
           command: ["/bin/sh", "-c", "sleep infinity"]
           {{ end }}
           env:
+            {{ if eq .Values.env.rf_debug  true }}
             - name: "RF_DEBUG"
               valueFrom:
                 secretKeyRef:
                   name: test 
                   key: RF_DEBUG
+            {{ end }}
             {{ if .Values.env.control_plane_host }}
             - name: "RF_APP_HOST"
               value: "{{ .Values.env.control_plane_host }}"
@@ -128,4 +130,4 @@ spec:
         command:
           - "/bin/bash"
           - "-c"
-          - "until [ $(curl -sw '%{http_code}' http://backend.default.svc.cluster.local -o /dev/null) -eq 200 ]; do echo backend not ready; sleep 1; done"
+          - "until [ $(curl -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo backend not ready; sleep 1; done"

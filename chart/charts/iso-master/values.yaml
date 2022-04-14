@@ -100,8 +100,8 @@ affinity: {}
 nodeSelector: {}
 
 pvc:
-  image_db: ""
-  package_analyzer_db: ""
+  image_db: "image-db-pvc"
+  package_analyzer_db: "package-analyzer-db-pvc"
 
 #TODO: use this in template.
 livenessProbe:
@@ -134,7 +134,7 @@ secret:
     - MEMBER_ROLE_ID
     - GUEST_ROLE_ID
     - RF_APP_HOST
-    # - RF_APP_ADMIN
+    - RF_APP_ADMIN
     - SERVICE_TYPE
     - STS_ACCESS_ID
     - AWS_ACCESS_KEY_ID
@@ -160,10 +160,10 @@ volumes:
       type: DirectoryOrCreate
   - name: package-analyzer-db-pvc
     persistentVolumeClaim:
-      claimName: "{{ .Values.pvc.package_analyzer_db }}"
+      claimName: "package-analyzer-db-pvc"
   - name: image-db-pvc
     persistentVolumeClaim:
-      claimName: "{{ .Values.pvc.image_db }}"
+      claimName: "image-db-pvc"
   - name: vulns-db
     hostPath:
       path: /opt/rapidfort/data/iso-master/vulns_db

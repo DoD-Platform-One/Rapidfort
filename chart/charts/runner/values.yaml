@@ -41,7 +41,7 @@ ingress:
     - host:
       paths:
         - /runner/.*
-      paths:
+      # paths:
         - path: /runner/.*
           pathType: ImplementationSpecific
   tls: []

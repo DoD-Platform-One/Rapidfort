@@ -119,4 +119,4 @@ spec:
         command:
           - "/bin/bash"
           - "-c"
-          - "until [ $(redis-cli -h redis.default.svc.cluster.local ping) == 'PONG' ]; do echo redis not ready; sleep 1; done"
+          - "until [ $(redis-cli -h redis ping) == 'PONG' ]; do echo redis not ready; sleep 1; done"

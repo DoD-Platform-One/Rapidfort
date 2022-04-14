@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
 name: rapidfort
-version: 0.1.0-bb.2
+version: 0.1.0-bb.3
 appVersion: 0.1.0
 description: Automated container hardening
 keywords:
@@ -19,28 +19,40 @@ annotations:
 dependencies:
   - name: aggregator
     version: 0.1.0
+    condition: aggregator.enabled
   - name: backend
     version: 0.1.0
+    condition: backend.enabled
   - name: frontrow
     version: 0.1.0
+    condition: frontrow.enabled
   - name: iso-master
     version: 0.1.0
+    condition: iso-master.enabled
   - name: keycloak
     version: 0.1.0
+    condition: keycloak.enabled
   - name: mysql
     version: 0.1.0
+    condition: mysql.enabled
   - name: redis
     version: 0.1.0
+    condition: redis.enabled
   - name: rf-scan
     version: 0.1.0
+    condition: rf-scan.enabled
   - name: rfapi
     version: 0.1.0
+    condition: rfapi.enabled
   - name: rfpubsub
     version: 0.1.0
+    condition: rfpubsub.enabled
   - name: rfvdb
     version: 0.1.0
+    condition: rfvdb.enabled
   - name: runner
     version: 0.1.0
+    condition: runner.enabled
   - name: gluon
     version: "0.2.9"
     repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
