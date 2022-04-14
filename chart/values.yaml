@@ -1,60 +1,183 @@
+secrets:
+  stringData:
+    # AWS Account Access Key
+    AWS_ACCESS_KEY_ID: ""
+
+    # AWS SES SMTP user name
+    USERNAME_SMTP: ""
+
+    # AWS SES SMTP password
+    PASSWORD_SMTP: ""
+
+    # <identity role arn> Not needed for BB deployment?
+    SOURCE_ARN: "" 
+
+    # Region that AWS resources are setup in
+    AWS_DEFAULT_REGION: us-east-1 
+
+    # AWS Account Secret Key
+    AWS_SECRET_ACCESS_KEY: ""
+
+    # AWS Account Access Key
+    STS_ACCESS_ID: ""
+
+    # ARN for STS role, accessed via IAM
+    STS_ROLE_ARN: ""
+
+    # AWS Account Secret Key
+    STS_SECRET_KEY: ""
+
+    # JWT Public Key from Keycloak - not in init.sql (derived?)
+    KEYCLOAK_JWT_PUB_KEY: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt0EwFCzsmzWgn7A8A40hzX1kPHab0WZTmUF8OwHt7fyds6sBiSDPnLIh0BgmXIO2WIrGzARm9dVUeAWI/aUI7qucfgYgW7XSwwz7X/IrX6DExsNZzTLxgIfDJR/WP0fo1vO10BQDAtJxEkX5YvFitBFzg4FLKMZP5inAFM21+jfjD2ufi7NWTyFJR6YCLGFma29XHE75yE76+Xq8eH3DI/8xmrU5hw1Yk5GrABf4KYTijsp+QLQZkEycYvfJEPEMigwnARdp6C3VDp/T8OL1hb2YtrZ4vjZ80azEicQ3ea/R05JK6ikfik2SlC5Rm0Ore0Rh4jB1tI51biVa0smsiwIDAQAB
+    
+    # Found in init.sql
+    KEYCLOAK_CLIENT_ID: scanners
+
+    # Name of s3 bucket in AWS
+    RF_S3_BUCKET: ""
+
+    # Name of created realm in Keycloak - Found in init.sql
+    KEYCLOAK_REALM: customers
+
+    # Name of service account in Keycloak - Found in init.sql
+    KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID: admin-cli
+
+    # Service account secret from Keycloak - found in init.sql
+    KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET: 5b97220c-838a-4186-bcdd-8cdb77d0e0f3 
+
+    # Database URL
+    # Syntax:  protocol://username:password@hostname/databaseName
+    # Example: mysql://user:pass@mysql/standalone
+    DB_URL: "mysql://root:RF-123579@mysql/standalone"
+
+    # ID of Admin Role in Keycloak - Found in init.sql
+    ADMIN_ROLE_ID: 27d3ab99-d8f0-4eb2-bdd5-3b5091eb97bd
+
+    # ID of Member Role in Keycloak - Found in init.sql
+    MEMBER_ROLE_ID: b653c6eb-2e67-4322-a58e-14e110199215
+
+    # ID of Gues Role in Keycloak - Found in init.sql
+    GUEST_ROLE_ID: 5b11397f-db4d-4f98-b3c8-a810e165b55c
+
+    # Hostname or IP address of ingress point to RapidFort, should not be localhost/127.0.0.1
+    RF_APP_HOST: ""
+
+    # Unsure, known values are `SAAS` and `ON-PREMISE`
+    # `ON-PREMISE` seems to be correct value for BB deployment
+    SERVICE_TYPE: ON-PREMISE
+
+    # Email address of RF admin, must be allowed to be emailed through SES
+    RF_APP_ADMIN: ""
+
 aggregator:
+  enabled: true 
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/aggregator
-    tag: latest
+    tag: 1.1.0-bc0c4fa-1980-rfhardened
+  fullnameOverride: aggregator
+  env:
+    deploy_mode: "STANDALONE"
 
 backend:
+  enabled: true
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/backend
-    tag: latest
+    tag: 1.1.0-12b88d2-1980-rfhardened
+  initContainer:
+    image:
+      repository: registry1.dso.mil/ironbank/big-bang/base
+      tag: 1.0.0
+  fullnameOverride: backend
+  env:
+    # MUST be set to an allowed SES ID - Configured on AWS
+    sender_email_id: 
+    deployment_mode: "STANDALONE"
+  keycloak:
+    serviceName: keycloak
+  ingress:
+    enabled: false
 
 frontrow:
+  enabled: true
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow
-    tag: latest
+    tag: 1.1.353-22fc3ee-1980
+  fullnameOverride: frontrow
+  env:
+    deploy_mode: "STANDALONE"
+  ingress:
+    enabled: false
 
 iso-master:
+  enabled: true
   image:
-    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/iso-master
-    tag: latest
-  initContainer:
-    image:
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfstub.alp.base
-      tag: latest
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/iso-master-exe
+    tag: 1.1.0-fe0398f-01
+  # Not used anymore
+  # initContainer:
+  #   image:
+  #     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfstub.alp.base
+  #     tag: latest
+  fullnameOverride: iso-master
+  env:
+    deployment_mode: "STANDALONE"
+  keycloak:
+    serviceName: keycloak
+  ingress:
+    enabled: false
 
 keycloak:
+  enabled: true
+  # image:
+  #   repository: registry1.dso.mil/ironbank/opensource/keycloak/keycloak
+  #   tag: 15.0.2 # This is the closest IB tag to what RF requests (15.1.1)
+  # Pull from public image because pullsecrets are hard
   image:
-    repository: registry1.dso.mil/ironbank/opensource/keycloak/keycloak
-    tag: 15.0.2 # This is the closest IB tag to what RF requests (15.1.1)
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/keycloak
+    tag: "16.1.1" 
   connectionTest:
     image:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
       tag: latest
+  # Was removed in deployment but I think we might want to keep it tbh
   initContainer:
     image:
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      # repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/mysql
       tag: latest
+  fullnameOverride: keycloak
+  ingress:
+    enabled: false
 
 mysql:
+  enabled: true 
   image:
-    repository: registry1.dso.mil/ironbank/opensource/mysql/mysql8
-    tag: latest
+    # repository: registry1.dso.mil/ironbank/opensource/mysql/mysql8
+    # Pull from public because pullSecrets are hard
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/mysql
+    tag: "8.0.27"
   connectionTest:
     image:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
       tag: latest
+  fullnameOverride: mysql
 
 redis:
+  enabled: true
   image:
-    repository: registry1.dso.mil/ironbank/opensource/redis/redis6
+    # repository: registry1.dso.mil/ironbank/opensource/redis/redis6
+    # Pull from public because pullSecrets are hard
+    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/redis
     tag: latest
     # At time of writing rf is asking for the latest from dockerhub which is redis6
   connectionTest:
     image:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
       tag: latest
+  fullnameOverride: redis
 
 rf-scan:
+  enabled: true
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rf-scan-exe
     tag: 1.1.0-fe0398f-01
@@ -62,46 +185,72 @@ rf-scan:
     image:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
       tag: latest
+  fullnameOverride: rf-scan
+  env:
+    deployment_mode: "STANDALONE"
+  keycloak: 
+    serviceName: keycloak
+  ingress:
+    enabled: false
 
 rfapi:
+  enabled: true
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi
-    tag: latest
+    tag: 1.1.0-9233cfa-1980-rfhardened
   initContainer:
     image:
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      # repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/redis
       tag: latest
   connectionTest:
     image:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
       tag: latest
+  fullnameOverride: rfapi
+  env:
+    deploy_mode: "STANDALONE"
 
 rfpubsub:
+  enabled: true
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfpubsub
-    tag: latest
+    tag: 1.1.0-a22490b-1980-rfhardened
+  fullnameOverride: rfpubsub
+  env:
+    deploy_mode: "STANDALONE"
+  ingress:
+    enabled: false
 
 rfvdb:
+  enabled: false
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfvdb
     tag: latest
   initContainer:
     image:
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      # repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
+      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/redis
       tag: latest
   connectionTest:
     image:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
       tag: latest
+  fullnameOverride: rfvdb
 
 runner:
+  enabled: false
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner
-    tag: latest
+    tag: 1.1.0-3fac88a-2611-rfhardened
   initContainer:
     image:
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
-      tag: latest
+      repository: registry1.dso.mil/ironbank/big-bang/base
+      tag: 1.0.0
+  fullnameOverride: runner
+  env:
+     # Email address of RF admin, must be allowed to be emailed through SES
+    rf_app_admin: ""
 
 # Bigbang helm test values default disabled
 bbtests:

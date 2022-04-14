@@ -6,6 +6,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Changed
 - Updated to latest charts from RF (Apr 7 2022)
+- Fixed some weirdness around the authUrl value w/ volumes for keycloak
+- Commented stub init container
+- Fixed an invalid yaml key in runner values
 
 ### Added
 - Support for BB pipelines
@@ -24,3 +27,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Updated parent `chart.yaml` to `apiVersion` `v2`
 - Added dependencies on local charts to parent `chart.yaml`
 - Overrode all subchart image locations to possible locations in approved registries
+- Added initContainers back for proper internal dependency chaining
+  - keycloak depends on mysql
+- Added explanatory comments for all secrets
+- Added sender email variable to work around SES stuff
+- Added PVCs and references to them for iso-master, rf-scan
+- Added RF_APP_ADMIN to customize email for RF deployment
+- Added conditional for RF_DEBUG in runner
+- Added rf-secret
+  - Values come from the parent chart values
+  - Keycloak stuff is all dependent on stuff already in init.yaml so no security issues (for now)
+- Added capability to disable dependent charts
+- Added new initContainer image references
+- Added environment variable overrides where necessary
+- Added a gitignore to keep secrets from being committed

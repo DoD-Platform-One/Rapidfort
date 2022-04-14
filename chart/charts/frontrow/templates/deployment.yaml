@@ -28,9 +28,12 @@ spec:
         hostPath:
           path: /root/rapidfort
       {{ end }}          
-      {{ end }}         
+      {{ end }}
       {{ if .Values.volumes }}
       {{ tpl (toYaml (index .Values.volumes )) . | nindent 6 }}
+      {{ end }}
+      {{ if .Values.keycloakConfig.authUrl }}
+      {{ tpl (toYaml (index .Values.keycloakConfig.volumes )) . | nindent 6 }}
       {{ end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -59,9 +62,12 @@ spec:
           - name: code
             mountPath: "/root/rapidfort"
           {{ end }}
-          {{ end }}             
+          {{ end }}
           {{ if .Values.volumeMounts }}
           {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
+          {{ end }}
+          {{ if .Values.keycloakConfig.authUrl }}
+          {{ tpl (toYaml (index .Values.keycloakConfig.volumeMounts )) . | nindent 12 }}
           {{ end }}
           ports:
             - name: http

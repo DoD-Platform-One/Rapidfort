@@ -72,16 +72,16 @@ tolerations: []
 
 affinity: {}
 
-volumes:
-  - name: config-volume
-    configMap:
-      name: keycloak-config
-volumeMounts:
-  - mountPath: "/usr/share/nginx/html/app/keycloak.json"
-    name: config-volume
-    subPath: "keycloak.json"
-
-authUrl: ""
+keycloakConfig:
+  authUrl: ""
+  volumes:
+    - name: config-volume
+      configMap:
+        name: keycloak-config
+  volumeMounts:
+    - mountPath: "/usr/share/nginx/html/app/keycloak.json"
+      name: config-volume
+      subPath: "keycloak.json"
 
 env:
   rf_debug: false

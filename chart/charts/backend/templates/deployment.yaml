@@ -32,13 +32,13 @@ spec:
       {{ if .Values.volumes }}
       {{ tpl (toYaml (index .Values.volumes )) . | nindent 6 }}
       {{ end }}      
-      # initContainers:
-      # - name: init
-      #   image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init:1.1.0-271e065-19
-      #   command:
-      #     - "/bin/bash"
-      #     - "-c"
-      #     - "until [ $(curl --connect-timeout 10 -sw '%{http_code}' http://{{ .Values.keycloak.serviceName }}.default.svc.cluster.local -o /dev/null) -eq 200 ]; do echo keycloak not ready; sleep 1; done"
+      initContainers:
+      - name: init
+        image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
+        command:
+          - "/bin/bash"
+          - "-c"
+          - "until [ $(curl --connect-timeout 10 -sw '%{http_code}' http://{{ .Values.keycloak.serviceName }} -o /dev/null) -eq 200 ]; do echo keycloak not ready; sleep 1; done"
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -50,6 +50,8 @@ spec:
           command: ["/bin/sh", "-c", "sleep infinity"]
           {{ end }}          
           env:
+            - name: SENDER_EMAIL_ID
+              value: "{{ .Values.env.sender_email_id }}"
             #Start: Below variable are required for tunnel stub
             {{ if .Values.tunnelStubendabled }}
             - name: AMI_IMAGE_ID
