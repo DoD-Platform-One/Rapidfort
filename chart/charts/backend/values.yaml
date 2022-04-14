@@ -9,6 +9,11 @@ image:
   tag: stable
   pullPolicy: IfNotPresent
 
+initContainer:
+  image:
+    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init
+    tag: 1.1.0-271e065-19
+
 tunnelStubendabled: false
 
 env:
@@ -24,6 +29,7 @@ env:
   rf_debug: false 
   on_premise: 0
   deployment_mode: ""  
+  sender_email_id: "" # Defaults to noreply@rapidfort.com
 
 imagePullSecrets: []
 nameOverride: ""
@@ -111,6 +117,7 @@ secret:
     - GUEST_ROLE_ID
     - RF_APP_HOST
     - RF_S3_BUCKET
+    - RF_APP_ADMIN
     
 autoscaling:
   enabled: false

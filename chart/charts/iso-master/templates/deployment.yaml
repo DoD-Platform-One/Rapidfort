@@ -27,10 +27,10 @@ spec:
         #   command:
         #     - "/bin/bash"
         #     - "-c"
-        #     - "until [ $(curl --connect-timeout 10 -sw '%{http_code}' http://backend.default.svc.cluster.local -o /dev/null) -eq 200 ]; do echo backend not ready; sleep 1; done"      
-        - name: rfstub-alp-base
-          image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
-          command: ['sh', '-c', "echo loaded {{ .Values.initContainer.image.repository }}"]
+        #     - "until [ $(curl --connect-timeout 10 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo backend not ready; sleep 1; done"      
+        # - name: rfstub-alp-base
+        #   image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
+        #   command: ['sh', '-c', "echo loaded {{ .Values.initContainer.image.repository }}"]
       volumes:
       {{ if eq .Values.env.rf_debug  true }}
       {{ if eq .Values.env.deploy_mode  "STANDALONE" }}

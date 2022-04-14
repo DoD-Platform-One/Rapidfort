@@ -90,11 +90,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       # Below was removed, unsure it that's the best course
-      # initContainers:
-      # - name: init-mysql
-      #   image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
-      #   command:
-      #     - "/bin/ash"
-      #     - "-c"
-      #     - "until mysql --host=mysql.default.svc.cluster.local --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
+      initContainers:
+      - name: init-mysql
+        image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "until mysql --host=mysql --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
 
