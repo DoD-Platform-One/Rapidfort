@@ -1,0 +1,18 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: mysql
+upstream:
+  type: git
+  git:
+    repo: https://github.com/bitnami/charts
+    directory: /bitnami/mysql
+    ref: b0f80b8d141c1cb68f706dc38d3caaa74593c6aa
+  updateStrategy: resource-merge
+upstreamLock:
+  type: git
+  git:
+    repo: https://github.com/bitnami/charts
+    directory: /bitnami/mysql
+    ref: b0f80b8d141c1cb68f706dc38d3caaa74593c6aa
+    commit: b0f80b8d141c1cb68f706dc38d3caaa74593c6aa
