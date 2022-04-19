@@ -81,7 +81,7 @@ affinity: {}
 db:
   vendor: "MYSQL"
   addr: "mysql"
-  user: "keycloak"
+  username: "keycloak"
   password: "RF-123579"
   jdbc_params: "useSSL=false"
   proxy_address_forwarding: "true"

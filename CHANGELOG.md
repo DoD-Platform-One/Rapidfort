@@ -4,6 +4,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Changed - 2022-04-15
+- Replace existing mysql chart with upstream - use IB approved `8.0.28` image
+- Modify `rf-secret` for configurable/templated `DB_URL`
+- update keycloak initContainer
+- Add configmap at parent chart for DB initialization
+- Add job for external db initialization
+
 ### Changed
 - Updated to latest charts from RF (Apr 7 2022)
 - Fixed some weirdness around the authUrl value w/ volumes for keycloak

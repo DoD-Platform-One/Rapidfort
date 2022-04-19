@@ -45,11 +45,6 @@ secrets:
     # Service account secret from Keycloak - found in init.sql
     KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET: 5b97220c-838a-4186-bcdd-8cdb77d0e0f3 
 
-    # Database URL
-    # Syntax:  protocol://username:password@hostname/databaseName
-    # Example: mysql://user:pass@mysql/standalone
-    DB_URL: "mysql://root:RF-123579@mysql/standalone"
-
     # ID of Admin Role in Keycloak - Found in init.sql
     ADMIN_ROLE_ID: 27d3ab99-d8f0-4eb2-bdd5-3b5091eb97bd
 
@@ -87,6 +82,8 @@ backend:
     image:
       repository: registry1.dso.mil/ironbank/big-bang/base
       tag: 1.0.0
+  imagePullSecrets:
+    - name: private-registry
   fullnameOverride: backend
   env:
     # MUST be set to an allowed SES ID - Configured on AWS
@@ -132,6 +129,8 @@ keycloak:
   #   repository: registry1.dso.mil/ironbank/opensource/keycloak/keycloak
   #   tag: 15.0.2 # This is the closest IB tag to what RF requests (15.1.1)
   # Pull from public image because pullsecrets are hard
+  imagePullSecrets:
+    - name: private-registry
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/keycloak
     tag: "16.1.1" 
@@ -143,14 +142,69 @@ keycloak:
   initContainer:
     image:
       # repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/mysql
-      tag: latest
+      repository: registry1.dso.mil/ironbank/opensource/mysql/mysql8
+      tag: 8.0.28
+  db:
+    addr: "mysql"
   fullnameOverride: keycloak
   ingress:
     enabled: false
 
 mysql:
-  enabled: true 
+  # Set 'enabled' to true if you want to deploy a local (in-cluster) mysql instance
+  enabled: true
+  # To use an external mysql instance, set enabled to false and uncomment
+  # the line below:
+  # mysqlServer: ""
+  # Seeding database required on intial run. Set to false if conducting a new install with existing data
+  seedDatabase: true
+  # ensure this is also set in the keycloak db.addr value
+
+  # To use an external secret for the password for an external mysql
+  # instance, set enabled to false and provide the name of the secret on the
+  # line below:
+  # existingSecret: ""
+  # existingSecretPasswordKey: "mysql-password"
+  image:
+    registry: registry1.dso.mil/ironbank
+    repository: opensource/mysql/mysql8
+    tag: 8.0.28
+
+    pullSecrets:
+      - private-registry
+  initdbScriptsConfigMap: "init-db-configuration"
+  fullnameOverride: "mysql"
+  ## @param architecture MySQL architecture (`standalone` or `replication`)
+  ##
+  architecture: standalone
+  auth:
+    ## @param auth.rootPassword Password for the `root` user. Ignored if existing secret is provided
+    ## ref: https://github.com/bitnami/bitnami-docker-mysql#setting-the-root-password-on-first-run
+    ##
+    rootPassword: "mysql"
+    ## @param auth.database Name for a custom database to create
+    ## ref: https://github.com/bitnami/bitnami-docker-mysql/blob/master/README.md#creating-a-database-on-first-run
+    ##
+    database: standalone
+    ## @param auth.username Name for a custom user to create
+    ## ref: https://github.com/bitnami/bitnami-docker-mysql/blob/master/README.md#creating-a-database-user-on-first-run
+    ##
+    username: "mysql"
+    ## @param auth.password Password for the new user. Ignored if existing secret is provided
+    ##
+    password: "mysql"
+    ## @param auth.existingSecret Use existing secret for password details. The secret has to contain the keys `mysql-root-password`, `mysql-replication-password` and `mysql-password`
+    ## NOTE: When it's set the auth.rootPassword, auth.password, auth.replicationPassword are ignored.
+    ##
+    existingSecret: ""
+  primary:
+    ## @param primary.args [array] Override default container args on MySQL Primary container(s) (useful when using custom images)
+    ## Modification: RF needs specific auth type(?)
+    ##
+    args: ["--default-authentication-plugin=mysql_native_password"]
+
+mysql-orig:
+  enabled: false
   image:
     # repository: registry1.dso.mil/ironbank/opensource/mysql/mysql8
     # Pull from public because pullSecrets are hard

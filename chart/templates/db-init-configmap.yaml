@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-db-configuration
+  annotations:
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation 
+  labels:
+    app: {{ template "rapidfort.name" . }}
+    chart: {{ template "rapidfort.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+{{- if (.Files.Glob "files/init.sql") }}
+{{ (.Files.Glob "files/init.sql").AsConfig | indent 2 }}
+{{- end }}
