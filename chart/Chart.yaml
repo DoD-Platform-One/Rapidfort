@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
 name: rapidfort
-version: 0.1.0-bb.3
+version: 0.1.0-bb.4
 appVersion: 0.1.0
 description: Automated container hardening
 keywords:
@@ -33,8 +33,9 @@ dependencies:
     version: 0.1.0
     condition: keycloak.enabled
   - name: mysql
-    version: 0.1.0
+    version: 8.9.0
     condition: mysql.enabled
+    repository: file://./charts/mysql
   - name: redis
     version: 0.1.0
     condition: redis.enabled

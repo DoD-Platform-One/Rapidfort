@@ -15,8 +15,8 @@ dependencies:
   repository: ""
   version: 0.1.0
 - name: mysql
-  repository: ""
-  version: 0.1.0
+  repository: file://./charts/mysql
+  version: 8.9.0
 - name: redis
   repository: ""
   version: 0.1.0
@@ -38,5 +38,5 @@ dependencies:
 - name: gluon
   repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
   version: 0.2.9
-digest: sha256:7ba88553556d5fdcadee7f76b761aef46385332c9d6f353da085ef76952de8db
-generated: "2022-04-11T14:53:27.989160504-05:00"
+digest: sha256:370e2cd529ec4e456dc117d4820060f30d41f978515400bbb15aabd17506c07e
+generated: "2022-04-14T20:11:28.35717-07:00"

@@ -46,7 +46,7 @@ spec:
           - name: "DB_ADDR"
             value: "{{ .Values.db.addr }}"
           - name: "DB_USER"
-            value: "{{ .Values.db.user }}"
+            value: "{{ .Values.db.username }}"
           - name: "DB_PASSWORD"
             value: "{{ .Values.db.password }}"
           - name: "JDBC_PARAMS"
@@ -96,5 +96,5 @@ spec:
         command:
           - "/bin/sh"
           - "-c"
-          - "until mysql --host=mysql --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
+          - "until mysql --host={{ .Values.db.addr}} --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
 
