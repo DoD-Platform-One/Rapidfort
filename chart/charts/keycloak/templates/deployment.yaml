@@ -89,6 +89,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.initContainer.enabled }}
       # Below was removed, unsure it that's the best course
       initContainers:
       - name: init-mysql
@@ -97,4 +98,5 @@ spec:
           - "/bin/sh"
           - "-c"
           - "until mysql --host={{ .Values.db.addr}} --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
+      {{- end }}
 
