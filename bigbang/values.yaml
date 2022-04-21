@@ -5,16 +5,18 @@ rapidfort:
     branch: main
     path: chart
   flux: {}
+  ingress:
+    gateway: ""
 
 # Big Bang Core - toggle to enable/disable
 networkPolicies:
   enabled: false
 
 istiooperator:
-  enabled: false
+  enabled: true
 
 istio:
-  enabled: false
+  enabled: true
 
 gatekeeper:
   enabled: false

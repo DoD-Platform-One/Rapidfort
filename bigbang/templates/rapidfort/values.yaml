@@ -1,6 +1,16 @@
 {{- $pkg := "rapidfort" }}
 {{- define "bigbang.defaults.rapidfort" -}}
+# hostname is deprecated and replaced with domain. But if hostname exists then use it.
+domain: {{ default .Values.domain .Values.hostname }}
+istio:
+  enabled: {{ .Values.istio.enabled }}
+  rapidfort:
+    gateways:
+    - istio-system/{{ default "public" .Values.rapidfort.ingress.gateway }}
 
+keycloak:
+  initContainer:
+    enabled: {{ not .Values.istio.enabled }}
 {{- end }}
 
 {{- /* Create secret */ -}}

@@ -10,6 +10,13 @@ metadata:
     app.kubernetes.io/name: {{ $pkg }}
     {{- include "commonLabels" . | nindent 4}}
 spec:
+  {{- if .Values.istio.enabled }}
+  dependsOn:
+    {{- if .Values.istio.enabled }}
+    - name: istio
+      namespace: {{ .Release.Namespace }}
+    {{- end }}
+  {{- end }}
   targetNamespace: {{ $pkg }}
   chart:
     spec:

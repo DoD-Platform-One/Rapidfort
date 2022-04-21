@@ -13,6 +13,86 @@
 
 - Will need real-world resource consumption by each service for realistic requests/limits in the templates
 
+## Ingress paths/pods/ports
+
+- backend
+  - /api/v1/.*
+  - port 80
+- frontrow
+  - /.*
+  - /cli/.*
+  - port 80
+- iso-master
+  - /iso-master/.*
+  - port 80
+- keycloak
+  - /auth/.*
+  - port 80
+- rf-scan
+  - /rf-scan/.*
+  - port 80
+- rfapi
+  - rfapi seems to have some special sauce, here's the value definition of ingress
+```
+ingress:
+  websocket:
+    enabled: true
+    className: rf-ingress-class
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        proxy_set_header Upgrade "websocket";
+        proxy_set_header Connection "Upgrade";
+      nginx.ingress.kubernetes.io/server-snippets: |
+        location /rfapi/events {
+          proxy_set_header X-Forwarded-Host $http_host;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_set_header X-Forwarded-For $remote_addr;
+          proxy_set_header Host $host;
+        }
+    hosts:
+      - host:
+        paths:
+          - path: /rfapi/events
+            pathType: ImplementationSpecific
+    tls: []
+  http:
+    enabled: true
+    className: rf-ingress-class
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+    hosts:
+      - host:
+        paths:
+          - path: /rfapi
+            pathType: ImplementationSpecific
+    tls: []
+```
+- rfpubsub
+  - /rfpubsub
+  - port 80
+  - code below is a snippet from values pertaining to ingress, prob have to implement this via istio
+```
+annotations:
+  nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+  nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  nginx.ingress.kubernetes.io/configuration-snippet: |
+    proxy_set_header Upgrade "websocket";
+    proxy_set_header Connection "Upgrade";
+  nginx.ingress.kubernetes.io/server-snippets: |
+    location /rfpubsub {
+      proxy_set_header X-Forwarded-Host $http_host;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header X-Forwarded-For $remote_addr;
+      proxy_set_header Host $host;
+    }
+```
+- runner
+  - not sure if runner actually needs ingress or not, TODO
+  - /runner/.*
+  - port 80
+
 ## RapidFort Services
 
 ### aggregator
