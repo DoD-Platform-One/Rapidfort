@@ -1,0 +1,127 @@
+{{- if and ( .Values.istio.enabled ) ( .Values.istio.rapidfort.enabled ) }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ template "rapidfort.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include (printf "rapidfort.labels") . | nindent 4 }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  gateways:
+  {{- range .Values.istio.rapidfort.gateways }}
+    - {{ . }}
+  {{- end }}
+  hosts:
+  {{- range .Values.istio.rapidfort.hosts }}
+    - {{ tpl . $}}
+  {{- end }}
+  http:
+  - name: backend
+    match:
+    - uri:
+        regex: "/api/v1/.*"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.backend.service.port | default "80" }}
+        host: backend
+  - name: iso-master
+    match:
+    - uri:
+        regex: "/iso-master/.*"
+    route:
+    - destination:
+        port:
+          number: {{ index .Values "iso-master" "service" "port" | default "80" }}
+        host: iso-master
+  - name: rf-scab
+    match:
+    - uri:
+        regex: "/rf-scan/.*"
+    route:
+    - destination:
+        port:
+          number: {{ index .Values "rf-scan" "service" "port" | default "80" }}
+        host: rf-scan
+  - name: keycloak
+    match:
+    - uri:
+        regex: "/auth/.*"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.keycloak.service.port | default "80" }}
+        host: keycloak
+  - name: rfapi-websocket
+    match:
+    - uri:
+        prefix: "/rfapi/events"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.rfapi.service.port | default "80" }}
+        host: rfapi
+      headers:
+        request:
+          set:
+            Upgrade: "websocket"
+            Connection: "upgrade"
+        # Can be implemented via wasm filter see notes at bottom
+        # response:
+        #   set:
+        #     X-Forwarded-Host: $http_host
+        #     X-Forwarded-Proto: $scheme
+        #     X-Forwarded-For: $remote_addr
+        #     Host: $host;
+  - name: rfapi
+    match:
+    - uri:
+        regex: "/rfapi"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.rfapi.service.port | default "80" }}
+        host: rfapi
+  - name: rfpubsub-websocket
+    match:
+    - uri:
+        prefix: "/rfpubsub"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.rfpubsub.service.port | default "80" }}
+        host: rfpubsub
+      headers:
+        request:
+          set:
+            Upgrade: "websocket"
+            Connection: "upgrade"
+        # Can be implemented via wasm filter see notes at bottom
+        # response:
+        #   set:
+        #     X-Forwarded-Host: $http_host
+        #     X-Forwarded-Proto: $scheme
+        #     X-Forwarded-For: $remote_addr
+        #     Host: $host;
+  - name: frontrow
+    match:
+    - uri:
+        regex: "/.*"
+    - uri:
+        regex: "/cli/.*"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.frontrow.service.port | default "80" }}
+        host: frontrow
+{{- end }}
+
+# Header modification notes:
+# https://istio.io/latest/docs/reference/config/networking/envoy-filter/
+# https://istio.io/latest/blog/2020/wasm-announce/
+# https://github.com/istio/istio/issues/20602#issuecomment-668858147
+# https://istio.io/latest/docs/ops/configuration/extensibility/wasm-module-distribution/
+# Example(ish):
+# https://medium.com/@bryant.hagadorn/how-to-add-header-security-to-an-istio-application-with-an-envoy-wasm-filter-without-changing-a-a8adabcca27b
+# https://github.com/blhagadorn/kronos/blob/master/assembly/index.ts

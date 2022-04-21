@@ -29,6 +29,35 @@ If release name contains chart name it will be used as a full name.
 Create chart name and version as used by the chart label.
 */}}
 {{- define "rapidfort.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
+{{/*
+Common labels
+*/}}
+{{- define "rapidfort.labels" -}}
+helm.sh/chart: {{ include "rapidfort.chart" . }}
+{{ include "rapidfort.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "rapidfort.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "rapidfort.name" . }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "rapidfort.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "rapidfort.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}

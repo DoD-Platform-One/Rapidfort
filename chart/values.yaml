@@ -78,12 +78,12 @@ backend:
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/backend
     tag: 1.1.0-12b88d2-1980-rfhardened
+  imagePullSecrets:
+    - name: private-registry
   initContainer:
     image:
       repository: registry1.dso.mil/ironbank/big-bang/base
       tag: 1.0.0
-  imagePullSecrets:
-    - name: private-registry
   fullnameOverride: backend
   env:
     # MUST be set to an allowed SES ID - Configured on AWS
@@ -140,6 +140,8 @@ keycloak:
       tag: latest
   # Was removed in deployment but I think we might want to keep it tbh
   initContainer:
+    # Istio-injection interferes with the mysql initContainer, see https://istio.io/latest/docs/ops/deployment/requirements/#server-first-protocols
+    enabled: true
     image:
       # repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
       repository: registry1.dso.mil/ironbank/opensource/mysql/mysql8
@@ -306,7 +308,25 @@ runner:
      # Email address of RF admin, must be allowed to be emailed through SES
     rf_app_admin: ""
 
-# Bigbang helm test values default disabled
+# Big Bang Values
+domain: bigbang.dev
+istio:
+  enabled: true 
+  mtls:
+    # -- STRICT = Allow only mutual TLS traffic,
+    # PERMISSIVE = Allow both plain text and mutual TLS traffic
+    # PERMISSIVE is required for any action which redeploys pods because STRICT interferes with initContainers
+    # Can be changed to STRICT after all initContainers have finished but will interfere with upgrades/pod deployments that have initContainers
+    mode: PERMISSIVE
+  rapidfort:
+    enabled: true
+    gateways:
+    - istio-system/public
+    hosts:
+    - rapidfort.{{ .Values.domain }}
+
+
+# Bigbang helm test values - default disabled
 bbtests:
   enabled: false
   cypress:
