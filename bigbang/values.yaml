@@ -1,14 +1,29 @@
 rapidfort:
   enabled: true 
+
   git:
     repo: https://repo1.dso.mil/platform-one/big-bang/apps/third-party/rapidfort
     branch: main
     path: chart
+
   flux: {}
+
   ingress:
     gateway: ""
+  
+  objectStorage:
+    # -- Access key for connecting to object storage endpoint.
+    accessKey: ""
 
-# Big Bang Core - toggle to enable/disable
+    # -- Secret key for connecting to object storage endpoint.
+    accessSecret: ""
+
+    # -- Bucket name to use for RapidFort
+    bucket: ""
+
+# Big Bang 
+domain: bigbang.dev
+
 networkPolicies:
   enabled: false
 
