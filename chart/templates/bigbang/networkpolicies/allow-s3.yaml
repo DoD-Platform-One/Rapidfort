@@ -1,0 +1,20 @@
+{{- if .Values.networkPolicies.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-s3
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector: 
+    matchExpressions:
+    - {key: app.kubernetes.io/name, operator: In, values: [aggregator, backend, iso-master, rf-scan, rfpubsub]}
+  policyTypes:
+  - Egress
+  egress:
+  - ports:
+    - port: 443
+      protocol: TCP
+    # If s3 isn't working this may be why TODO
+    # - port: 80
+    #   protocol: TCP
+{{- end }}
