@@ -8,6 +8,16 @@ istio:
     gateways:
     - istio-system/{{ default "public" .Values.rapidfort.ingress.gateway }}
 
+{{- with .Values.rapidfort.objectStorage }}
+{{- if and .accessKey .accessSecret .bucket }}
+secrets:
+  stringData: 
+    AWS_ACCESS_KEY_ID: {{ .accessKey }}
+    AWS_SECRET_ACCESS_KEY: {{ .accessSecret }}
+    RF_S3_BUCKET: {{ .bucket }}
+{{- end }}
+{{- end }}
+
 keycloak:
   initContainer:
     enabled: {{ not .Values.istio.enabled }}
