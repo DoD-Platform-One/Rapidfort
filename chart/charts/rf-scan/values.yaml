@@ -6,9 +6,11 @@
 replicaCount: 1
 
 image:
-  repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan
-  tag: stable
+  repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan-exe
   pullPolicy: IfNotPresent
+
+global:
+  rf_app_host: ""
 
 env:
   #Tunnel Stub variables. - START
@@ -20,8 +22,6 @@ env:
   vpc_subnet_id: ""
   #Tunnel Stub variables. - END
   backend_service_name: "backend"
-  deployment_mode: "PRODUCTION" # this has to be upper case as per the code standard
-  on_premise: 0
   debug: off
   rf_debug: false
   redis_host: "redis"
@@ -33,8 +33,8 @@ env:
   redis_db_ha: 4   
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "rf-scan"
+fullnameOverride: "rf-scan"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -48,7 +48,7 @@ serviceAccount:
 podAnnotations: {}
 
 podSecurityContext:
-  fsGroup: 412
+  {}
 
 securityContext:
   privileged: true
@@ -63,7 +63,7 @@ service:
 
 ingress:
   enabled: true
-  className: "rf-ingress-class"
+  className: ""
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
@@ -100,7 +100,7 @@ tolerations: []
 affinity: {}
 
 keycloak:
-  serviceName: keycloak-http
+  serviceName: keycloak
 
 #TODO: use this in template.
 livenessProbe:
@@ -130,53 +130,49 @@ secret:
     - MEMBER_ROLE_ID
     - GUEST_ROLE_ID
     - RF_APP_HOST
-    # - RF_APP_ADMIN
-    - SERVICE_TYPE
-    - STS_ACCESS_ID
     - AWS_ACCESS_KEY_ID
     - AWS_SECRET_ACCESS_KEY
-    - STS_ROLE_ARN
-    - STS_SECRET_KEY
+    - RF_ROLE_ARN
+    - DEPLOY_MODE
 
 pvc:
   image_db: ""
   package_analyzer_db: ""
 
 volumes:
-  - name: fuse
-    hostPath:
-      path: /dev/fuse
-  - name: dockersock
-    hostPath:
-      path: /var/run/docker.sock
   - name: imgs-work-dir
     hostPath:
-      path: /imgs-work-dir
-      type: DirectoryOrCreate
-  - name: package-analyzer-db-pvc
-    persistentVolumeClaim:
-      claimName: "{{ .Values.pvc.package_analyzer_db }}"
-  - name: image-db-pvc
-    persistentVolumeClaim:
-      claimName: "{{ .Values.pvc.image_db }}"
+      path: /opt/rapidfort/data/shared/imgs_work_dir
+  - name: package-analyzer-db
+    hostPath:
+      path: /opt/rapidfort/data/iso-master/package-analyzer-db
+  - name: image-db
+    hostPath:
+      path: /opt/rapidfort/data/iso-master/image_db
   - name: vulns-db
     hostPath:
       path: /opt/rapidfort/data/iso-master/vulns_db
-  # - name: env
-  #   configMap:
-  #     name: rf-version-info
-volumeMounts:
-  - name: fuse
-    mountPath: "/dev/fuse"
+  - name: env
+    hostPath:
+      path: /opt/rapidfort/data/.env
   - name: dockersock
-    mountPath: "/var/run/docker.sock"
+    hostPath:
+      path: /var/run/docker.sock
+  - name: fuse
+    hostPath:
+      path: /dev/fuse
+volumeMounts:
   - name: imgs-work-dir
     mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
-  - name: package-analyzer-db-pvc
+  - name: package-analyzer-db
     mountPath: "/opt/rapidfort/iso-master/app/package-analyzer-db"
-  - name: image-db-pvc
+  - name: image-db
     mountPath: "/opt/rapidfort/iso-master/app/image_db"
   - name: vulns-db
     mountPath: "/opt/rapidfort/iso-master/app/db"
-  # - name: env
-  #   mountPath: "/opt/rapidfort/.env"
+  - name: env
+    mountPath: "/opt/rapidfort/.env"
+  - name: dockersock
+    mountPath: "/var/run/docker.sock"
+  - name: fuse
+    mountPath: "/dev/fuse"

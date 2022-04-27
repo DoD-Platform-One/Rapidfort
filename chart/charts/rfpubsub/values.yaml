@@ -8,10 +8,8 @@ image:
   repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0.1"
 
 env:
-  deploy_mode: "PRODUCTION"
   rf_api_server: "iso-master"
   api_key: "03f4b34739f506f88c9bbc3410b5d070"
   rf_debug: false
@@ -26,19 +24,20 @@ env:
 secret:
   name: "rf-secret"
   keys:
-    - STS_ACCESS_ID
     - AWS_ACCESS_KEY_ID
     - AWS_DEFAULT_REGION
     - AWS_SECRET_ACCESS_KEY
-    - STS_ROLE_ARN
-    - STS_SECRET_KEY
     - RF_S3_BUCKET
     - RF_APP_HOST
+    - RF_ROLE_ARN
+    - DEPLOY_MODE 
 
+global:
+  rf_app_host: ""
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "rfpubsub"
+fullnameOverride: "rfpubsub"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -68,7 +67,7 @@ service:
 
 ingress:
   enabled: true
-  className: rf-ingress-class
+  className: ""
   annotations:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"

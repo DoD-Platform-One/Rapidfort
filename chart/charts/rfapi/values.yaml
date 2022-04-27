@@ -7,12 +7,13 @@ replicaCount: 1
 image:
   repository:  274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "rfapi"
+fullnameOverride: "rfapi"
+
+global:
+  rf_app_host: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -43,7 +44,7 @@ service:
 ingress:
   websocket:
     enabled: true
-    className: rf-ingress-class
+    className: ""
     annotations:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
@@ -65,7 +66,7 @@ ingress:
     tls: []
   http:
     enabled: true
-    className: rf-ingress-class
+    className: ""
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
@@ -99,4 +100,6 @@ affinity: {}
 
 env:
   rf_debug: false
-  deploy_mode: PRODUCTION
+  redis_host: "redis"
+  redis_port: "6379"
+  redis_pwd: ""

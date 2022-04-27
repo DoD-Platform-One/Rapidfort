@@ -8,11 +8,17 @@ image:
   repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+
+initContainer:
+  image:
+    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "1.1.0-271e065-19"
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "runner"
+fullnameOverride: "runner"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -34,7 +40,7 @@ podSecurityContext: {}
 
 ingress:
   enabled: true
-  className: rf-ingress-class
+  className: ""
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
   hosts:
@@ -47,12 +53,6 @@ ingress:
   tls: []
 
 securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -79,10 +79,21 @@ tolerations: []
 
 affinity: {}
 
+secret:
+  name: rf-secret
+  keys:
+  - RF_APP_HOST
+  - AWS_DEFAULT_REGION
+  - RF_APP_ADMIN
+  - RF_APP_ADMIN_PASSWD
+
 env:
-  rf_app_host: ""
-  aws_default_region: ""
-  rf_app_admin: ""
-  rf_app_passwd: ""
-  control_plane_host: ""
   rf_debug: false
+  redis_host: "redis"
+  redis_port: "6379"
+  redis_pwd: ""
+  redis_host_ha: "redis"
+  redis_port_ha: "6379"
+  redis_pwd_ha: ""
+  redis_db_ha: 4
+

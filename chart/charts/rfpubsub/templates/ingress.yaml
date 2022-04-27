@@ -1,6 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "rfpubsub.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
+{{- $rf_host := .Values.global.rf_app_host }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -12,7 +13,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: {{ .Values.ingress.className }}
+  ingressClassName: {{ default .Values.ingress.className .Values.global.ingressClassName }}
 {{- if .Values.ingress.tls }}
   tls:
   {{- range .Values.ingress.tls }}
@@ -36,7 +37,9 @@ spec:
                 port:
                   number: {{ $svcPort }}
         {{- end }}
-      {{ if .host }}
+      {{ if $rf_host }}
+      host: {{ $rf_host | quote }}
+      {{ else if .host }}
       host: {{ .host | quote }}
       {{ end }}
   {{- end }}

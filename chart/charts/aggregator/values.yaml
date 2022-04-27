@@ -8,11 +8,10 @@ image:
   repository:  274057717848.dkr.ecr.us-east-1.amazonaws.com/aggregator
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "aggregator"
+fullnameOverride: "aggregator"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -65,15 +64,16 @@ env:
   rf_debug: false
   rf_api_server: iso-master
   redis_host: redis
-  deploy_mode: ""
+  redis_port: "6379"
+  redis_pwd: ""
 
 secret:
   name: "rf-secret"
   keys:
-    - STS_ACCESS_ID
     - AWS_ACCESS_KEY_ID
     - AWS_DEFAULT_REGION
     - AWS_SECRET_ACCESS_KEY
-    - STS_ROLE_ARN
-    - STS_SECRET_KEY
     - RF_S3_BUCKET
+    - RF_ROLE_ARN
+    - RF_APP_HOST
+    - DEPLOY_MODE
