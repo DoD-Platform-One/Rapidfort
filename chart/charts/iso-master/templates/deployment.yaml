@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "iso-master.fullname" . }}
+  labels:
+    {{- include "iso-master.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "iso-master.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "iso-master.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "iso-master.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        # - name: init
+        #   image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init:1.1.0-271e065-19
+        #   command:
+        #     - "/bin/bash"
+        #     - "-c"
+        #     - "until [ $(curl --connect-timeout 10 -sw '%{http_code}' http://backend.default.svc.cluster.local -o /dev/null) -eq 200 ]; do echo backend not ready; sleep 1; done"      
+        - name: rfstub-alp-base
+          image: "274057717848.dkr.ecr.us-east-1.amazonaws.com/rfstub.alp.base:latest"
+          command: ['sh', '-c', 'echo loaded 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfstub.alp.base']
+      volumes:
+      {{ if eq .Values.env.rf_debug  true }}
+      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
+      - name: code
+        hostPath:
+          path: /root/rapidfort
+      {{ end }}          
+      {{ end }}      
+      {{ if .Values.volumes }}
+      {{ tpl (toYaml (index .Values.volumes )) . | nindent 6 }}
+      {{ end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{ if eq .Values.env.rf_debug  true }}
+          workingDir: /root/rapidfort/iso-master
+          command: ["/bin/sh", "-c", "sleep infinity"]
+          {{ end }}          
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            httpGet:
+              path: /
+              port: http
+          env:
+            - name: RF_DEBUG
+              value: "{{ .Values.env.debug }}"
+            #start: Tunneling stub env vars
+            {{ if .Values.tunnelStubendabled }}
+            - name: AMI_IMAGE_ID
+              value: "{{ .Values.env.ami_image_id }}"
+            - value: KEYPAIR_NAME
+              name: "rf-iso-worker-1.0"
+            - name: VMPOOL_APP_PORT
+              value: "{{ .Values.env.vm_scheduler_port }}"
+            - name: VMPOOL_SERVER_ADDR
+              value: "{{ .Values.env.vm_server_addr }}"
+            - name: SECGROUP_ID
+              value: "{{ .Values.env.security_group_id }}"
+            - name: VPC_SUBNET_ID
+              value: "{{ .Values.env.vpc_subnet_id }}"
+            {{ end }}
+            #end
+            {{ if .Values.secret.name }}
+            {{- $secretName := .Values.secret.name }}
+            {{- range .Values.secret.keys }}
+            - name: {{ . | quote}}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secretName }}
+                  key: {{ . | quote}}
+            {{- end }}
+            - name: DATA_PLANE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secretName }}
+                  key: RF_APP_HOST      
+            {{ end }}                       
+            - name: "BACKEND_SERVICE_NAME"
+              value: "{{ .Values.env.backend_service_name}}"
+            - name: DEPLOY_MODE
+              value: "{{ .Values.env.deployment_mode }}"
+            - name: AUTH_SERVER_ROOT_URL
+              value: "http://{{ .Values.keycloak.serviceName }}"
+            - name: DEFAULT_STUB_TYPE
+              value: "monitoring"
+            - name: BACKEND_SERVICE_NAME
+              value: "backend"
+            - name: BACKEND_APP_PORT
+              value: "80"
+            - name: ON_PREMISE
+              value: "{{ .Values.env.on_premise | default 0 }}"
+            - name: RF_REDIS_HOST_NAME_HA
+              value: "{{ .Values.env.redis_host_ha }}"                     
+            - name: RF_REDIS_PORT_HA
+              value: "{{ .Values.env.redis_port_ha }}"
+            - name: RF_REDIS_PWD_HA
+              value: "{{ .Values.env.redis_pwd_ha }}"
+            - name: RF_REDIS_DB_HA
+              value: "{{ .Values.env.redis_db_ha }}"
+            - name: RF_REDIS_HOST_NAME
+              value: "{{ .Values.env.redis_host }}"
+            - name: RF_REDIS_PORT
+              value: "{{ .Values.env.redis_port }}"
+            - name: RF_REDIS_PWD
+              value: "{{ .Values.env.redis_pwd }}"              
+          volumeMounts:
+            {{- if eq .Values.env.rf_debug true }}
+            {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
+            - name: code
+              mountPath: "/root/rapidfort"
+            {{ end }}
+            {{ end }}         
+            {{ if .Values.volumeMounts }}
+            {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
+            {{ end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+

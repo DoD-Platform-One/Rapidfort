@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rfapi.fullname" . }}
+  labels:
+    {{- include "rfapi.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "rfapi.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rfapi.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{ if eq .Values.env.rf_debug  true }}
+      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
+      - name: code
+        hostPath:
+          path: /root/rapidfort
+      {{ end }}          
+      {{ end }}  
+      serviceAccountName: {{ include "rfapi.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init
+          image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init:1.1.0-271e065-19
+          command:
+            - "/bin/bash"
+            - "-c"
+            - "until [ $(redis-cli -h redis.default.svc.cluster.local ping) == 'PONG' ]; do echo redis not ready; sleep 1; done"
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{ if eq .Values.env.rf_debug  true }}
+          workingDir: /root/rapidfort/rfapi
+          command: ["/bin/sh", "-c", "sleep infinity"]
+          volumeMounts:
+            - name: code
+              mountPath: "/root/rapidfort"
+          {{ end }}          
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            {{- if eq .Values.env.rf_debug true }}
+            {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
+            - name: code
+              mountPath: "/root/rapidfort"
+            {{ end }}
+            {{ end }}          
+          env:
+            - name: "RF_DEBUG"
+              value: "{{ .Values.env.rf_debug }}"
+          # livenessProbe:
+          #   httpGet:
+          #     path: /rfapi
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /rfapi
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

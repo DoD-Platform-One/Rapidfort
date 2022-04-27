@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "frontrow.fullname" . }}
+  labels:
+    {{- include "frontrow.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "frontrow.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "frontrow.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "frontrow.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+      {{ if eq .Values.env.rf_debug true }}
+      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
+      - name: code
+        hostPath:
+          path: /root/rapidfort
+      {{ end }}          
+      {{ end }}         
+      {{ if .Values.volumes }}
+      {{ tpl (toYaml (index .Values.volumes )) . | nindent 6 }}
+      {{ end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{ if eq .Values.env.rf_debug true }}
+          workingDir: /root/rapidfort/frontrow
+          command: ["/bin/sh", "-c", "sleep infinity"]
+          {{ end }}          
+          env:
+            {{ if .Values.secret.name }}
+            {{- $secretName := .Values.secret.name }}
+            {{- range .Values.secret.keys }}
+            - name: {{ . | quote}}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secretName }}
+                  key: {{ . | quote}}
+            {{- end }}
+            {{- end }}           
+          volumeMounts:
+          {{- if eq .Values.env.rf_debug true }}
+          {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
+          - name: code
+            mountPath: "/root/rapidfort"
+          {{ end }}
+          {{ end }}             
+          {{ if .Values.volumeMounts }}
+          {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
+          {{ end }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
