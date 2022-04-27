@@ -26,11 +26,9 @@ spec:
       {{- end }}
       volumes:
       {{ if eq .Values.env.rf_debug  true }}
-      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
       - name: code
         hostPath:
           path: /root/rapidfort
-      {{ end }}          
       {{ end }}  
       serviceAccountName: {{ include "rfapi.serviceAccountName" . }}
       securityContext:
@@ -41,7 +39,7 @@ spec:
           command:
             - "/bin/bash"
             - "-c"
-            - "until [ $(redis-cli -h redis ping) == 'PONG' ]; do echo redis not ready; sleep 1; done"
+            - "until [ $(redis-cli -h {{ .Values.env.redis_host }} -p {{ .Values.env.redis_port }} ping) == 'PONG' ]; do echo redis not ready; sleep 1; done"
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -51,9 +49,6 @@ spec:
           {{ if eq .Values.env.rf_debug  true }}
           workingDir: /root/rapidfort/rfapi
           command: ["/bin/sh", "-c", "sleep infinity"]
-          volumeMounts:
-            - name: code
-              mountPath: "/root/rapidfort"
           {{ end }}          
           ports:
             - name: http
@@ -61,22 +56,44 @@ spec:
               protocol: TCP
           volumeMounts:
             {{- if eq .Values.env.rf_debug true }}
-            {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
             - name: code
               mountPath: "/root/rapidfort"
-            {{ end }}
             {{ end }}          
           env:
             - name: "RF_DEBUG"
               value: "{{ .Values.env.rf_debug }}"
-          # livenessProbe:
-          #   httpGet:
-          #     path: /rfapi
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /rfapi
-          #     port: http
+            - name: RF_REDIS_HOST_NAME
+              value: "{{ .Values.env.redis_host }}"
+            - name: RF_REDIS_PORT
+              value: "{{ .Values.env.redis_port }}"
+            - name: RF_REDIS_PWD
+              value: "{{ .Values.env.redis_pwd }}"
+          livenessProbe:
+            periodSeconds: 30
+            initialDelaySeconds: 15
+            timeoutSeconds: 10          
+            {{- if eq .Values.env.rf_debug true }}
+            exec:
+              command:
+              - /bin/true
+            {{ else }}
+            httpGet:
+              path: /
+              port: http
+            {{ end }}
+          readinessProbe:
+            periodSeconds: 30
+            initialDelaySeconds: 15
+            timeoutSeconds: 10          
+            {{- if eq .Values.env.rf_debug true }}
+            exec:
+              command:
+              - /bin/true
+            {{ else }}
+            httpGet:
+              path: /
+              port: http
+            {{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

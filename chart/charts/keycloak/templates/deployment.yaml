@@ -31,15 +31,19 @@ spec:
         - name: rapidfort-theme
           hostPath:
             path: /opt/rapidfort/data/keycloak-theme
+      initContainers:
+      - name: init-mysql
+        image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "until mysql --host=mysql --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"            
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          volumeMounts:
-            - name: rapidfort-theme
-              mountPath: "/opt/jboss/keycloak/themes/rapidfort"
           env:
           - name: "DB_VENDOR"
             value: "{{ .Values.db.vendor }}"

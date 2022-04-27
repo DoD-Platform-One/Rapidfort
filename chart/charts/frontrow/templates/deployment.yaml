@@ -23,12 +23,10 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
       {{ if eq .Values.env.rf_debug true }}
-      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
       - name: code
         hostPath:
-          path: /root/rapidfort
-      {{ end }}          
-      {{ end }}
+          path: /root/rapidfort    
+      {{ end }}         
       {{ if .Values.volumes }}
       {{ tpl (toYaml (index .Values.volumes )) . | nindent 6 }}
       {{ end }}
@@ -39,7 +37,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{ if eq .Values.env.rf_debug true }}
           workingDir: /root/rapidfort/frontrow
@@ -58,11 +56,9 @@ spec:
             {{- end }}           
           volumeMounts:
           {{- if eq .Values.env.rf_debug true }}
-          {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
           - name: code
             mountPath: "/root/rapidfort"
-          {{ end }}
-          {{ end }}
+          {{ end }}             
           {{ if .Values.volumeMounts }}
           {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
           {{ end }}
@@ -74,13 +70,31 @@ spec:
               containerPort: 80
               protocol: TCP
           livenessProbe:
+            periodSeconds: 30
+            initialDelaySeconds: 15
+            timeoutSeconds: 10          
+            {{- if eq .Values.env.rf_debug true }}
+            exec:
+              command:
+              - /bin/true
+            {{ else }}
             httpGet:
               path: /
               port: http
+            {{ end }}
           readinessProbe:
+            periodSeconds: 30
+            initialDelaySeconds: 15
+            timeoutSeconds: 10          
+            {{- if eq .Values.env.rf_debug true }}
+            exec:
+              command:
+              - /bin/true
+            {{ else }}
             httpGet:
               path: /
               port: http
+            {{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
