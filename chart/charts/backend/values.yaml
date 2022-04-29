@@ -82,9 +82,6 @@ keycloak:
 secret:
   name: "rf-secret"
   keys:
-    - USERNAME_SMTP
-    - PASSWORD_SMTP
-    - SOURCE_ARN
     - AWS_ACCESS_KEY_ID
     - AWS_DEFAULT_REGION
     - AWS_SECRET_ACCESS_KEY
@@ -99,8 +96,8 @@ secret:
     - GUEST_ROLE_ID
     - RF_APP_HOST
     - RF_S3_BUCKET
-    # - RF_APP_ADMIN
-    - RF_ROLE_ARN
+    - RF_APP_ADMIN
+    # - RF_ROLE_ARN
     - DEPLOY_MODE    
     
 autoscaling:

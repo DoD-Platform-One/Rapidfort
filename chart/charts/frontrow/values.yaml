@@ -85,14 +85,8 @@ keycloakConfig:
       name: config-volume
       subPath: "keycloak.json"
 
-volumes:
-  - name: env
-    configMap:
-      name: rf-version-info      
-volumeMounts:
-  - name: env
-    mountPath: "/opt/rapidfort/.env"
-    subPath: ".env"    
+volumes: []    
+volumeMounts: []   
 
 authUrl: ""
 

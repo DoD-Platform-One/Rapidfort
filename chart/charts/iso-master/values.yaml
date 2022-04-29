@@ -130,12 +130,9 @@ secret:
     - MEMBER_ROLE_ID
     - GUEST_ROLE_ID
     - RF_APP_HOST
-    # - RF_APP_ADMIN
-    # - SERVICE_TYPE
-    # - STS_ACCESS_ID
+    - RF_APP_ADMIN
     - AWS_ACCESS_KEY_ID
     - AWS_SECRET_ACCESS_KEY
-    - RF_ROLE_ARN
     - DEPLOY_MODE
 
 pvc:

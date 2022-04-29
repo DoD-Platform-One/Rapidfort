@@ -30,14 +30,7 @@ spec:
       volumes:
         - name: rapidfort-theme
           hostPath:
-            path: /opt/rapidfort/data/keycloak-theme
-      initContainers:
-      - name: init-mysql
-        image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
-        command:
-          - "/bin/sh"
-          - "-c"
-          - "until mysql --host=mysql --user={{ .Values.db.username }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"            
+            path: /opt/rapidfort/data/keycloak-theme           
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
