@@ -1,0 +1,75 @@
+#TODO: use this in template.
+livenessProbe:
+  periodSeconds: 30
+  initialDelaySeconds: 15
+  timeoutSeconds: 10
+  failureThreshold: 1
+
+readinessProbe:
+  periodSeconds: 30
+  initialDelaySeconds: 15
+  timeoutSeconds: 10
+  failureThreshold: 1
+
+secret:
+  name: "rf-secret"
+  keys:
+    - AWS_DEFAULT_REGION
+    - DB_URL
+    - RF_S3_BUCKET
+    - KEYCLOAK_JWT_PUB_KEY
+    - KEYCLOAK_REALM
+    - KEYCLOAK_CLIENT_ID
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET
+    - ADMIN_ROLE_ID
+    - MEMBER_ROLE_ID
+    - GUEST_ROLE_ID
+    - RF_APP_HOST
+    - RF_APP_ADMIN
+    - RF_ROLE_ARN
+    - DEPLOY_MODE    
+
+keycloak:
+  serviceName: keycloak
+
+volumes:
+  - name: imgs-work-dir
+    hostPath:
+      path: /opt/rapidfort/data/shared/imgs_work_dir
+  - name: package-analyzer-db
+    hostPath:
+      path: /opt/rapidfort/data/iso-master/package-analyzer-db
+  - name: image-db
+    hostPath:
+      path: /opt/rapidfort/data/iso-master/image_db
+  - name: vulns-db
+    hostPath:
+      path: /opt/rapidfort/data/iso-master/vulns_db
+  - name: env
+    hostPath:
+      path: /opt/rapidfort/data/.env
+  - name: dockersock
+    hostPath:
+      path: /var/run/docker.sock
+  - name: fuse
+    hostPath:
+      path: /dev/fuse
+volumeMounts:
+  - name: imgs-work-dir
+    mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
+  - name: package-analyzer-db
+    mountPath: "/opt/rapidfort/iso-master/app/package-analyzer-db"
+  - name: image-db
+    mountPath: "/opt/rapidfort/iso-master/app/image_db"
+  - name: vulns-db
+    mountPath: "/opt/rapidfort/iso-master/app/db"
+  - name: env
+    mountPath: "/opt/rapidfort/.env"
+  - name: dockersock
+    mountPath: "/var/run/docker.sock"
+  - name: fuse
+    mountPath: "/dev/fuse"
+
+autoscaling:
+  enabled: false

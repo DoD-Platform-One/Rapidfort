@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.1.0-9e7b858-2084-rfhardened
+appVersion: 1.1.0-dd9fe45-1-rfhardened
 description: A Helm chart for Kubernetes
 name: iso-master
 type: application
