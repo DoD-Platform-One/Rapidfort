@@ -1,0 +1,71 @@
+env:
+  vmpool_server_addr: "internal-free-tier-internal-1090325284.us-east-1.elb.amazonaws.com"
+  security_group_id: "sg-041664a539d02df2f"
+  vpc_subnet_id: "subnet-0ba23c4c4a6a9b265"
+  redis_host_ha: "rfv-db-redis-cluster-master"
+  redis_pwd_ha: "s3onU6vZw3"
+
+pvc:
+  image_db: "free-tier-production-image-db"
+  package_analyzer_db: "free-tier-production-package-analyzer-db"
+
+volumes:
+  - name: fuse
+    hostPath:
+      path: /dev/fuse
+  - name: dockersock
+    hostPath:
+      path: /var/run/docker.sock
+  - name: imgs-work-dir
+    hostPath:
+      path: /imgs-work-dir
+      type: DirectoryOrCreate
+  - name: package-analyzer-db-pvc
+    persistentVolumeClaim:
+      claimName: "{{ .Values.pvc.package_analyzer_db }}"
+  - name: image-db-pvc
+    persistentVolumeClaim:
+      claimName: "{{ .Values.pvc.image_db }}"
+  - name: vulns-db
+    hostPath:
+      path: /opt/rapidfort/data/iso-master/vulns_db
+  # - name: env
+  #   configMap:
+  #     name: rf-version-info
+volumeMounts:
+  - name: fuse
+    mountPath: "/dev/fuse"
+  - name: dockersock
+    mountPath: "/var/run/docker.sock"
+  - name: imgs-work-dir
+    mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
+  - name: package-analyzer-db-pvc
+    mountPath: "/opt/rapidfort/iso-master/app/package-analyzer-db"
+  - name: image-db-pvc
+    mountPath: "/opt/rapidfort/iso-master/app/image_db"
+  - name: vulns-db
+    mountPath: "/opt/rapidfort/iso-master/app/db"
+  # - name: env
+  #   mountPath: "/opt/rapidfort/.env"
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-type
+          operator: In
+          values:
+          - storageOptimized
+
+livenessProbe:
+  failureThreshold: 3
+
+readinessProbe:
+  failureThreshold: 3
+
+global:
+  rf_app_host: "us01.rapidfort.com"
+
+keycloak:
+  serviceName: keycloak-http

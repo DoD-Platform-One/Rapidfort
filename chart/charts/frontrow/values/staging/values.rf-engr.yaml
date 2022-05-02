@@ -1,0 +1,8 @@
+authUrl: "https://frontrow.rapidfort.io/auth/"
+
+env:
+  rf_debug: false
+  deploy_mode: "STAGING"
+
+global:
+  rf_app_host: "frontrow.rapidfort.io"          
