@@ -7,12 +7,10 @@ replicaCount: 1
 image:
   repository: redis
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "redis"
+fullnameOverride: "redis"
 
 serviceAccount:
   # Specifies whether a service account should be created

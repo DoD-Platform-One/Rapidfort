@@ -1,0 +1,7 @@
+securityContext:
+  allowPrivilegeEscalation: true
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - SYS_PTRACE

@@ -18,41 +18,40 @@ annotations:
     - RapidFort: 0.1.0
 dependencies:
   - name: aggregator
-    version: 0.1.0
+    version: 1.1.0
     condition: aggregator.enabled
   - name: backend
-    version: 0.1.0
+    version: 1.1.0
     condition: backend.enabled
+  - name: fluent-bit
+    version: 1.1.0
+    condition: fluent-bit.enabled
   - name: frontrow
-    version: 0.1.0
+    version: 1.1.0
     condition: frontrow.enabled
   - name: iso-master
-    version: 0.1.0
+    version: 1.1.0
     condition: iso-master.enabled
   - name: keycloak
-    version: 0.1.0
+    version: 1.1.0
     condition: keycloak.enabled
   - name: mysql
     version: 8.9.0
     condition: mysql.enabled
-    repository: file://./charts/mysql
   - name: redis
-    version: 0.1.0
+    version: 1.1.0
     condition: redis.enabled
   - name: rf-scan
-    version: 0.1.0
+    version: 1.1.0
     condition: rf-scan.enabled
   - name: rfapi
-    version: 0.1.0
+    version: 1.1.0
     condition: rfapi.enabled
   - name: rfpubsub
-    version: 0.1.0
+    version: 1.1.0
     condition: rfpubsub.enabled
-  - name: rfvdb
-    version: 0.1.0
-    condition: rfvdb.enabled
   - name: runner
-    version: 0.1.0
+    version: 1.1.0
     condition: runner.enabled
   - name: gluon
     version: "0.2.9"

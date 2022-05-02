@@ -7,12 +7,19 @@ replicaCount: 1
 image:
   repository: jboss/keycloak
   pullPolicy: IfNotPresent
+initContainer:
+  enabled: true
+  image:
+    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init
+    tag: 1.1.0-271e065-19
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "16.1.1"
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "keycloak"
+fullnameOverride: "keycloak"
+
+global:
+  rf_app_host: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -41,6 +48,7 @@ service:
   port: 80
 
 ingress:
+  className: ""
   enabled: true
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
@@ -94,9 +102,3 @@ connectionTest:
   image:
     repository: busybox
     tag: latest # I know this is bad but I'm just trying to mirror initial behavior
-
-initContainer:
-  enabled: true
-  image:
-    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init
-    tag: 1.1.0-271e065-19

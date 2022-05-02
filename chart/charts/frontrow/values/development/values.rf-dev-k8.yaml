@@ -1,0 +1,8 @@
+authUrl: "https://auth-dev.rapidfort.io/auth/"
+
+env:
+  rf_debug: false
+  deploy_mode: "DEV"  
+
+global:
+  rf_app_host: "frontrow-dev.rapidfort.io"

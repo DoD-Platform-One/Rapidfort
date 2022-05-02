@@ -30,16 +30,13 @@ spec:
       volumes:
         - name: rapidfort-theme
           hostPath:
-            path: /opt/rapidfort/data/keycloak-theme
+            path: /opt/rapidfort/data/keycloak-theme           
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          volumeMounts:
-            - name: rapidfort-theme
-              mountPath: "/opt/jboss/keycloak/themes/rapidfort"
           env:
           - name: "DB_VENDOR"
             value: "{{ .Values.db.vendor }}"

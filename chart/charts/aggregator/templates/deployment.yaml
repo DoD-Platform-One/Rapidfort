@@ -29,12 +29,10 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
       {{ if eq .Values.env.rf_debug  true }}
-      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
       - name: code
         hostPath:
           path: /root/rapidfort
       {{ end }}          
-      {{ end }}      
         - name: raid-volume
           hostPath:
             path: /opt/rapidfort/data/aggregator/
@@ -44,13 +42,11 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{ if eq .Values.env.rf_debug  true }}
+          {{ if eq .Values.env.rf_debug true }}
           workingDir: /root/rapidfort/aggregator
           command: ["/bin/sh", "-c", "sleep infinity"]
           {{ end }}          
           env:
-            - name: "DEPLOY_MODE"
-              value: "{{ .Values.env.deploy_mode }}"
             - name: "RF_API_SERVER"
               value: "{{ .Values.env.rf_api_server }}"
             - name: "REDIS_HOST_NAME"
@@ -72,11 +68,9 @@ spec:
               protocol: TCP
           volumeMounts:
             {{- if eq .Values.env.rf_debug true }}
-            {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
             - name: code
               mountPath: "/root/rapidfort"
-            {{ end }}
-            {{ end }}          
+            {{ end }}   
             - name: raid-volume
               mountPath: "/mnt/raid"            
           resources:

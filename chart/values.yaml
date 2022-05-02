@@ -3,29 +3,11 @@ secrets:
     # AWS Account Access Key
     AWS_ACCESS_KEY_ID: ""
 
-    # AWS SES SMTP user name
-    USERNAME_SMTP: ""
-
-    # AWS SES SMTP password
-    PASSWORD_SMTP: ""
-
-    # <identity role arn> Not needed for BB deployment?
-    SOURCE_ARN: "" 
-
     # Region that AWS resources are setup in
     AWS_DEFAULT_REGION: us-east-1 
 
     # AWS Account Secret Key
     AWS_SECRET_ACCESS_KEY: ""
-
-    # AWS Account Access Key
-    STS_ACCESS_ID: ""
-
-    # ARN for STS role, accessed via IAM
-    STS_ROLE_ARN: ""
-
-    # AWS Account Secret Key
-    STS_SECRET_KEY: ""
 
     # JWT Public Key from Keycloak - not in init.sql (derived?)
     KEYCLOAK_JWT_PUB_KEY: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt0EwFCzsmzWgn7A8A40hzX1kPHab0WZTmUF8OwHt7fyds6sBiSDPnLIh0BgmXIO2WIrGzARm9dVUeAWI/aUI7qucfgYgW7XSwwz7X/IrX6DExsNZzTLxgIfDJR/WP0fo1vO10BQDAtJxEkX5YvFitBFzg4FLKMZP5inAFM21+jfjD2ufi7NWTyFJR6YCLGFma29XHE75yE76+Xq8eH3DI/8xmrU5hw1Yk5GrABf4KYTijsp+QLQZkEycYvfJEPEMigwnARdp6C3VDp/T8OL1hb2YtrZ4vjZ80azEicQ3ea/R05JK6ikfik2SlC5Rm0Ore0Rh4jB1tI51biVa0smsiwIDAQAB
@@ -57,12 +39,21 @@ secrets:
     # Hostname or IP address of ingress point to RapidFort, should not be localhost/127.0.0.1
     RF_APP_HOST: ""
 
-    # Unsure, known values are `SAAS` and `ON-PREMISE`
-    # `ON-PREMISE` seems to be correct value for BB deployment
-    SERVICE_TYPE: ON-PREMISE
-
     # Email address of RF admin, must be allowed to be emailed through SES
     RF_APP_ADMIN: ""
+
+    # Initial password of RF admin, used by Runner
+    RF_APP_ADMIN_PASSWD: ""
+
+    # ARN of role on AWS
+    RF_ROLE_ARN: ""
+
+    # Deployment mode of RapidFort (Should be STANDALONE)
+    DEPLOY_MODE: STANDALONE
+
+# Global var for the hostname of the RF application, should probably be the same as the secret
+global:
+  rf_app_host: ""
 
 aggregator:
   enabled: true 
@@ -94,11 +85,14 @@ backend:
   ingress:
     enabled: false
 
+fluent-bit:
+  enabled: false
+
 frontrow:
   enabled: true
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow
-    tag: 1.1.0-2b57594-2793-rfhardened
+    tag: 1.1.0-1ac52f2-2832
   fullnameOverride: frontrow
   env:
     deploy_mode: "STANDALONE"
@@ -109,7 +103,7 @@ iso-master:
   enabled: true
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/iso-master-exe
-    tag: 1.1.0-fe0398f-01
+    tag: 1.1.0-dd9fe45-1-rfhardened
   # Not used anymore
   # initContainer:
   #   image:
@@ -236,7 +230,7 @@ rf-scan:
   enabled: true
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rf-scan-exe
-    tag: 1.1.0-fe0398f-01
+    tag: 1.1.0-dd9fe45-1-rfhardened
   connectionTest:
     image:
       repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
@@ -285,27 +279,11 @@ rfpubsub:
     websocket:
       enabled: false
 
-rfvdb:
-  enabled: false
-  image:
-    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfvdb
-    tag: latest
-  initContainer:
-    image:
-      # repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/redis
-      tag: latest
-  connectionTest:
-    image:
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
-      tag: latest
-  fullnameOverride: rfvdb
-
 runner:
   enabled: false
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner
-    tag: 1.1.0-dd9fe45-2793-rfhardened
+    tag: 1.1.0-65fabca-2832
   initContainer:
     image:
       repository: registry1.dso.mil/ironbank/big-bang/base
@@ -314,6 +292,8 @@ runner:
   env:
      # Email address of RF admin, must be allowed to be emailed through SES
     rf_app_admin: ""
+  ingress:
+    enabled: false
 
 # Big Bang Values
 domain: bigbang.dev

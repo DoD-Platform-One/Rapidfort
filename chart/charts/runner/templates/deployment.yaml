@@ -28,7 +28,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
-        {{ if eq .Values.env.rf_debug  true }}
+        {{- if .Values.env.rf_debug }}
         - name: code
           hostPath:
             path: /root/rapidfort
@@ -53,30 +53,39 @@ spec:
           command: ["/bin/sh", "-c", "sleep infinity"]
           {{ end }}
           env:
-            {{ if eq .Values.env.rf_debug  true }}
-            - name: "RF_DEBUG"
+            #inject create values as env variable.
+            {{ if .Values.secret.name }}
+            {{- $secretName := .Values.secret.name }}
+            {{- range .Values.secret.keys }}
+            - name: {{ . | quote}}
               valueFrom:
                 secretKeyRef:
-                  name: test 
-                  key: RF_DEBUG
+                  name: {{ $secretName }}
+                  key: {{ . | quote}}
+            {{- end }}
             {{ end }}
-            {{ if .Values.env.control_plane_host }}
-            - name: "RF_APP_HOST"
-              value: "{{ .Values.env.control_plane_host }}"
-            {{ else }}
-            - name: "RF_APP_HOST"
-              value: "{{ .Values.env.rf_app_host }}"
+            {{ if .Values.rf_role_arn }}
+            - name: RF_ROLE_ARN
+              value: "{{ .Values.env.rf_role_arn }}"
             {{ end }}
-            - name: "AWS_DEFAULT_REGION"
-              value: "{{ .Values.env.aws_default_region }}"
-            - name: "RF_APP_ADMIN"
-              value: "{{ .Values.env.rf_app_admin }}"
-            - name: "RF_APP_ADMIN_PASSWD"
-              value: "{{ .Values.env.rf_app_admin_passwd }}"
-            - name: "RF_ROOT_URL"
-              value: "https://{{ .Values.env.rf_app_host }}"
+            - name: RF_DEBUG
+              value: "{{ .Values.env.rf_debug }}"
+            - name: RF_REDIS_HOST_NAME_HA
+              value: "{{ .Values.env.redis_host_ha }}"
+            - name: RF_REDIS_PORT_HA
+              value: "{{ .Values.env.redis_port_ha }}"
+            - name: RF_REDIS_PWD_HA
+              value: "{{ .Values.env.redis_pwd_ha }}"
+            - name: RF_REDIS_DB_HA
+              value: "{{ .Values.env.redis_db_ha }}"
+            - name: RF_REDIS_HOST_NAME
+              value: "{{ .Values.env.redis_host }}"
+            - name: RF_REDIS_PORT
+              value: "{{ .Values.env.redis_port }}"
+            - name: RF_REDIS_PWD
+              value: "{{ .Values.env.redis_pwd }}"
           volumeMounts:
-            {{- if eq .Values.env.rf_debug true }}
+            {{- if .Values.env.rf_debug }}
             - name: code
               mountPath: "/root/rapidfort"
             {{ end }}
@@ -90,6 +99,12 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 120
+            periodSeconds: 2
           livenessProbe:
             {{- if eq .Values.env.rf_debug true }}
             exec:

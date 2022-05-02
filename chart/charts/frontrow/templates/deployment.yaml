@@ -21,14 +21,6 @@ spec:
       serviceAccountName: {{ include "frontrow.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      volumes:
-      {{ if eq .Values.env.rf_debug true }}
-      {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
-      - name: code
-        hostPath:
-          path: /root/rapidfort
-      {{ end }}          
-      {{ end }}
       {{ if .Values.volumes }}
       {{ tpl (toYaml (index .Values.volumes )) . | nindent 6 }}
       {{ end }}
@@ -39,7 +31,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{ if eq .Values.env.rf_debug true }}
           workingDir: /root/rapidfort/frontrow
@@ -55,34 +47,38 @@ spec:
                   name: {{ $secretName }}
                   key: {{ . | quote}}
             {{- end }}
-            {{- end }}           
+            {{- end }}
+          {{ if or .Values.volumeMounts .Values.keycloakConfig.authUrl }}
           volumeMounts:
-          {{- if eq .Values.env.rf_debug true }}
-          {{ if eq .Values.env.deploy_mode  "STANDALONE" }}
-          - name: code
-            mountPath: "/root/rapidfort"
-          {{ end }}
-          {{ end }}
           {{ if .Values.volumeMounts }}
           {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
           {{ end }}
           {{ if .Values.keycloakConfig.authUrl }}
           {{ tpl (toYaml (index .Values.keycloakConfig.volumeMounts )) . | nindent 12 }}
           {{ end }}
+          {{ end }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
+            periodSeconds: 30
+            initialDelaySeconds: 15
+            timeoutSeconds: 10        
             httpGet:
               path: /
               port: http
           readinessProbe:
+            periodSeconds: 30
+            initialDelaySeconds: 15
+            timeoutSeconds: 10   
             httpGet:
               path: /
               port: http
+          {{ if .Values.resources }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

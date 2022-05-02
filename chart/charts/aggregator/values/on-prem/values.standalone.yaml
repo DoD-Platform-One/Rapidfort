@@ -1,0 +1,9 @@
+autoscaling:
+  enabled: false
+
+secret:
+  name: "rf-secret"
+  keys:
+    - AWS_DEFAULT_REGION
+    - RF_S3_BUCKET
+    - DEPLOY_MODE
