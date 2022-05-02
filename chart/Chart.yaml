@@ -20,51 +20,39 @@ dependencies:
   - name: aggregator
     version: 1.1.0
     condition: aggregator.enabled
-    repository: file://./charts/aggregator
   - name: backend
     version: 1.1.0
     condition: backend.enabled
-    repository: file://./charts/backend
   - name: fluent-bit
     version: 1.1.0
     condition: fluent-bit.enabled
-    repository: file://./charts/fluent-bit
   - name: frontrow
     version: 1.1.0
     condition: frontrow.enabled
-    repository: file://./charts/frontrow
   - name: iso-master
     version: 1.1.0
     condition: iso-master.enabled
-    repository: file://./charts/iso-master
   - name: keycloak
     version: 1.1.0
     condition: keycloak.enabled
-    repository: file://./charts/keycloak
   - name: mysql
     version: 8.9.0
     condition: mysql.enabled
-    repository: file://./charts/mysql
   - name: redis
     version: 1.1.0
     condition: redis.enabled
-    repository: file://./charts/redis
   - name: rf-scan
     version: 1.1.0
     condition: rf-scan.enabled
-    repository: file://./charts/rf-scan
   - name: rfapi
     version: 1.1.0
     condition: rfapi.enabled
-    repository: file://./charts/rfapi
   - name: rfpubsub
     version: 1.1.0
     condition: rfpubsub.enabled
-    repository: file://./charts/rfpubsub
   - name: runner
     version: 1.1.0
     condition: runner.enabled
-    repository: file://./charts/runner
   - name: gluon
     version: "0.2.9"
     repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
