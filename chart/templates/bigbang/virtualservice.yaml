@@ -35,7 +35,7 @@ spec:
         port:
           number: {{ index .Values "iso-master" "service" "port" | default "80" }}
         host: iso-master
-  - name: rf-scab
+  - name: rf-scan
     match:
     - uri:
         regex: "/rf-scan/.*"
