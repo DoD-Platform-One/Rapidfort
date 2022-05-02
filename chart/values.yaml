@@ -68,7 +68,7 @@ backend:
   enabled: true
   image:
     repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/backend
-    tag: 1.1.0-c46b0ef-2793-rfhardened 
+    tag: 1.1.0-c46b0ef-2793-rfhardened
   imagePullSecrets:
     - name: private-registry
   initContainer:
@@ -260,6 +260,11 @@ rfapi:
   fullnameOverride: rfapi
   env:
     deploy_mode: "STANDALONE"
+  ingress:
+    http:
+      enabled: false
+    websocket:
+      enabled: false
 
 rfpubsub:
   enabled: true
@@ -271,6 +276,8 @@ rfpubsub:
     deploy_mode: "STANDALONE"
   ingress:
     enabled: false
+    websocket:
+      enabled: false
 
 runner:
   enabled: false
