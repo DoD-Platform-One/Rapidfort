@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.1.0-c46b0ef-2793-rfhardened
+appVersion: 1.1.0-68eac7c-2-rfhardened
 description: A Helm chart for Kubernetes
 name: backend
 type: application
