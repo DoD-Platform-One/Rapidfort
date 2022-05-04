@@ -13,3 +13,4 @@ spec:
       command: ['wget']
       args: ['{{ include "rfapi.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never
+  

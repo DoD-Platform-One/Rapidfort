@@ -3,7 +3,7 @@ rapidfort:
 
   git:
     repo: https://repo1.dso.mil/platform-one/big-bang/apps/third-party/rapidfort
-    branch: netpol-fix
+    branch: main
     path: chart
 
   flux: {}
