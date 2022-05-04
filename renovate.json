@@ -1,0 +1,26 @@
+{
+    "baseBranches": ["main"],
+    "dependencyDashboard": "true",
+    "dependencyDashboardHeader": "- [ ] Sync upstream helm chart version with updated dependencies.",
+    "dependencyDashboardTitle": "Renovate: Upgrade RapidFort Package Dependencies",
+    "draftPR": "true",
+    "labels": ["rapidfort","Big Bang Third-Party","Package Sustainment","kind::maintenance"],
+    "packageRules": [
+      {
+        "matchDatasources": ["docker"],
+        "groupName": "RapidFort"
+      }
+    ],
+    "separateMajorMinor": "false",
+    "regexManagers": [
+      {
+        "fileMatch": ["^chart/deps/redis/Chart\\.yaml$"],
+        "matchStrings": [
+          "version:\\s+(?<currentValue>.+)"
+        ],
+        "depNameTemplate": "https://repo1.dso.mil/platform-one/big-bang/apps/application-utilities/redis.git",
+        "datasourceTemplate": "git-tags"
+      }
+    ]
+  }
+  

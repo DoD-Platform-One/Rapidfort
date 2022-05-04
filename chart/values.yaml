@@ -63,6 +63,7 @@ aggregator:
   fullnameOverride: aggregator
   env:
     deploy_mode: "STANDALONE"
+    redis_host: redis-master
 
 backend:
   enabled: true
@@ -80,6 +81,7 @@ backend:
     # MUST be set to an allowed SES ID - Configured on AWS
     sender_email_id: 
     deployment_mode: "STANDALONE"
+    redis_host: redis-master
   keycloak:
     serviceName: keycloak
   ingress:
@@ -112,6 +114,8 @@ iso-master:
   fullnameOverride: iso-master
   env:
     deployment_mode: "STANDALONE"
+    redis_host: "redis-master"
+    redis_host_ha: "redis-master"
   keycloak:
     serviceName: keycloak
   ingress:
@@ -199,32 +203,14 @@ mysql:
     ##
     args: ["--default-authentication-plugin=mysql_native_password"]
 
-mysql-orig:
-  enabled: false
-  image:
-    # repository: registry1.dso.mil/ironbank/opensource/mysql/mysql8
-    # Pull from public because pullSecrets are hard
-    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/mysql
-    tag: "8.0.27"
-  connectionTest:
-    image:
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
-      tag: latest
-  fullnameOverride: mysql
-
 redis:
   enabled: true
-  image:
-    # repository: registry1.dso.mil/ironbank/opensource/redis/redis6
-    # Pull from public because pullSecrets are hard
-    repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/redis
-    tag: latest
-    # At time of writing rf is asking for the latest from dockerhub which is redis6
-  connectionTest:
-    image:
-      repository: registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/busybox
-      tag: latest
-  fullnameOverride: redis
+  istio:
+    enabled: true
+  architecture: standalone
+  fullnameOverride: "redis"
+  auth:
+    enabled: false
 
 rf-scan:
   enabled: true
@@ -238,6 +224,8 @@ rf-scan:
   fullnameOverride: rf-scan
   env:
     deployment_mode: "STANDALONE"
+    redis_host: "redis-master"
+    redis_host_ha: "redis-master"
   keycloak: 
     serviceName: keycloak
   ingress:
@@ -260,6 +248,7 @@ rfapi:
   fullnameOverride: rfapi
   env:
     deploy_mode: "STANDALONE"
+    redis_host: "redis-master"
   ingress:
     http:
       enabled: false
@@ -274,6 +263,8 @@ rfpubsub:
   fullnameOverride: rfpubsub
   env:
     deploy_mode: "STANDALONE"
+    redis_host: "redis-master"
+    redis_host_ha: "redis-master"
   ingress:
     enabled: false
     websocket:
@@ -292,6 +283,8 @@ runner:
   env:
      # Email address of RF admin, must be allowed to be emailed through SES
     rf_app_admin: ""
+    redis_host: "redis-master"
+    redis_host_ha: "redis-master"
   ingress:
     enabled: false
 

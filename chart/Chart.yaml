@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
 name: rapidfort
-version: 0.1.0-bb.5
+version: 0.1.0-bb.6
 appVersion: 0.1.0
 description: Automated container hardening
 keywords:
@@ -39,8 +39,9 @@ dependencies:
     version: 8.9.0
     condition: mysql.enabled
   - name: redis
-    version: 1.1.0
+    version: 16.4.0-bb.0
     condition: redis.enabled
+    repository: file://./charts/redis
   - name: rf-scan
     version: 1.1.0
     condition: rf-scan.enabled
