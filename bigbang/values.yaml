@@ -12,14 +12,18 @@ rapidfort:
     gateway: ""
   
   objectStorage:
+
     # -- Access key for connecting to object storage endpoint.
-    accessKey: ""
+    aws_access_key_id: ""
 
     # -- Secret key for connecting to object storage endpoint.
-    accessSecret: ""
+    aws_secret_access_key: ""
+
+    # -- Region that bucket is in
+    aws_default_region: ""
 
     # -- Bucket name to use for RapidFort
-    bucket: ""
+    s3_bucket: ""
 
 # Big Bang 
 domain: bigbang.dev

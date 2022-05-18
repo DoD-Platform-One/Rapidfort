@@ -2,7 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [Unreleased]
+## [1.1.4-bb.7] - 2022-05-17
+
+This is the first release of the chart using the proper RapidFort upstream chart collection.
+
+### Changed 2022-05-16
+- Moved to kpt upstream tracking
+- Translated package to rapidfort parent chart from github
+- Fixed netpols to work with containerPort 8080
 
 ### Changed 2022-05-04
 - Replace existing redis chart with the BB approved package

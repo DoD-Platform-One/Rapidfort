@@ -14,7 +14,7 @@
     "separateMajorMinor": "false",
     "regexManagers": [
       {
-        "fileMatch": ["^chart/deps/redis/Chart\\.yaml$"],
+        "fileMatch": ["^chart/deps/redis-bb/Chart\\.yaml$"],
         "matchStrings": [
           "version:\\s+(?<currentValue>.+)"
         ],

@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: 1.1.0-2b57594-2793-rfhardened
-description: A Helm chart for Kubernetes
-name: frontrow
-type: application
-version: 1.1.0

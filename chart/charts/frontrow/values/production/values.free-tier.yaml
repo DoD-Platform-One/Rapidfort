@@ -1,8 +1,0 @@
-authUrl: "https://us01.rapidfort.com/auth/"
-
-env:
-  rf_debug: false
-  deploy_mode: "PRODUCTION"
-
-global:
-  rf_app_host: "us01.rapidfort.com"     

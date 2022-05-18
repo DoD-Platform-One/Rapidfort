@@ -2,55 +2,38 @@
 
 Due to how BB uses RapidFort and the differences in environments there are some changes to templates and values that needed to be made.
 
+## Parent Chart
+
+### Values
+
+- All image locations/tags are overridden at the parent chart to refer to approved tags/registries. This modification is in the `values.yaml` file. Any place that refers to an image/tag was modified by us.
+- Values sub-section for RF mysql was replaced with values sub-section for mysql-bb
+- Values sub-section for RF redis was replaced with values sub-section for redis-bb
+- Added a Big Bang values section at bottom. All values under `#Big Bang Values` were added by us to facilitate BB functionality.
+
+### Chart.yaml
+
+- Reference to the RF mysql chart was removed and replaced with a reference to the mysql-bb chart
+- Reference to the RF redis chart was removed and replaced with a reference to the redis-bb chart
+- Added dependecy on gluon for BB testing
+- Replaced the chart version with the BB mandated form.
+
+### Templates
+
+- New Templates
+  - Added the `external-db-job.yaml` for mysql-bb
+  - Added the `db-init-configmap.yaml` for mysql-bb
+- Edited RF Templates
+  - Modified the default value for the `DB_URL` in the `secret.yaml` file. MySQL from BB doesn't allow remote connections from root so this was changed to default to the mysql:mysql user/pass.
+- The _helpers.tpl file was replaced with our custom version that supports BB
+
 ## Aggregator
 
-### Autoscaling
-
-To avoid compaitibility issues the apiVersion of autoscaling was changed to `v2beta2` from `v2beta1` in `chart/charts/aggregator/templates/hpa.yaml`
-
-```
-apiVersion: autoscaling/v2beta2
-```
-
-This also required yaml changes because of syntax changes between the apiVersions at `spec.metrics.resource`
-
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-```
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-```
+No changes at this time.
 
 ## Backend
 
-### Autoscaling
-
-To avoid compaitibility issues the apiVersion of autoscaling was changed to `v2beta2` from `v2beta1` in `chart/charts/backend/templates/hpa.yaml`
-
-```
-apiVersion: autoscaling/v2beta2
-```
-
-This also required yaml changes because of syntax changes between the apiVersions at `spec.metrics.resource`
-
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-```
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-```
+No changes at this time.
 
 ## Frontrow
 
@@ -58,266 +41,36 @@ No changes at this time.
 
 ## ISO-Master
 
-### Init Container
-
-The init container for iso-master was hardcoded to an aws registry so that was changed to reference a value that could be overridden by the parent chart at `spec.template.spec.initContainers` in `chart/charts/iso-master/templates/deployment.yaml`
-
-```
-image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
-command: ['sh', '-c', "echo loaded {{ .Values.initContainer.image.repository }}"]
-```
-
-Values were added to facilitate the above change at `chart/charts/iso-master/values.yaml`
-
-```
-initContainer:
-  image:
-    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfstub.alp.base
-    tag: latest
-```
+No changes at this time.
 
 ## Keycloak
 
-### Init Container
+### Helm Test
 
-The init container for keycloak was hardcoded to an aws registry so that was changed to reference a value that could be overridden by the parent chart at `spec.template.spec.initContainers` in `chart/charts/keycloak/templates/deployment.yaml`
+The helm test from RF was removed as it was an artifact from helm initialization and served no purpose.
 
-```
-image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
-```
+### InitContainer
 
-Values were added to facilitate the above change at `chart/charts/keycloak/values.yaml`
+The init-mysql initContainer script incorrectly referred to the `db.user` value as `db.username`. This was corrected.
 
-```
-initContainer:
-  image:
-    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init
-    tag: latest
-```
+## RF-SCAN
 
-### Autoscaling
+### Helm Test
 
-To avoid compaitibility issues the apiVersion of autoscaling was changed to `v2beta2` from `v2beta1` in `chart/charts/keycloak/templates/hpa.yaml`
-
-```
-apiVersion: autoscaling/v2beta2
-```
-
-This also required yaml changes because of syntax changes between the apiVersions at `spec.metrics.resource`
-
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-```
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-```
-
-### Helm Test Container
-
-The image reference for the helm test container was hardcoded to a generic busybox image so it was changed to reference a value that could be overridden by the parent chart at `spec.containers` in `chart/charts/keycloak/templates/tests/test-connection.yaml`
-
-```
-image: "{{ .Values.connectionTest.image.repository }}:{{ .Values.connectionTest.image.tag | default .Chart.AppVersion }}"
-```
-
-Values were added to facilitate the above change at `chart/charts/keycloak/values.yaml`
-
-```
-connectionTest:
-image:
-  repository: busybox
-  tag: latest
-```
-
-## Redis
-
-### Autoscaling
-
-To avoid compaitibility issues the apiVersion of autoscaling was changed to `v2beta2` from `v2beta1` in `chart/charts/redis/templates/hpa.yaml`
-
-```
-apiVersion: autoscaling/v2beta2
-```
-
-This also required yaml changes because of syntax changes between the apiVersions at `spec.metrics.resource`
-
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-```
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-```
-
-### Helm Test Container
-
-The image reference for the helm test container was hardcoded to a generic busybox image so it was changed to reference a value that could be overridden by the parent chart at `spec.containers` in `chart/charts/redis/templates/tests/test-connection.yaml`
-
-```
-image: "{{ .Values.connectionTest.image.repository }}:{{ .Values.connectionTest.image.tag | default .Chart.AppVersion }}"
-```
-
-Values were added to facilitate the above change at `chart/charts/redis/values.yaml`
-
-```
-connectionTest:
-image:
-  repository: busybox
-  tag: latest
-```
+The helm test from RF was removed as it was an artifact from helm initialization and served no purpose.
 
 ## RFAPI
 
-### Autoscaling
+### Helm Test
 
-To avoid compaitibility issues the apiVersion of autoscaling was changed to `v2beta2` from `v2beta1` in `chart/charts/rfapi/templates/hpa.yaml`
-
-```
-apiVersion: autoscaling/v2beta2
-```
-
-This also required yaml changes because of syntax changes between the apiVersions at `spec.metrics.resource`
-
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-```
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-```
-
-### Helm Test Container
-
-The image reference for the helm test container was hardcoded to a generic busybox image so it was changed to reference a value that could be overridden by the parent chart at `spec.containers` in `chart/charts/rfapi/templates/tests/test-connection.yaml`
-
-```
-image: "{{ .Values.connectionTest.image.repository }}:{{ .Values.connectionTest.image.tag | default .Chart.AppVersion }}"
-```
-
-Values were added to facilitate the above change at `chart/charts/rfapi/values.yaml`
-
-```
-connectionTest:
-image:
-  repository: busybox
-  tag: latest
-```
+The helm test from RF was removed as it was an artifact from helm initialization and served no purpose.
 
 ## RFPUBSUB
 
-### Autoscaling
-
-To avoid compaitibility issues the apiVersion of autoscaling was changed to `v2beta2` from `v2beta1` in `chart/charts/rfpubsub/templates/hpa.yaml`
-
-```
-apiVersion: autoscaling/v2beta2
-```
-
-This also required yaml changes because of syntax changes between the apiVersions at `spec.metrics.resource`
-
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-```
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-```
-
-## RFVDB
-
-### Init Container
-
-The init container for rfvdb was hardcoded to an aws registry so that was changed to reference a value that could be overridden by the parent chart at `spec.template.spec.initContainers` in `chart/charts/rfvdb/templates/deployment.yaml`
-
-```
-image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
-```
-
-Values were added to facilitate the above change at `chart/charts/rfvdb/values.yaml`
-
-```
-initContainer:
-  image:
-    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init
-    tag: latest
-```
-
-### Autoscaling
-
-To avoid compaitibility issues the apiVersion of autoscaling was changed to `v2beta2` from `v2beta1` in `chart/charts/rfvdb/templates/hpa.yaml`
-
-```
-apiVersion: autoscaling/v2beta2
-```
-
-This also required yaml changes because of syntax changes between the apiVersions at `spec.metrics.resource`
-
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-```
-```
-targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-target: 
-  type: Utilization
-  averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-```
-
-### Helm Test Container
-
-The image reference for the helm test container was hardcoded to a generic busybox image so it was changed to reference a value that could be overridden by the parent chart at `spec.containers` in `chart/charts/rfvdb/templates/tests/test-connection.yaml`
-
-```
-image: "{{ .Values.connectionTest.image.repository }}:{{ .Values.connectionTest.image.tag | default .Chart.AppVersion }}"
-```
-
-Values were added to facilitate the above change at `chart/charts/rfvdb/values.yaml`
-
-```
-connectionTest:
-image:
-  repository: busybox
-  tag: latest
-```
+No changes at this time.
 
 ## Runner
 
-### Init Container
+### Values
 
-The init container for runner was hardcoded to an aws registry so that was changed to reference a value that could be overridden by the parent chart at `spec.template.spec.initContainers` in `chart/charts/runner/templates/deployment.yaml`
-
-```
-image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
-```
-
-Values were added to facilitate the above change at `chart/charts/runner/values.yaml`
-
-```
-initContainer:
-  image:
-    repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/init
-    tag: latest
-```
+The Runner values file had an old reference to a defunct image registry for the initContainer, even though this is overridden via the parent chart it was fixed here to reference RapidFort's public ecr registry.

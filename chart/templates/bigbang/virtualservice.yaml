@@ -17,6 +17,7 @@ spec:
     - {{ tpl . $}}
   {{- end }}
   http:
+
   - name: backend
     match:
     - uri:
@@ -26,6 +27,19 @@ spec:
         port:
           number: {{ .Values.backend.service.port | default "80" }}
         host: backend
+
+  - name: frontrow
+    match:
+    - uri:
+        regex: "/cli/.*"
+    - uri:
+        regex: "/app/.*"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.frontrow.service.port | default "80" }}
+        host: frontrow
+
   - name: iso-master
     match:
     - uri:
@@ -35,15 +49,7 @@ spec:
         port:
           number: {{ index .Values "iso-master" "service" "port" | default "80" }}
         host: iso-master
-  - name: rf-scan
-    match:
-    - uri:
-        regex: "/rf-scan/.*"
-    route:
-    - destination:
-        port:
-          number: {{ index .Values "rf-scan" "service" "port" | default "80" }}
-        host: rf-scan
+
   - name: keycloak
     match:
     - uri:
@@ -53,6 +59,17 @@ spec:
         port:
           number: {{ .Values.keycloak.service.port | default "80" }}
         host: keycloak
+
+  - name: rf-scan
+    match:
+    - uri:
+        regex: "/rf-scan/.*"
+    route:
+    - destination:
+        port:
+          number: {{ index .Values "rf-scan" "service" "port" | default "80" }}
+        host: rf-scan
+
   - name: rfapi-websocket
     match:
     - uri:
@@ -74,6 +91,7 @@ spec:
         #     X-Forwarded-Proto: $scheme
         #     X-Forwarded-For: $remote_addr
         #     Host: $host;
+
   - name: rfapi
     match:
     - uri:
@@ -83,6 +101,7 @@ spec:
         port:
           number: {{ .Values.rfapi.service.port | default "80" }}
         host: rfapi
+
   - name: rfpubsub-websocket
     match:
     - uri:
@@ -104,18 +123,18 @@ spec:
         #     X-Forwarded-Proto: $scheme
         #     X-Forwarded-For: $remote_addr
         #     Host: $host;
-  - name: frontrow
+
+  - name: runner
     match:
     - uri:
-        regex: "/cli/.*"
-    - uri:
-        regex: "/app/.*"
+        regex: "/runner/.*"
     route:
     - destination:
         port:
-          number: {{ .Values.frontrow.service.port | default "80" }}
-        host: frontrow
-  - name: frontrow-redirect
+          number: {{ .Values.runner.service.port | default "80" }}
+        host: runner
+
+  - name: catchall-redirect-frontrow
     match:
     - uri:
         regex: ".*"

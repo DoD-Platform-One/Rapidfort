@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: 1.1.0-064ad2c-2-rfhardened
-description: A Helm chart for Kubernetes
-name: rfapi
-type: application
-version: 1.1.0
