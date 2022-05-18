@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: 1.1.0-43d1dc1-2-rfhardened
-description: A Helm chart for Kubernetes
-name: rfpubsub
-type: application
-version: 1.1.0

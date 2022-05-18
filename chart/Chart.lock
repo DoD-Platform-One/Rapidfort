@@ -1,42 +1,42 @@
 dependencies:
 - name: aggregator
-  repository: ""
-  version: 1.1.0
+  repository: file://deps/aggregator/
+  version: 1.1.1
 - name: backend
-  repository: ""
-  version: 1.1.0
+  repository: file://deps/backend/
+  version: 1.1.1
 - name: fluent-bit
-  repository: ""
+  repository: file://deps/fluent-bit/
   version: 1.1.0
 - name: frontrow
-  repository: ""
+  repository: file://deps/frontrow/
   version: 1.1.0
 - name: iso-master
-  repository: ""
+  repository: file://deps/iso-master/
   version: 1.1.0
 - name: keycloak
-  repository: ""
-  version: 1.1.0
+  repository: file://deps/keycloak/
+  version: 1.1.1
 - name: mysql
-  repository: ""
+  repository: file://deps/mysql-bb/
   version: 8.9.0
 - name: redis
-  repository: ""
-  version: 1.1.0
+  repository: file://deps/redis-bb/
+  version: 16.4.0-bb.0
 - name: rf-scan
-  repository: ""
-  version: 1.1.0
+  repository: file://deps/rf-scan/
+  version: 1.1.1
 - name: rfapi
-  repository: ""
-  version: 1.1.0
+  repository: file://deps/rfapi/
+  version: 1.1.1
 - name: rfpubsub
-  repository: ""
-  version: 1.1.0
+  repository: file://deps/rfpubsub/
+  version: 1.1.1
 - name: runner
-  repository: ""
-  version: 1.1.0
+  repository: file://deps/runner/
+  version: 1.1.1
 - name: gluon
   repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
   version: 0.2.9
-digest: sha256:02ddf306866b8c280758eaf7068b11356b252ede8d9a8d7abd7680976105e44c
-generated: "2022-05-02T10:26:57.886775105-05:00"
+digest: sha256:0a4eda685a8a0c098d3ee4238063d8c65f8670d7fdf68a2ec75021adbf38cb92
+generated: "2022-05-16T17:07:21.624116639-05:00"

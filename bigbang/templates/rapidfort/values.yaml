@@ -17,17 +17,18 @@ networkPolicies:
 
 {{- with .Values.rapidfort.objectStorage }}
 {{- if and .accessKey .accessSecret .bucket }}
-secrets:
-  stringData: 
-    AWS_ACCESS_KEY_ID: {{ .accessKey }}
-    AWS_SECRET_ACCESS_KEY: {{ .accessSecret }}
-    RF_S3_BUCKET: {{ .bucket }}
+secret:
+  aws_access_key_id: {{ .aws_access_key_id }}
+  aws_secret_access_key: {{ .aws_secret_access_key }}
+  aws_default_region: {{ .aws_default_region }}
+  s3_bucket: {{ .s3_bucket }}
 {{- end }}
 {{- end }}
 
 keycloak:
-  initContainer:
-    enabled: {{ not .Values.istio.enabled }}
+  initContainers:
+    init_mysql:
+      enabled: {{ not .Values.istio.enabled }}
 {{- end }}
 
 {{- /* Create secret */ -}}

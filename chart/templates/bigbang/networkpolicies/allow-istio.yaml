@@ -18,7 +18,7 @@ spec:
         matchLabels:
           {{- toYaml .Values.networkPolicies.ingressLabels | nindent 10}}
     ports:
-    - port: 80
+    - port: 8080
       protocol: TCP
   egress:
   - to:

@@ -1,8 +1,0 @@
-authUrl: "https://frontrow.rapidfort.com/auth/"
-
-env:
-  rf_debug: false
-  deploy_mode: "PRODUCTION"
-
-global:
-  rf_app_host: "frontrow.rapidfort.com"     
