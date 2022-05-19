@@ -1,10 +1,10 @@
 dependencies:
 - name: aggregator
   repository: file://deps/aggregator/
-  version: 1.1.1
+  version: 1.1.0
 - name: backend
   repository: file://deps/backend/
-  version: 1.1.1
+  version: 1.1.0
 - name: fluent-bit
   repository: file://deps/fluent-bit/
   version: 1.1.0
@@ -16,7 +16,7 @@ dependencies:
   version: 1.1.0
 - name: keycloak
   repository: file://deps/keycloak/
-  version: 1.1.1
+  version: 1.1.0
 - name: mysql
   repository: file://deps/mysql-bb/
   version: 8.9.0
@@ -25,18 +25,18 @@ dependencies:
   version: 16.4.0-bb.0
 - name: rf-scan
   repository: file://deps/rf-scan/
-  version: 1.1.1
+  version: 1.1.0
 - name: rfapi
   repository: file://deps/rfapi/
-  version: 1.1.1
+  version: 1.1.0
 - name: rfpubsub
   repository: file://deps/rfpubsub/
-  version: 1.1.1
+  version: 1.1.0
 - name: runner
   repository: file://deps/runner/
-  version: 1.1.1
+  version: 1.1.0
 - name: gluon
   repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
   version: 0.2.9
-digest: sha256:0a4eda685a8a0c098d3ee4238063d8c65f8670d7fdf68a2ec75021adbf38cb92
-generated: "2022-05-16T17:07:21.624116639-05:00"
+digest: sha256:60e266522206db4d939ecb8538cabffb28443e3af783ac411a14b068e8c5cad5
+generated: "2022-05-19T12:51:05.228837493-05:00"

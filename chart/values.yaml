@@ -5,7 +5,7 @@ secret:
   s3_bucket: ""
   rf_app_admin: ""
   rf_app_admin_passwd: ""
-  rf_app_host: "" # This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service.
+  rf_app_host: "" # This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service
 
 global:
   rf_app_host: "" # This field is used to update the host name in the ingress.
@@ -20,7 +20,7 @@ aggregator:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/aggregator-exe"
-    tag: "1.1.3-rfhardened"
+    tag: "1.1.8-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -32,7 +32,7 @@ backend:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/backend-exe"
-    tag: "1.1.3-rfhardened"
+    tag: "1.1.8-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -48,13 +48,13 @@ frontrow:
   authUrl: ""
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow"
-    tag: "1.1.3-rfhardened"
+    tag: "1.1.8-rfhardened"
 
 iso-master:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/iso-master-exe"
-    tag: "1.1.3-rfhardened"
+    tag: "1.1.8-rfhardened"
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
@@ -135,7 +135,7 @@ rf-scan:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rf-scan-exe"
-    tag: "1.1.3-rfhardened"
+    tag: "1.1.8-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -147,8 +147,8 @@ rf-scan:
 rfapi:
   enabled: true
   image:
-    repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi"
-    tag: "1.1.3-rfhardened"
+    repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi-exe"
+    tag: "1.1.8-rfhardened"
   initContainers:
     init:
       image:
@@ -160,7 +160,7 @@ rfpubsub:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfpubsub-exe"
-    tag: "1.1.3-rfhardened"
+    tag: "1.1.8-rfhardened"
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
@@ -169,7 +169,7 @@ runner:
   enabled: false
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner"
-    tag: "1.1.3-rfhardened"
+    tag: "1.1.8-rfhardened"
   initContainers:
     init:
       image:
