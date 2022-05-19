@@ -1,6 +1,6 @@
 # rapidfort
 
-![Version: 1.1.4-bb.7](https://img.shields.io/badge/Version-1.1.4--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.3](https://img.shields.io/badge/AppVersion-1.1.3-informational?style=flat-square)
+![Version: 1.1.8-bb.7](https://img.shields.io/badge/Version-1.1.8--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.8](https://img.shields.io/badge/AppVersion-1.1.8-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -42,22 +42,22 @@ helm install rapidfort chart/
 | ingress.enabled | bool | `true` |  |
 | aggregator.enabled | bool | `true` |  |
 | aggregator.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/aggregator-exe"` |  |
-| aggregator.image.tag | string | `"1.1.3-rfhardened"` |  |
+| aggregator.image.tag | string | `"1.1.8-rfhardened"` |  |
 | aggregator.initContainers.volumePermissions.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"` |  |
 | aggregator.env.redis_host | string | `"redis-master"` |  |
 | backend.enabled | bool | `true` |  |
 | backend.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/backend-exe"` |  |
-| backend.image.tag | string | `"1.1.3-rfhardened"` |  |
+| backend.image.tag | string | `"1.1.8-rfhardened"` |  |
 | backend.initContainers.volumePermissions.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"` |  |
 | backend.initContainers.init.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"` |  |
 | backend.env.redis_host | string | `"redis-master"` |  |
 | frontrow.enabled | bool | `true` |  |
 | frontrow.authUrl | string | `""` |  |
 | frontrow.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow"` |  |
-| frontrow.image.tag | string | `"1.1.3-rfhardened"` |  |
+| frontrow.image.tag | string | `"1.1.8-rfhardened"` |  |
 | iso-master.enabled | bool | `true` |  |
 | iso-master.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/iso-master-exe"` |  |
-| iso-master.image.tag | string | `"1.1.3-rfhardened"` |  |
+| iso-master.image.tag | string | `"1.1.8-rfhardened"` |  |
 | iso-master.env.redis_host | string | `"redis-master"` |  |
 | iso-master.env.redis_host_ha | string | `"redis-master"` |  |
 | keycloak.enabled | bool | `true` |  |
@@ -86,23 +86,23 @@ helm install rapidfort chart/
 | redis.auth.enabled | bool | `false` |  |
 | rf-scan.enabled | bool | `true` |  |
 | rf-scan.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rf-scan-exe"` |  |
-| rf-scan.image.tag | string | `"1.1.3-rfhardened"` |  |
+| rf-scan.image.tag | string | `"1.1.8-rfhardened"` |  |
 | rf-scan.initContainers.volumePermissions.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"` |  |
 | rf-scan.env.redis_host | string | `"redis-master"` |  |
 | rf-scan.env.redis_host_ha | string | `"redis-master"` |  |
 | rfapi.enabled | bool | `true` |  |
-| rfapi.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi"` |  |
-| rfapi.image.tag | string | `"1.1.3-rfhardened"` |  |
+| rfapi.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi-exe"` |  |
+| rfapi.image.tag | string | `"1.1.8-rfhardened"` |  |
 | rfapi.initContainers.init.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"` |  |
 | rfapi.env.redis_host | string | `"redis-master"` |  |
 | rfpubsub.enabled | bool | `true` |  |
 | rfpubsub.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfpubsub-exe"` |  |
-| rfpubsub.image.tag | string | `"1.1.3-rfhardened"` |  |
+| rfpubsub.image.tag | string | `"1.1.8-rfhardened"` |  |
 | rfpubsub.env.redis_host | string | `"redis-master"` |  |
 | rfpubsub.env.redis_host_ha | string | `"redis-master"` |  |
 | runner.enabled | bool | `false` |  |
 | runner.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner"` |  |
-| runner.image.tag | string | `"1.1.3-rfhardened"` |  |
+| runner.image.tag | string | `"1.1.8-rfhardened"` |  |
 | runner.initContainers.init.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"` |  |
 | runner.env.redis_host | string | `"redis-master"` |  |
 | runner.env.redis_host_ha | string | `"redis-master"` |  |
