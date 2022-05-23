@@ -3,12 +3,19 @@ secret:
   aws_secret_access_key: ""
   aws_default_region: ""
   s3_bucket: ""
-  rf_app_admin: ""
-  rf_app_admin_passwd: ""
-  rf_app_host: "" # This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service
+  # -- This value must be a syntax valid email (doesn't need to be a real one, though it should be for production)
+  rf_app_admin: "rfadmin@fakeemail.com"
+  rf_app_admin_passwd: "p@ssw0rd"
+  # -- This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service
+  rf_app_host: ""
 
 global:
-  rf_app_host: "" # This field is used to update the host name in the ingress.
+  # -- This field is used to update the host name in the ingress.
+  rf_app_host: ""
+
+# -- When internal runner traffic is enabled runner defaults to `backend` for it's url
+# if the backend service name is changed, update it here
+runner_rf_app_host: ""
 
 sc:
   enabled: false
@@ -24,7 +31,10 @@ aggregator:
   initContainers:
     volumePermissions:
       image:
-        repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"
+        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
+        tag: "8.6"
+  imagePullSecrets:
+  - name: private-registry
   env:
     redis_host: redis-master
 
@@ -36,10 +46,14 @@ backend:
   initContainers:
     volumePermissions:
       image:
-        repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"
+        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
+        tag: "8.6"
     init:
       image:
-        repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"
+        repository: "registry1.dso.mil/ironbank/big-bang/base"
+        tag: "1.17.0"
+  imagePullSecrets:
+  - name: private-registry
   env:
     redis_host: redis-master
 
@@ -67,17 +81,21 @@ keycloak:
   initContainers:
     init_mysql:
       image:
-        repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"
+        repository: "registry1.dso.mil/ironbank/opensource/mysql/mysql8"
+        tag: "8.0.28"
+  imagePullSecrets:
+  - name: private-registry
 
 mysql:
-  # Set 'enabled' to true if you want to deploy a local (in-cluster) mysql instance
+  # -- Set 'enabled' to true if you want to deploy a local (in-cluster) mysql instance
   enabled: true
   # To use an external mysql instance, set enabled to false and uncomment
   # the line below:
   # mysqlServer: ""
-  # Seeding database required on intial run. Set to false if conducting a new install with existing data
+
+  # -- Seeding database required on intial run. Set to false if conducting a new install with existing data.
+  # Ensure this is also set in the keycloak db.addr value
   seedDatabase: true
-  # ensure this is also set in the keycloak db.addr value
 
   # To use an external secret for the password for an external mysql
   # instance, set enabled to false and provide the name of the secret on the
@@ -124,6 +142,10 @@ mysql:
 
 redis:
   enabled: true
+  image:
+    registry: registry1.dso.mil
+    repository: ironbank/bitnami/redis
+    tag: 6.2.5
   istio:
     enabled: true
   architecture: standalone
@@ -139,7 +161,10 @@ rf-scan:
   initContainers:
     volumePermissions:
       image:
-        repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"
+        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
+        tag: "8.6"
+  imagePullSecrets:
+  - name: private-registry
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
@@ -152,7 +177,10 @@ rfapi:
   initContainers:
     init:
       image:
-        repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"
+        repository: "registry1.dso.mil/ironbank/bitnami/redis"
+        tag: "6.2.5"
+  imagePullSecrets:
+  - name: private-registry
   env:
     redis_host: redis-master
 
@@ -166,14 +194,19 @@ rfpubsub:
     redis_host_ha: redis-master
 
 runner:
-  enabled: false
+  secret:
+    # -- Change to rf-runner-secret to internalize runner traffic
+    name: rf-secret
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner"
     tag: "1.1.8-rfhardened"
   initContainers:
     init:
       image:
-        repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"
+        repository: "registry1.dso.mil/ironbank/big-bang/base"
+        tag: "1.17.0"
+  imagePullSecrets:
+  - name: private-registry
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
@@ -181,7 +214,7 @@ runner:
 logger:
   enabled: false
 
-# Big Bang Values
+# -- Big Bang Values
 domain: bigbang.dev
 istio:
   enabled: false
@@ -203,8 +236,12 @@ networkPolicies:
   ingressLabels: 
     app: istio-ingressgateway
     istio: ingressgateway
+  # -- IP range of api.rapidfort.com
+  rapidfortApiIpRange: ""
+  # -- test
+  controlPlaneCidr: ""
 
-# Bigbang helm test values - default disabled
+# -- Bigbang helm test values - default disabled
 bbtests:
   enabled: false
   cypress:

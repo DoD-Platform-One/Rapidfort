@@ -14,16 +14,24 @@ networkPolicies:
     {{- $gateway := default "public" .Values.rapidfort.ingress.gateway }}
     {{- $default := dict "app" (dig "gateways" $gateway "ingressGateway" nil .Values.istio) "istio" nil }}
     {{- toYaml (dig "values" "gateways" $gateway "selector" $default .Values.istio) | nindent 4 }}
+  controlPlaneCidr: {{ .Values.networkPolicies.controlPlaneCidr }}
 
+secret:
 {{- with .Values.rapidfort.objectStorage }}
 {{- if and .accessKey .accessSecret .bucket }}
-secret:
   aws_access_key_id: {{ .aws_access_key_id }}
   aws_secret_access_key: {{ .aws_secret_access_key }}
   aws_default_region: {{ .aws_default_region }}
   s3_bucket: {{ .s3_bucket }}
 {{- end }}
 {{- end }}
+  rf_app_host: {{printf "%s.%s" "rapidfort" .Values.domain }}
+
+{{ if eq .Values.domain "bigbang.dev" }}
+runner:
+  secret:
+    name: rf-runner-secret
+{{ end }}
 
 keycloak:
   initContainers:

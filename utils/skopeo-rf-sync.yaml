@@ -1,0 +1,18 @@
+public.ecr.aws/rapidfort:
+  images:
+    aggregator-exe:
+    - "1.1.8-rfhardened"
+    backend-exe:
+    - "1.1.8-rfhardened"
+    frontrow:
+    - "1.1.8-rfhardened"
+    iso-master-exe:
+    - "1.1.8-rfhardened"
+    rf-scan-exe:
+    - "1.1.8-rfhardened"
+    rfapi-exe:
+    - "1.1.8-rfhardened"
+    rfpubsub-exe:
+    - "1.1.8-rfhardened"
+    runner:
+    - "1.1.8-rfhardened"

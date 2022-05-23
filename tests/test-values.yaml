@@ -1,2 +1,15 @@
+secret:
+  aws_access_key_id: FAKEID54G8A4F654GH7T
+  aws_secret_access_key: FAKEKEYxlLONi5IEMW8zA0Va4l0i9yPwfD5AMn0K
+  aws_default_region: us-east-1
+  s3_bucket: fakebucket
+  rf_app_admin: ci@repo1.dso.mil
+  rf_app_admin_passwd: p@ssw0rd
+  rf_app_host: rapidfort.bigbang.dev
+
+runner:
+  secret:
+    name: rf-runner-secret
+
 bbtests:
   enabled: false 

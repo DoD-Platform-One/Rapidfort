@@ -2,6 +2,28 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.8-bb.8]
+
+### Added
+
+- Added internal communication mode for runner
+  - Change name of secret referenced by runner in values to `rf-runner-secret`
+  - Added test values to allow runner to run in pipeline using internal comms
+- Added netpols to support runner functionality, vdb and external
+- Added fake values for CI
+- Added util for syncing tags from amazon ecr to gitlab container registry
+
+### Changed
+- Reformatted values comments so they get imported into the helmdocs readme
+- Optimized initContainer commands to speed up initContainer dependency chaining
+  - added `--connect-timeout=10` flag to Keycloak initContainer mysql command
+  - wrapped the rfapi initContainer redis command in the timeout command
+  - added `--connect-timeout 10 --max-time 15` to runner initContainer curl
+- Fixed a gitignore issue that stopped mysql-bb from working
+  - This readded secrets.yaml to that chart
+- Fixed the rfapi virtualservice ingress matching
+- Changed initContainers to use IB images
+
 ## [1.1.8-bb.7] - 2022-05-19
 
 Updated to RapidFort version 1.1.8

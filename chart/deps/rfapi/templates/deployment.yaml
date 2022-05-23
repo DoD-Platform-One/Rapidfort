@@ -40,7 +40,7 @@ spec:
           command:
             - "/bin/bash"
             - "-c"
-            - "until [ $(redis-cli -h {{ .Values.env.redis_host }} -p {{ .Values.env.redis_port }} ping) == 'PONG' ]; do echo redis not ready; sleep 1; done"
+            - "until [ \"$(timeout 10 redis-cli -h {{ .Values.env.redis_host }} -p {{ .Values.env.redis_port }} ping)\" == 'PONG' ]; do echo 'redis not ready'; sleep 5s; echo 'trying again...'; done"
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
