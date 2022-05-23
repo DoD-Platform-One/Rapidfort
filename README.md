@@ -1,6 +1,6 @@
 # rapidfort
 
-![Version: 1.1.8-bb.7](https://img.shields.io/badge/Version-1.1.8--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.8](https://img.shields.io/badge/AppVersion-1.1.8-informational?style=flat-square)
+![Version: 1.1.8-bb.8](https://img.shields.io/badge/Version-1.1.8--bb.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.8](https://img.shields.io/badge/AppVersion-1.1.8-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -34,10 +34,11 @@ helm install rapidfort chart/
 | secret.aws_secret_access_key | string | `""` |  |
 | secret.aws_default_region | string | `""` |  |
 | secret.s3_bucket | string | `""` |  |
-| secret.rf_app_admin | string | `""` |  |
+| secret.rf_app_admin | string | `""` | This value must be a syntax valid email (doesn't need to be a real one, though it should be for production) |
 | secret.rf_app_admin_passwd | string | `""` |  |
-| secret.rf_app_host | string | `""` |  |
-| global.rf_app_host | string | `""` |  |
+| secret.rf_app_host | string | `""` | This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service |
+| global.rf_app_host | string | `""` | This field is used to update the host name in the ingress. |
+| runner_rf_app_host | string | `""` | When internal runner traffic is enabled runner defaults to `backend` for it's url if the backend service name is changed, update it here |
 | sc.enabled | bool | `false` |  |
 | ingress.enabled | bool | `true` |  |
 | aggregator.enabled | bool | `true` |  |
@@ -64,8 +65,8 @@ helm install rapidfort chart/
 | keycloak.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/keycloak"` |  |
 | keycloak.image.tag | string | `"16.1.1"` |  |
 | keycloak.initContainers.init_mysql.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"` |  |
-| mysql.enabled | bool | `true` |  |
-| mysql.seedDatabase | bool | `true` |  |
+| mysql.enabled | bool | `true` | Set 'enabled' to true if you want to deploy a local (in-cluster) mysql instance |
+| mysql.seedDatabase | bool | `true` | Seeding database required on intial run. Set to false if conducting a new install with existing data. Ensure this is also set in the keycloak db.addr value |
 | mysql.image.registry | string | `"registry1.dso.mil/ironbank"` |  |
 | mysql.image.repository | string | `"opensource/mysql/mysql8"` |  |
 | mysql.image.tag | string | `"8.0.28"` |  |
@@ -100,14 +101,14 @@ helm install rapidfort chart/
 | rfpubsub.image.tag | string | `"1.1.8-rfhardened"` |  |
 | rfpubsub.env.redis_host | string | `"redis-master"` |  |
 | rfpubsub.env.redis_host_ha | string | `"redis-master"` |  |
-| runner.enabled | bool | `false` |  |
+| runner.secret.name | string | `"rf-secret"` | Change to rf-runner-secret to internalize runner traffic |
 | runner.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner"` |  |
 | runner.image.tag | string | `"1.1.8-rfhardened"` |  |
 | runner.initContainers.init.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/init"` |  |
 | runner.env.redis_host | string | `"redis-master"` |  |
 | runner.env.redis_host_ha | string | `"redis-master"` |  |
 | logger.enabled | bool | `false` |  |
-| domain | string | `"bigbang.dev"` |  |
+| domain | string | `"bigbang.dev"` | Big Bang Values |
 | istio.enabled | bool | `false` |  |
 | istio.mtls.mode | string | `"PERMISSIVE"` | STRICT = Allow only mutual TLS traffic, PERMISSIVE = Allow both plain text and mutual TLS traffic PERMISSIVE is required for any action which redeploys pods because STRICT interferes with initContainers Can be changed to STRICT after all initContainers have finished but will interfere with upgrades/pod deployments that have initContainers |
 | istio.rapidfort.enabled | bool | `true` |  |
@@ -116,10 +117,9 @@ helm install rapidfort chart/
 | networkPolicies.enabled | bool | `false` |  |
 | networkPolicies.ingressLabels.app | string | `"istio-ingressgateway"` |  |
 | networkPolicies.ingressLabels.istio | string | `"ingressgateway"` |  |
-| bbtests.enabled | bool | `false` |  |
-| bbtests.cypress.artifacts | bool | `true` |  |
-| bbtests.cypress.envs.cypress_url | string | `"http://test.test"` |  |
-| bbtests.scripts.envs.URL | string | `"http://test.test"` |  |
+| networkPolicies.rapidfortApiIpRange | string | `""` | IP range of api.rapidfort.com |
+| networkPolicies.controlPlaneCidr | string | `""` | test |
+| bbtests | object | `{"cypress":{"artifacts":true,"envs":{"cypress_url":"http://test.test"}},"enabled":false,"scripts":{"envs":{"URL":"http://test.test"}}}` | Bigbang helm test values - default disabled |
 
 ## Contributing
 

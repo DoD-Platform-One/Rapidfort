@@ -95,7 +95,7 @@ spec:
   - name: rfapi
     match:
     - uri:
-        regex: "/rfapi"
+        regex: "/rfapi.*"
     route:
     - destination:
         port:
@@ -124,6 +124,7 @@ spec:
         #     X-Forwarded-For: $remote_addr
         #     Host: $host;
 
+  {{ if .Values.runner.enabled }}
   - name: runner
     match:
     - uri:
@@ -133,6 +134,7 @@ spec:
         port:
           number: {{ .Values.runner.service.port | default "80" }}
         host: runner
+  {{ end }}
 
   - name: catchall-redirect-frontrow
     match:

@@ -38,7 +38,7 @@ spec:
         command:
           - "/bin/sh"
           - "-c"
-          - "until mysql --host=mysql --user={{ .Values.db.user }} --password={{ .Values.db.password }} --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
+          - "until mysql --host=mysql --user={{ .Values.db.user }} --password={{ .Values.db.password }} --connect-timeout=10 --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
       {{- end }}       
       containers:
         - name: {{ .Chart.Name }}
