@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: redis
+  repository: rapidfort/redis
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
