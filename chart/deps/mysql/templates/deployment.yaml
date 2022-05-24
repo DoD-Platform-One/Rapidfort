@@ -34,22 +34,34 @@ spec:
         - name: mysql-initdb
           configMap:
             name: mysql-initdb-config
+      initContainers:
+        - name: volume-permissions
+          image: public.ecr.aws/w9i9p8n5/init
+          command:
+          - /bin/bash
+          - -c
+          - chmod 777 /bitnami/mysql
+          volumeMounts:
+            - name: mysql-data
+              mountPath: "/bitnami/mysql"         
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["--default-authentication-plugin=mysql_native_password"]
+          env:
+            - name: MYSQL_DATABASE
+              value: "keycloak"
+            - name: MYSQL_AUTHENTICATION_PLUGIN
+              value: mysql_native_password
+            - name: MYSQL_ROOT_PASSWORD
+              value: "RF-123579"
           volumeMounts:
             - name: mysql-data
-              mountPath: "/var/lib/mysql"
+              mountPath: "/bitnami/mysql"
             - name: mysql-initdb
-              mountPath: /docker-entrypoint-initdb.d/init.sql
-              subPath: "init.sql"
-          env:
-          - name: MYSQL_ROOT_PASSWORD
-            value: "RF-123579"
+              mountPath: /docker-entrypoint-initdb.d
           ports:
             - name: mysql
               containerPort: 3306
