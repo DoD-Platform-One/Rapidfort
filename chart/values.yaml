@@ -27,7 +27,7 @@ aggregator:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/aggregator-exe"
-    tag: "1.1.8-rfhardened"
+    tag: "1.1.9-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -42,7 +42,7 @@ backend:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/backend-exe"
-    tag: "1.1.8-rfhardened"
+    tag: "1.1.9-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -62,13 +62,13 @@ frontrow:
   authUrl: ""
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow"
-    tag: "1.1.8-rfhardened"
+    tag: "1.1.9-rfhardened"
 
 iso-master:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/iso-master-exe"
-    tag: "1.1.8-rfhardened"
+    tag: "1.1.9-rfhardened"
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
@@ -157,7 +157,7 @@ rf-scan:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rf-scan-exe"
-    tag: "1.1.8-rfhardened"
+    tag: "1.1.9-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -173,7 +173,7 @@ rfapi:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi-exe"
-    tag: "1.1.8-rfhardened"
+    tag: "1.1.9-rfhardened"
   initContainers:
     init:
       image:
@@ -188,7 +188,7 @@ rfpubsub:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfpubsub-exe"
-    tag: "1.1.8-rfhardened"
+    tag: "1.1.9-rfhardened"
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
@@ -199,7 +199,7 @@ runner:
     name: rf-secret
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner"
-    tag: "1.1.8-rfhardened"
+    tag: "1.1.9-rfhardened"
   initContainers:
     init:
       image:
