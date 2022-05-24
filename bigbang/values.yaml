@@ -63,3 +63,6 @@ kiali:
 
 twistlock:
   enabled: false
+
+promtail:
+  enabled: false
