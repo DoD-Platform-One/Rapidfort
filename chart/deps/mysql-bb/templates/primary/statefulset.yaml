@@ -240,7 +240,7 @@ spec:
             {{- end }}
             {{- if or .Values.primary.configuration .Values.primary.existingConfigmap }}
             - name: config
-              mountPath: /opt/bitnami/mysql/conf/my.cnf
+              mountPath: /etc/my.cnf
               subPath: my.cnf
             {{- end }}
             {{- if and .Values.auth.usePasswordFiles (not .Values.auth.customPasswordFiles) }}

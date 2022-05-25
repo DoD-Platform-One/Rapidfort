@@ -1,6 +1,6 @@
 # rapidfort
 
-![Version: 1.1.9-bb.8](https://img.shields.io/badge/Version-1.1.9--bb.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.9](https://img.shields.io/badge/AppVersion-1.1.9-informational?style=flat-square)
+![Version: 1.1.9-bb.9](https://img.shields.io/badge/Version-1.1.9--bb.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.9](https://img.shields.io/badge/AppVersion-1.1.9-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -87,6 +87,7 @@ helm install rapidfort chart/
 | mysql.auth.password | string | `"mysql"` |  |
 | mysql.auth.existingSecret | string | `""` |  |
 | mysql.primary.args[0] | string | `"--default-authentication-plugin=mysql_native_password"` |  |
+| mysql.primary.configuration | string | `"[mysqld]\ndatadir=/bitnami/mysql/data\nsocket=/var/lib/mysql/mysql.sock\npid-file=/var/run/mysqld/mysqld.pid\ntls_version=TLSv1.2"` | Configuration overrides for default mysql configuration |
 | redis.enabled | bool | `true` |  |
 | redis.image.registry | string | `"registry1.dso.mil"` |  |
 | redis.image.repository | string | `"ironbank/bitnami/redis"` |  |

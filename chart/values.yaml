@@ -140,6 +140,14 @@ mysql:
     ##
     args: ["--default-authentication-plugin=mysql_native_password"]
 
+    # -- Configuration overrides for default mysql configuration
+    configuration: |-
+      [mysqld]
+      datadir=/bitnami/mysql/data
+      socket=/var/lib/mysql/mysql.sock
+      pid-file=/var/run/mysqld/mysqld.pid
+      tls_version=TLSv1.2
+
 redis:
   enabled: true
   image:
