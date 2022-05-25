@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.9-bb.9]
+
+- MySQL-BB chart now persists data properly and uses suggested IB default config values
+
 ## [1.1.9-bb.8]
 
 - Updated Rapidfort to 1.1.9
