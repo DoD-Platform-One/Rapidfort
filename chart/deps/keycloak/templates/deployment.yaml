@@ -27,10 +27,11 @@ spec:
       serviceAccountName: {{ include "keycloak.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      volumes:
-        - name: rapidfort-theme
-          hostPath:
-            path: /opt/rapidfort/data/keycloak-theme
+      # Unused volume
+      # volumes:
+      #   - name: rapidfort-theme
+      #     hostPath:
+      #       path: /opt/rapidfort/data/keycloak-theme
       initContainers:
       {{- if .Values.initContainers.init_mysql.enabled }}
       - name: init-mysql
