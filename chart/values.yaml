@@ -17,11 +17,14 @@ global:
 # if the backend service name is changed, update it here
 runner_rf_app_host: ""
 
+sharedPvcs:
+  image-db-shared:
+    storageSize: 10Gi
+  imgs-work-dir-shared:
+    storageSize: 10Gi
+
 sc:
   enabled: false
-
-ingress:
-  enabled: true
 
 aggregator:
   enabled: true
@@ -37,6 +40,13 @@ aggregator:
   - name: private-registry
   env:
     redis_host: redis-master
+  PVCs:
+    aggregatorRaidVolume:
+      storageSize: 3Gi
+  volumes:
+  - name: raid-volume
+    persistentVolumeClaim:
+      claimName: aggregator-raid-volume
 
 backend:
   enabled: true
@@ -56,6 +66,25 @@ backend:
   - name: private-registry
   env:
     redis_host: redis-master
+  ingress:
+    enabled: false
+  PVCs:
+    backendImgsWorkDir:
+      storageSize: 10Gi
+  volumes:
+  - name: imgs-work-dir
+    persistentVolumeClaim:
+      claimName: imgs-work-dir-shared
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: 'app.kubernetes.io/name'
+            operator: In
+            values:
+            - iso-master
+        topologyKey: "kubernetes.io/hostname"
 
 frontrow:
   enabled: true
@@ -63,6 +92,8 @@ frontrow:
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow"
     tag: "1.1.9-rfhardened"
+  ingress:
+    enabled: false
 
 iso-master:
   enabled: true
@@ -72,6 +103,23 @@ iso-master:
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
+  ingress:
+    enabled: false
+  PVCs:
+    iso-masterImgsWorkDir:
+      storageSize: 10Gi
+    iso-masterImageDb:
+      storageSize: 10Gi
+  volumes:
+  - name: imgs-work-dir
+    persistentVolumeClaim:
+      claimName: imgs-work-dir-shared
+  - name: image-db
+    persistentVolumeClaim:
+      claimName: image-db-shared
+  - name: dockersock
+    hostPath:
+      path: /var/run/docker.sock
 
 keycloak:
   enabled: true
@@ -85,6 +133,8 @@ keycloak:
         tag: "8.0.28"
   imagePullSecrets:
   - name: private-registry
+  ingress:
+    enabled: false
 
 mysql:
   # -- Set 'enabled' to true if you want to deploy a local (in-cluster) mysql instance
@@ -176,6 +226,35 @@ rf-scan:
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
+  ingress:
+    enabled: false
+  PVCs:
+    rf-scanImgsWorkDir:
+      storageSize: 10Gi
+    rf-scanImageDb:
+      storageSize: 10Gi
+  volumes:
+  - name: imgs-work-dir
+    persistentVolumeClaim:
+      claimName: imgs-work-dir-shared
+  - name: image-db
+    persistentVolumeClaim:
+      claimName: image-db-shared
+  volumeMounts:
+  - name: imgs-work-dir
+    mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
+  - name: image-db
+    mountPath: "/opt/rapidfort/iso-master/app/image_db"
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: 'app.kubernetes.io/name'
+            operator: In
+            values:
+            - iso-master
+        topologyKey: "kubernetes.io/hostname"
 
 rfapi:
   enabled: true
@@ -191,6 +270,11 @@ rfapi:
   - name: private-registry
   env:
     redis_host: redis-master
+  ingress:
+    websocket:
+      enabled: false
+    http:
+      enabled: false
 
 rfpubsub:
   enabled: true
@@ -200,6 +284,8 @@ rfpubsub:
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
+  ingress:
+    enabled: false
 
 runner:
   secret:
@@ -218,6 +304,8 @@ runner:
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
+  ingress:
+    enabled: false
 
 logger:
   enabled: false

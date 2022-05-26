@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.9-bb.10]
+
+- PVC-ified RF microservices
+  - Each chart gets its own pvc per volume needed, no sharing of volumes as of now
+- Removed docker.sock from rf-scan
+- Edited keycloak deployment to remove unused volume
+
 ## [1.1.9-bb.9]
 
 - MySQL-BB chart now persists data properly and uses suggested IB default config values
