@@ -1,6 +1,6 @@
 # rapidfort
 
-![Version: 1.1.9-bb.10](https://img.shields.io/badge/Version-1.1.9--bb.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.9](https://img.shields.io/badge/AppVersion-1.1.9-informational?style=flat-square)
+![Version: 1.1.9-bb.11](https://img.shields.io/badge/Version-1.1.9--bb.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.9](https://img.shields.io/badge/AppVersion-1.1.9-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -39,6 +39,8 @@ helm install rapidfort chart/
 | secret.rf_app_host | string | `""` | This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service |
 | global.rf_app_host | string | `""` | This field is used to update the host name in the ingress. |
 | runner_rf_app_host | string | `""` | When internal runner traffic is enabled runner defaults to `backend` for it's url if the backend service name is changed, update it here |
+| sharedPvcs.image-db-shared.storageSize | string | `"10Gi"` |  |
+| sharedPvcs.imgs-work-dir-shared.storageSize | string | `"10Gi"` |  |
 | sc.enabled | bool | `false` |  |
 | aggregator.enabled | bool | `true` |  |
 | aggregator.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/aggregator-exe"` |  |
@@ -62,7 +64,11 @@ helm install rapidfort chart/
 | backend.ingress.enabled | bool | `false` |  |
 | backend.PVCs.backendImgsWorkDir.storageSize | string | `"10Gi"` |  |
 | backend.volumes[0].name | string | `"imgs-work-dir"` |  |
-| backend.volumes[0].persistentVolumeClaim.claimName | string | `"backend-imgs-work-dir"` |  |
+| backend.volumes[0].persistentVolumeClaim.claimName | string | `"imgs-work-dir-shared"` |  |
+| backend.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].key | string | `"app.kubernetes.io/name"` |  |
+| backend.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].operator | string | `"In"` |  |
+| backend.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0] | string | `"iso-master"` |  |
+| backend.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey | string | `"kubernetes.io/hostname"` |  |
 | frontrow.enabled | bool | `true` |  |
 | frontrow.authUrl | string | `""` |  |
 | frontrow.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow"` |  |
@@ -77,14 +83,14 @@ helm install rapidfort chart/
 | iso-master.PVCs.iso-masterImgsWorkDir.storageSize | string | `"10Gi"` |  |
 | iso-master.PVCs.iso-masterImageDb.storageSize | string | `"10Gi"` |  |
 | iso-master.volumes[0].name | string | `"imgs-work-dir"` |  |
-| iso-master.volumes[0].persistentVolumeClaim.claimName | string | `"iso-master-imgs-work-dir"` |  |
+| iso-master.volumes[0].persistentVolumeClaim.claimName | string | `"imgs-work-dir-shared"` |  |
 | iso-master.volumes[1].name | string | `"image-db"` |  |
-| iso-master.volumes[1].persistentVolumeClaim.claimName | string | `"iso-master-image-db"` |  |
+| iso-master.volumes[1].persistentVolumeClaim.claimName | string | `"image-db-shared"` |  |
 | iso-master.volumes[2].name | string | `"dockersock"` |  |
 | iso-master.volumes[2].hostPath.path | string | `"/var/run/docker.sock"` |  |
 | keycloak.enabled | bool | `true` |  |
-| keycloak.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/keycloak"` |  |
-| keycloak.image.tag | string | `"16.1.1"` |  |
+| keycloak.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/keycloak"` |  |
+| keycloak.image.tag | string | `"18.0.0-legacy"` |  |
 | keycloak.initContainers.init_mysql.image.repository | string | `"registry1.dso.mil/ironbank/opensource/mysql/mysql8"` |  |
 | keycloak.initContainers.init_mysql.image.tag | string | `"8.0.28"` |  |
 | keycloak.imagePullSecrets[0].name | string | `"private-registry"` |  |
@@ -125,13 +131,17 @@ helm install rapidfort chart/
 | rf-scan.PVCs.rf-scanImgsWorkDir.storageSize | string | `"10Gi"` |  |
 | rf-scan.PVCs.rf-scanImageDb.storageSize | string | `"10Gi"` |  |
 | rf-scan.volumes[0].name | string | `"imgs-work-dir"` |  |
-| rf-scan.volumes[0].persistentVolumeClaim.claimName | string | `"rf-scan-imgs-work-dir"` |  |
+| rf-scan.volumes[0].persistentVolumeClaim.claimName | string | `"imgs-work-dir-shared"` |  |
 | rf-scan.volumes[1].name | string | `"image-db"` |  |
-| rf-scan.volumes[1].persistentVolumeClaim.claimName | string | `"rf-scan-image-db"` |  |
+| rf-scan.volumes[1].persistentVolumeClaim.claimName | string | `"image-db-shared"` |  |
 | rf-scan.volumeMounts[0].name | string | `"imgs-work-dir"` |  |
 | rf-scan.volumeMounts[0].mountPath | string | `"/opt/rapidfort/iso-master/app/imgs_work_dir"` |  |
 | rf-scan.volumeMounts[1].name | string | `"image-db"` |  |
 | rf-scan.volumeMounts[1].mountPath | string | `"/opt/rapidfort/iso-master/app/image_db"` |  |
+| rf-scan.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].key | string | `"app.kubernetes.io/name"` |  |
+| rf-scan.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].operator | string | `"In"` |  |
+| rf-scan.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0] | string | `"iso-master"` |  |
+| rf-scan.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey | string | `"kubernetes.io/hostname"` |  |
 | rfapi.enabled | bool | `true` |  |
 | rfapi.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi-exe"` |  |
 | rfapi.image.tag | string | `"1.1.9-rfhardened"` |  |
@@ -156,8 +166,6 @@ helm install rapidfort chart/
 | runner.env.redis_host | string | `"redis-master"` |  |
 | runner.env.redis_host_ha | string | `"redis-master"` |  |
 | runner.ingress.enabled | bool | `false` |  |
-| runner.volumes | list | `[]` |  |
-| runner.volumeMounts | list | `[]` |  |
 | logger.enabled | bool | `false` |  |
 | domain | string | `"bigbang.dev"` | Big Bang Values |
 | istio.enabled | bool | `false` |  |

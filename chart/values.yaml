@@ -124,8 +124,8 @@ iso-master:
 keycloak:
   enabled: true
   image:
-    repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/keycloak"
-    tag: 16.1.1
+    repository: "registry1.dso.mil/ironbank/rapidfort/keycloak"
+    tag: 18.0.0-legacy
   initContainers:
     init_mysql:
       image:
