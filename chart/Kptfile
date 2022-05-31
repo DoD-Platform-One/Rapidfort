@@ -5,7 +5,7 @@ metadata:
 upstream:
   type: git
   git:
-    commit: 1b8f9ad8c6793e222af1b1980724880696ae8321
+    commit: 39ea3738c2d4362509ae9c6c3e965328ce5380b2
     repo: https://github.com/rapidfort/rapidfort
     directory: /chart
     ref: main
