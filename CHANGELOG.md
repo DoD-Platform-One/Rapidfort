@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.10-bb.0]
+
+- Update to RF 1.1.10
+
 ## [1.1.9-bb.11]
 - Changed Keycloak dockerhub image (16.1.1) to IB image (18.0.0-legacy)
 
