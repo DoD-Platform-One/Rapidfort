@@ -45,6 +45,9 @@ ingress:
   className: ""
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"    
+    # nginx.ingress.kubernetes.io/limit-rps: 100
   hosts:
     - host:
       paths:
