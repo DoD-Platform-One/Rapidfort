@@ -288,6 +288,7 @@ rfpubsub:
     enabled: false
 
 runner:
+  enabled: true
   secret:
     # -- Change to rf-runner-secret to internalize runner traffic
     name: rf-secret
