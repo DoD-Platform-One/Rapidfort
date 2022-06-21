@@ -16,7 +16,7 @@
       {
         "fileMatch": ["^chart/deps/redis-bb/Chart\\.yaml$"],
         "matchStrings": [
-          "version:\\s+(?<currentValue>.+)"
+          "\\nversion:\\s+(?<currentValue>.+)"
         ],
         "depNameTemplate": "https://repo1.dso.mil/platform-one/big-bang/apps/application-utilities/redis.git",
         "datasourceTemplate": "git-tags"

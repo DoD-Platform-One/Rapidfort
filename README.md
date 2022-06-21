@@ -1,6 +1,6 @@
 # rapidfort
 
-![Version: 1.1.10-bb.0](https://img.shields.io/badge/Version-1.1.10--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.10](https://img.shields.io/badge/AppVersion-1.1.10-informational?style=flat-square)
+![Version: 1.1.10-bb.1](https://img.shields.io/badge/Version-1.1.10--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.10](https://img.shields.io/badge/AppVersion-1.1.10-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -92,14 +92,14 @@ helm install rapidfort chart/
 | keycloak.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/keycloak"` |  |
 | keycloak.image.tag | string | `"18.0.0-legacy"` |  |
 | keycloak.initContainers.init_mysql.image.repository | string | `"registry1.dso.mil/ironbank/opensource/mysql/mysql8"` |  |
-| keycloak.initContainers.init_mysql.image.tag | string | `"8.0.28"` |  |
+| keycloak.initContainers.init_mysql.image.tag | string | `"8.0.29"` |  |
 | keycloak.imagePullSecrets[0].name | string | `"private-registry"` |  |
 | keycloak.ingress.enabled | bool | `false` |  |
 | mysql.enabled | bool | `true` | Set 'enabled' to true if you want to deploy a local (in-cluster) mysql instance |
 | mysql.seedDatabase | bool | `true` | Seeding database required on intial run. Set to false if conducting a new install with existing data. Ensure this is also set in the keycloak db.addr value |
 | mysql.image.registry | string | `"registry1.dso.mil/ironbank"` |  |
 | mysql.image.repository | string | `"opensource/mysql/mysql8"` |  |
-| mysql.image.tag | string | `"8.0.28"` |  |
+| mysql.image.tag | string | `"8.0.29"` |  |
 | mysql.image.pullSecrets[0] | string | `"private-registry"` |  |
 | mysql.initdbScriptsConfigMap | string | `"init-db-configuration"` |  |
 | mysql.fullnameOverride | string | `"mysql"` |  |
@@ -114,7 +114,7 @@ helm install rapidfort chart/
 | redis.enabled | bool | `true` |  |
 | redis.image.registry | string | `"registry1.dso.mil"` |  |
 | redis.image.repository | string | `"ironbank/bitnami/redis"` |  |
-| redis.image.tag | string | `"6.2.5"` |  |
+| redis.image.tag | string | `"6.2.7"` |  |
 | redis.istio.enabled | bool | `true` |  |
 | redis.architecture | string | `"standalone"` |  |
 | redis.fullnameOverride | string | `"redis"` |  |
@@ -146,7 +146,7 @@ helm install rapidfort chart/
 | rfapi.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi-exe"` |  |
 | rfapi.image.tag | string | `"1.1.10-rfhardened"` |  |
 | rfapi.initContainers.init.image.repository | string | `"registry1.dso.mil/ironbank/bitnami/redis"` |  |
-| rfapi.initContainers.init.image.tag | string | `"6.2.5"` |  |
+| rfapi.initContainers.init.image.tag | string | `"6.2.7"` |  |
 | rfapi.imagePullSecrets[0].name | string | `"private-registry"` |  |
 | rfapi.env.redis_host | string | `"redis-master"` |  |
 | rfapi.ingress.websocket.enabled | bool | `false` |  |
@@ -157,6 +157,7 @@ helm install rapidfort chart/
 | rfpubsub.env.redis_host | string | `"redis-master"` |  |
 | rfpubsub.env.redis_host_ha | string | `"redis-master"` |  |
 | rfpubsub.ingress.enabled | bool | `false` |  |
+| runner.enabled | bool | `true` |  |
 | runner.secret.name | string | `"rf-secret"` | Change to rf-runner-secret to internalize runner traffic |
 | runner.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner"` |  |
 | runner.image.tag | string | `"1.1.10-rfhardened"` |  |

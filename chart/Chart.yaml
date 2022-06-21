@@ -3,7 +3,7 @@ apiVersion: v2
 name: rapidfort
 description: Automated Container Hardening
 type: application
-version: 1.1.10-bb.0
+version: 1.1.10-bb.1
 appVersion: 1.1.10
 dependencies:
 - repository: "file://deps/aggregator/"
@@ -37,12 +37,12 @@ dependencies:
   condition: keycloak.enabled
 
 - repository: "file://deps/mysql-bb/"
-  version: 8.9.0
+  version: 9.1.7-bb.0
   name: mysql
   condition: mysql.enabled
 
 - repository: "file://deps/redis-bb/"
-  version: 16.4.0-bb.0
+  version: 16.9.2-bb.0
   name: redis
   condition: redis.enabled
 

@@ -1,18 +1,11 @@
-apiVersion: kpt.dev/v1
+apiVersion: kpt.dev/v1alpha1
 kind: Kptfile
 metadata:
-  name: mysql
+  name: chart
 upstream:
   type: git
   git:
-    repo: https://github.com/bitnami/charts
-    directory: /bitnami/mysql
-    ref: b0f80b8d141c1cb68f706dc38d3caaa74593c6aa
-  updateStrategy: resource-merge
-upstreamLock:
-  type: git
-  git:
-    repo: https://github.com/bitnami/charts
-    directory: /bitnami/mysql
-    ref: b0f80b8d141c1cb68f706dc38d3caaa74593c6aa
-    commit: b0f80b8d141c1cb68f706dc38d3caaa74593c6aa
+    commit: 31a36643768e4d20cd0489e0b9c8f56efeb66fcc
+    repo: https://repo1.dso.mil/platform-one/big-bang/apps/application-utilities/mysql
+    directory: /chart
+    ref: 9.1.7-bb.0
