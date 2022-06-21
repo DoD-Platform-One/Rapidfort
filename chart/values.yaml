@@ -130,7 +130,7 @@ keycloak:
     init_mysql:
       image:
         repository: "registry1.dso.mil/ironbank/opensource/mysql/mysql8"
-        tag: "8.0.28"
+        tag: "8.0.29"
   imagePullSecrets:
   - name: private-registry
   ingress:
@@ -152,18 +152,10 @@ mysql:
   # line below:
   # existingSecret: ""
   # existingSecretPasswordKey: "mysql-password"
-  image:
-    registry: registry1.dso.mil/ironbank
-    repository: opensource/mysql/mysql8
-    tag: 8.0.28
 
-    pullSecrets:
-      - private-registry
   initdbScriptsConfigMap: "init-db-configuration"
   fullnameOverride: "mysql"
-  ## @param architecture MySQL architecture (`standalone` or `replication`)
-  ##
-  architecture: standalone
+
   auth:
     ## @param auth.rootPassword Password for the `root` user. Ignored if existing secret is provided
     ## ref: https://github.com/bitnami/bitnami-docker-mysql#setting-the-root-password-on-first-run
@@ -184,26 +176,13 @@ mysql:
     ## NOTE: When it's set the auth.rootPassword, auth.password, auth.replicationPassword are ignored.
     ##
     existingSecret: ""
-  primary:
-    ## @param primary.args [array] Override default container args on MySQL Primary container(s) (useful when using custom images)
-    ## Modification: RF needs specific auth type(?)
-    ##
-    args: ["--default-authentication-plugin=mysql_native_password"]
-
-    # -- Configuration overrides for default mysql configuration
-    configuration: |-
-      [mysqld]
-      datadir=/bitnami/mysql/data
-      socket=/var/lib/mysql/mysql.sock
-      pid-file=/var/run/mysqld/mysqld.pid
-      tls_version=TLSv1.2
 
 redis:
   enabled: true
   image:
     registry: registry1.dso.mil
     repository: ironbank/bitnami/redis
-    tag: 6.2.5
+    tag: 6.2.7
   istio:
     enabled: true
   architecture: standalone
@@ -265,7 +244,7 @@ rfapi:
     init:
       image:
         repository: "registry1.dso.mil/ironbank/bitnami/redis"
-        tag: "6.2.5"
+        tag: "6.2.7"
   imagePullSecrets:
   - name: private-registry
   env:

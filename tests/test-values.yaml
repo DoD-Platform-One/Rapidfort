@@ -12,4 +12,6 @@ runner:
     name: rf-runner-secret
 
 bbtests:
-  enabled: false 
+  enabled: false
+
+bb-version: master

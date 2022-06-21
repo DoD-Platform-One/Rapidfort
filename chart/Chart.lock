@@ -19,10 +19,10 @@ dependencies:
   version: 1.1.0
 - name: mysql
   repository: file://deps/mysql-bb/
-  version: 8.9.0
+  version: 9.1.7-bb.0
 - name: redis
   repository: file://deps/redis-bb/
-  version: 16.4.0-bb.0
+  version: 16.9.2-bb.0
 - name: rf-scan
   repository: file://deps/rf-scan/
   version: 1.1.0
@@ -38,5 +38,5 @@ dependencies:
 - name: gluon
   repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
   version: 0.2.9
-digest: sha256:60e266522206db4d939ecb8538cabffb28443e3af783ac411a14b068e8c5cad5
-generated: "2022-05-19T12:51:05.228837493-05:00"
+digest: sha256:d17911721438778e63db84ab39c5e44742e17f2e38cbc6c955538da59bae6dcd
+generated: "2022-06-17T16:08:32.869265543-05:00"

@@ -2,6 +2,13 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.10-bb.1]
+
+- update mysql chart to 9.1.7
+- update all  mysql images to 8.0.29
+- change redis chart to bb redis upstream
+- update all redis6 images to 6.2.7
+
 ## [1.1.10-bb.0]
 
 - Update to RF 1.1.10
