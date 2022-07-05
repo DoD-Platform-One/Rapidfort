@@ -59,6 +59,10 @@ spec:
               value: "{{ .Values.service.container_port }}"
             - name: AUTH_SERVER_ROOT_URL
               value: "http://{{ .Values.keycloak.serviceName }}"
+            - name: COMMUNITY_USER_ID
+              value: {{ default "" .Values.env.communityUserId | quote}}
+            - name: COMMUNITY_ORG_ID
+              value: {{ default "" .Values.env.communityOrgId | quote }}
             #NOTE: not using secret as secret goes for all the containers.
             - name: RF_DEBUG
               value:  "{{ .Values.env.rf_debug }}"

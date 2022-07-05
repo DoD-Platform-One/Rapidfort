@@ -1,0 +1,12 @@
+{{ if or (.Values.aggregator.enabled) (.Values.backend.enabled) (index .Values "iso-master" "enabled") (index .Values "rf-scan" "enabled") }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-bucket
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ index .Values "sharedPvcs" "local-bucket" "storageSize" }}
+{{ end }}

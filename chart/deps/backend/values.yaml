@@ -24,8 +24,9 @@ env:
   redis_host: redis
   backend_service_name: "backend"
   debug: "off"
-  rf_debug: false 
-
+  rf_debug: "false"
+  communityUserId: "" #only applies for SAAS Prod
+  communityOrgId: "" #only applies for SAAS Prod
 global:
   rf_app_host: ""
 
@@ -110,6 +111,7 @@ secret:
     - DEPLOY_MODE    
     - RF_APP_ADMIN
     - RF_APP_ADMIN_PASSWD
+    - RF_VERBOSE
     
 autoscaling:
   enabled: false
@@ -125,9 +127,14 @@ volumes:
   - name: imgs-work-dir
     hostPath:
       path: /opt/rapidfort/data/shared/imgs_work_dir
+  - name: local-bucket
+    hostPath:
+      path: /opt/rapidfort/local-bucket/
 volumeMounts:
   - name: imgs-work-dir
     mountPath: "/opt/rapidfort/backend/app/imgs_work_dir"
+  - name: local-bucket
+    mountPath: "/opt/rapidfort/local-bucket"
 
 livenessProbe:
   periodSeconds: 30

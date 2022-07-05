@@ -36,7 +36,7 @@ spec:
             name: mysql-initdb-config
       initContainers:
         - name: volume-permissions
-          image: public.ecr.aws/w9i9p8n5/init
+          image: public.ecr.aws/w9i9p8n5/init:1.1.10
           command:
           - /bin/bash
           - -c
