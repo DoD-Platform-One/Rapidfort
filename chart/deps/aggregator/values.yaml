@@ -83,6 +83,7 @@ secret:
     - RF_ROLE_ARN
     - RF_APP_HOST
     - DEPLOY_MODE
+    - RF_VERBOSE    
 
 container:
   extra_options: {}
@@ -91,6 +92,11 @@ volumes:
   - name: raid-volume
     hostPath:
       path: /opt/rapidfort/data/shared/aggregator/
+  - name: local-bucket
+    hostPath:
+      path: /opt/rapidfort/local-bucket/
 volumeMounts:
   - name: raid-volume
     mountPath: "/mnt/raid"
+  - name: local-bucket
+    mountPath: "/opt/rapidfort/local-bucket"

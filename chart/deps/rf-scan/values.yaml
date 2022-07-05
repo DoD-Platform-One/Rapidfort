@@ -115,6 +115,7 @@ secret:
     - AWS_SECRET_ACCESS_KEY
     - RF_ROLE_ARN
     - DEPLOY_MODE
+    - RF_VERBOSE
 
 volumes:
   - name: imgs-work-dir
@@ -126,6 +127,9 @@ volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
+  - name: local-bucket
+    hostPath:
+      path: /opt/rapidfort/local-bucket/
 
 volumeMounts:
   - name: imgs-work-dir
@@ -134,6 +138,8 @@ volumeMounts:
     mountPath: "/opt/rapidfort/iso-master/app/image_db"
   - name: dockersock
     mountPath: "/var/run/docker.sock"
+  - name: local-bucket
+    mountPath: "/opt/rapidfort/local-bucket"
 
 container:
   extra_options: {}

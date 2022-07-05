@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.11-bb.0]
+
+- update RF to 1.1.11
+
 ## [1.1.10-bb.1]
 
 - update mysql chart to 9.1.7

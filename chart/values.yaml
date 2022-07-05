@@ -22,6 +22,8 @@ sharedPvcs:
     storageSize: 10Gi
   imgs-work-dir-shared:
     storageSize: 10Gi
+  local-bucket:
+    storageSize: 10Gi
 
 sc:
   enabled: false
@@ -30,7 +32,7 @@ aggregator:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/aggregator-exe"
-    tag: "1.1.10-rfhardened"
+    tag: "1.1.11-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -47,12 +49,25 @@ aggregator:
   - name: raid-volume
     persistentVolumeClaim:
       claimName: aggregator-raid-volume
+  - name: local-bucket
+    persistentVolumeClaim:
+      claimName: local-bucket
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: 'app.kubernetes.io/name'
+            operator: In
+            values:
+            - iso-master
+        topologyKey: "kubernetes.io/hostname"
 
 backend:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/backend-exe"
-    tag: "1.1.10-rfhardened"
+    tag: "1.1.11-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -75,6 +90,9 @@ backend:
   - name: imgs-work-dir
     persistentVolumeClaim:
       claimName: imgs-work-dir-shared
+  - name: local-bucket
+    persistentVolumeClaim:
+      claimName: local-bucket
   affinity:
     podAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -91,7 +109,9 @@ frontrow:
   authUrl: ""
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow"
-    tag: "1.1.10-rfhardened"
+    tag: "1.1.11-rfhardened"
+  imagePullSecrets:
+  - name: private-registry
   ingress:
     enabled: false
 
@@ -99,7 +119,9 @@ iso-master:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/iso-master-exe"
-    tag: "1.1.10-rfhardened"
+    tag: "1.1.11-rfhardened"
+  imagePullSecrets:
+  - name: private-registry
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
@@ -120,6 +142,9 @@ iso-master:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
+  - name: local-bucket
+    persistentVolumeClaim:
+      claimName: local-bucket
 
 keycloak:
   enabled: true
@@ -189,12 +214,14 @@ redis:
   fullnameOverride: "redis"
   auth:
     enabled: false
+  # -- When enabled adds an extra service for redis to workaround an rfapi bug
+  svcWorkaround: true
 
 rf-scan:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rf-scan-exe"
-    tag: "1.1.10-rfhardened"
+    tag: "1.1.11-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -219,11 +246,16 @@ rf-scan:
   - name: image-db
     persistentVolumeClaim:
       claimName: image-db-shared
+  - name: local-bucket
+    persistentVolumeClaim:
+      claimName: local-bucket
   volumeMounts:
   - name: imgs-work-dir
     mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
   - name: image-db
     mountPath: "/opt/rapidfort/iso-master/app/image_db"
+  - name: local-bucket
+    mountPath: "/opt/rapidfort/local-bucket"
   affinity:
     podAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -239,7 +271,7 @@ rfapi:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi-exe"
-    tag: "1.1.10-rfhardened"
+    tag: "1.1.11-rfhardened"
   initContainers:
     init:
       image:
@@ -259,7 +291,9 @@ rfpubsub:
   enabled: true
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfpubsub-exe"
-    tag: "1.1.10-rfhardened"
+    tag: "1.1.11-rfhardened"
+  imagePullSecrets:
+  - name: private-registry
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
@@ -273,7 +307,7 @@ runner:
     name: rf-secret
   image:
     repository: "registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner"
-    tag: "1.1.10-rfhardened"
+    tag: "1.1.11-rfhardened"
   initContainers:
     init:
       image:
