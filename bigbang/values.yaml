@@ -50,6 +50,8 @@ gatekeeper:
           allowedHostPaths:
           - pathPrefix: /var/run/docker.sock
             readOnly: false
+          - pathPrefix: /tmp
+            readOnly: false
       volumeTypes:
         parameters:
           excludedResources:
