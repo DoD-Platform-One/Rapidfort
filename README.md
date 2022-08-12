@@ -1,6 +1,6 @@
 # rapidfort
 
-![Version: 1.1.16-bb.0](https://img.shields.io/badge/Version-1.1.16--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.16](https://img.shields.io/badge/AppVersion-1.1.16-informational?style=flat-square)
+![Version: 1.1.19-bb.0](https://img.shields.io/badge/Version-1.1.19--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.19](https://img.shields.io/badge/AppVersion-1.1.19-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -45,7 +45,7 @@ helm install rapidfort chart/
 | sc.enabled | bool | `false` |  |
 | aggregator.enabled | bool | `true` |  |
 | aggregator.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/aggregator-exe"` |  |
-| aggregator.image.tag | string | `"1.1.16-rfhardened"` |  |
+| aggregator.image.tag | string | `"1.1.19-rfhardened"` |  |
 | aggregator.initContainers.volumePermissions.image.repository | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"` |  |
 | aggregator.initContainers.volumePermissions.image.tag | string | `"8.6"` |  |
 | aggregator.imagePullSecrets[0].name | string | `"private-registry"` |  |
@@ -61,7 +61,7 @@ helm install rapidfort chart/
 | aggregator.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey | string | `"kubernetes.io/hostname"` |  |
 | backend.enabled | bool | `true` |  |
 | backend.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/backend-exe"` |  |
-| backend.image.tag | string | `"1.1.16-rfhardened"` |  |
+| backend.image.tag | string | `"1.1.19-rfhardened"` |  |
 | backend.initContainers.volumePermissions.image.repository | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"` |  |
 | backend.initContainers.volumePermissions.image.tag | string | `"8.6"` |  |
 | backend.initContainers.init.image.repository | string | `"registry1.dso.mil/ironbank/big-bang/base"` |  |
@@ -81,12 +81,12 @@ helm install rapidfort chart/
 | frontrow.enabled | bool | `true` |  |
 | frontrow.authUrl | string | `""` |  |
 | frontrow.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/frontrow"` |  |
-| frontrow.image.tag | string | `"1.1.16-rfhardened"` |  |
+| frontrow.image.tag | string | `"1.1.19-rfhardened"` |  |
 | frontrow.imagePullSecrets[0].name | string | `"private-registry"` |  |
 | frontrow.ingress.enabled | bool | `false` |  |
 | iso-master.enabled | bool | `true` |  |
 | iso-master.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/iso-master-exe"` |  |
-| iso-master.image.tag | string | `"1.1.16-rfhardened"` |  |
+| iso-master.image.tag | string | `"1.1.19-rfhardened"` |  |
 | iso-master.imagePullSecrets[0].name | string | `"private-registry"` |  |
 | iso-master.env.redis_host | string | `"redis-master"` |  |
 | iso-master.env.redis_host_ha | string | `"redis-master"` |  |
@@ -128,7 +128,7 @@ helm install rapidfort chart/
 | redis.svcWorkaround | bool | `true` | When enabled adds an extra service for redis to workaround an rfapi bug |
 | rf-scan.enabled | bool | `true` |  |
 | rf-scan.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rf-scan-exe"` |  |
-| rf-scan.image.tag | string | `"1.1.16-rfhardened"` |  |
+| rf-scan.image.tag | string | `"1.1.19-rfhardened"` |  |
 | rf-scan.initContainers.volumePermissions.image.repository | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"` |  |
 | rf-scan.initContainers.volumePermissions.image.tag | string | `"8.6"` |  |
 | rf-scan.imagePullSecrets[0].name | string | `"private-registry"` |  |
@@ -155,7 +155,7 @@ helm install rapidfort chart/
 | rf-scan.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey | string | `"kubernetes.io/hostname"` |  |
 | rfapi.enabled | bool | `true` |  |
 | rfapi.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfapi-exe"` |  |
-| rfapi.image.tag | string | `"1.1.16-rfhardened"` |  |
+| rfapi.image.tag | string | `"1.1.19-rfhardened"` |  |
 | rfapi.initContainers.init.image.repository | string | `"registry1.dso.mil/ironbank/bitnami/redis"` |  |
 | rfapi.initContainers.init.image.tag | string | `"6.2.7"` |  |
 | rfapi.imagePullSecrets[0].name | string | `"private-registry"` |  |
@@ -164,7 +164,7 @@ helm install rapidfort chart/
 | rfapi.ingress.http.enabled | bool | `false` |  |
 | rfpubsub.enabled | bool | `true` |  |
 | rfpubsub.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/rfpubsub-exe"` |  |
-| rfpubsub.image.tag | string | `"1.1.16-rfhardened"` |  |
+| rfpubsub.image.tag | string | `"1.1.19-rfhardened"` |  |
 | rfpubsub.imagePullSecrets[0].name | string | `"private-registry"` |  |
 | rfpubsub.env.redis_host | string | `"redis-master"` |  |
 | rfpubsub.env.redis_host_ha | string | `"redis-master"` |  |
@@ -172,7 +172,7 @@ helm install rapidfort chart/
 | runner.enabled | bool | `true` |  |
 | runner.secret.name | string | `"rf-secret"` | Change to rf-runner-secret to internalize runner traffic |
 | runner.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner"` |  |
-| runner.image.tag | string | `"1.1.16-rfhardened"` |  |
+| runner.image.tag | string | `"1.1.19-rfhardened"` |  |
 | runner.initContainers.init.image.repository | string | `"registry1.dso.mil/ironbank/big-bang/base"` |  |
 | runner.initContainers.init.image.tag | string | `"1.17.0"` |  |
 | runner.imagePullSecrets[0].name | string | `"private-registry"` |  |

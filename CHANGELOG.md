@@ -2,6 +2,8 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.19-bb.0]
+- Updated to RF 1.1.19
 ## [1.1.16-bb.0]
 - Updated to RF 1.1.16
 - Added new hostPath mount to runner (/tmp)
