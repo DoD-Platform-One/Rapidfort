@@ -12,6 +12,7 @@ secret:
 global:
   # -- This field is used to update the host name in the ingress.
   rf_app_host: ""
+  allowed_rf_host: "api.rapidfort.com"
 
 # -- When internal runner traffic is enabled runner defaults to `backend` for it's url
 # if the backend service name is changed, update it here
@@ -307,7 +308,7 @@ runner:
     name: rf-secret
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/runner"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.20-rfhardened"
   initContainers:
     init:
       image:
