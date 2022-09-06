@@ -28,6 +28,7 @@ env:
   communityUserId: "" #only applies for SAAS Prod
   communityOrgId: "" #only applies for SAAS Prod
 global:
+  allowed_rf_host: api.rapidfort.com
   rf_app_host: ""
 
 imagePullSecrets: []
