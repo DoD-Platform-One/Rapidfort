@@ -1,0 +1,34 @@
+{{- if .Values.networkPolicies.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: community-service
+  namespace: {{ .Release.Namespace }}
+spec:
+    host: {{ .Values.global.allowed_rf_host }}
+    trafficPolicy:
+      tls:
+        mode: SIMPLE
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: mysql-mtls-rapidfort
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: mysql     # The name of *your* K8s Service
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: redis-mtls-rapidfort
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: redis     # The name of *your* K8s Service
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+{{- end }}
