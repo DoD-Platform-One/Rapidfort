@@ -76,7 +76,7 @@ backend:
     init:
       image:
         repository: "registry1.dso.mil/ironbank/big-bang/base"
-        tag: "1.17.0"
+        tag: "2.0.0"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -207,7 +207,7 @@ redis:
   image:
     registry: registry1.dso.mil
     repository: ironbank/bitnami/redis
-    tag: 6.2.7
+    tag: 7.0.4
   istio:
     enabled: true
   architecture: standalone
@@ -276,7 +276,7 @@ rfapi:
     init:
       image:
         repository: "registry1.dso.mil/ironbank/bitnami/redis"
-        tag: "6.2.7"
+        tag: "7.0.4"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -307,12 +307,12 @@ runner:
     name: rf-secret
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/runner"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.20-rfhardened"
   initContainers:
     init:
       image:
         repository: "registry1.dso.mil/ironbank/big-bang/base"
-        tag: "1.17.0"
+        tag: "2.0.0"
   imagePullSecrets:
   - name: private-registry
   env:
