@@ -45,7 +45,7 @@ aggregator:
     redis_host: redis-master
   PVCs:
     aggregatorRaidVolume:
-      storageSize: 3Gi
+      storageSize: 5Gi
   volumes:
   - name: raid-volume
     persistentVolumeClaim:
