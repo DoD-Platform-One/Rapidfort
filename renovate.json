@@ -5,6 +5,7 @@
     "dependencyDashboardTitle": "Renovate: Upgrade RapidFort Package Dependencies",
     "draftPR": "true",
     "labels": ["rapidfort","Big Bang Third-Party","Package Sustainment","kind::maintenance"],
+    "commitMessagePrefix": "SKIP UPDATE CHECK",
     "packageRules": [
       {
         "matchDatasources": ["docker"],
