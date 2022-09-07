@@ -86,6 +86,8 @@ spec:
               value: "{{ .Values.env.redis_port }}"
             - name: RF_REDIS_PWD
               value: "{{ .Values.env.redis_pwd }}"
+            - name: RF_INTERNAL
+              value: "1"              
           volumeMounts:
             {{ if .Values.volumeMounts }}
             {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
