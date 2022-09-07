@@ -67,5 +67,5 @@ dependencies:
   condition: runner.enabled
 
 - name: gluon
-  version: "0.2.9"
+  version: "0.3.0"
   repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
