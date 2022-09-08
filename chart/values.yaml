@@ -289,7 +289,7 @@ rfapi:
       enabled: false
 
 rfpubsub:
-  enabled: false
+  enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe"
     tag: "1.1.19-rfhardened"
