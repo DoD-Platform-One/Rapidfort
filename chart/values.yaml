@@ -30,7 +30,7 @@ sc:
   enabled: false
 
 aggregator:
-  enabled: false
+  enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/aggregator-exe"
     tag: "1.1.19-rfhardened"
@@ -65,7 +65,7 @@ aggregator:
         topologyKey: "kubernetes.io/hostname"
 
 backend:
-  enabled: false
+  enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
     tag: "1.1.19-rfhardened"
@@ -106,7 +106,7 @@ backend:
         topologyKey: "kubernetes.io/hostname"
 
 frontrow:
-  enabled: false
+  enabled: true
   authUrl: ""
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/frontrow"
@@ -117,7 +117,7 @@ frontrow:
     enabled: false
 
 iso-master:
-  enabled: false
+  enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/iso-master-exe"
     tag: "1.1.19-rfhardened"
@@ -148,7 +148,7 @@ iso-master:
       claimName: local-bucket
 
 keycloak:
-  enabled: false
+  enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/keycloak"
     tag: 18.0.0-legacy
@@ -164,7 +164,7 @@ keycloak:
 
 mysql:
   # -- Set 'enabled' to true if you want to deploy a local (in-cluster) mysql instance
-  enabled: false
+  enabled: true
   # To use an external mysql instance, set enabled to false and uncomment
   # the line below:
   # mysqlServer: ""
@@ -204,7 +204,7 @@ mysql:
     existingSecret: ""
 
 redis:
-  enabled: false
+  enabled: true
   image:
     registry: registry1.dso.mil
     repository: ironbank/bitnami/redis
@@ -219,7 +219,7 @@ redis:
   svcWorkaround: true
 
 rf-scan:
-  enabled: false
+  enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rf-scan-exe"
     tag: "1.1.19-rfhardened"
@@ -269,7 +269,7 @@ rf-scan:
         topologyKey: "kubernetes.io/hostname"
 
 rfapi:
-  enabled: false
+  enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfapi-exe"
     tag: "1.1.19-rfhardened"
@@ -302,7 +302,7 @@ rfpubsub:
     enabled: false
 
 runner:
-  enabled: false
+  enabled: true
   secret:
     # -- Change to rf-runner-secret to internalize runner traffic
     name: rf-secret
