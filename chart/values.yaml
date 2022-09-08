@@ -150,7 +150,7 @@ keycloak:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/keycloak"
-    tag: 18.0.0-legacy
+    tag: 19.0.1-legacy
   initContainers:
     init_mysql:
       image:
