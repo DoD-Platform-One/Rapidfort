@@ -328,7 +328,7 @@ logger:
 # -- Big Bang Values
 domain: bigbang.dev
 istio:
-  enabled: true
+  enabled: false
   mtls:
     # -- STRICT = Allow only mutual TLS traffic,
     # PERMISSIVE = Allow both plain text and mutual TLS traffic
@@ -336,14 +336,14 @@ istio:
     # Can be changed to STRICT after all initContainers have finished but will interfere with upgrades/pod deployments that have initContainers
     mode: PERMISSIVE
   rapidfort:
-    enabled: true
+    enabled: false
     gateways:
     - istio-system/public
     hosts:
     - rapidfort.{{ .Values.domain }}
 
 networkPolicies:
-  enabled: true
+  enabled: false
   ingressLabels: 
     app: istio-ingressgateway
     istio: ingressgateway
