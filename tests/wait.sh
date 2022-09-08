@@ -20,3 +20,7 @@ kubectl get VirtualService -n rapidfort || true
 
 kubectl describe pod -n rapidfort mysql-0
 set +x
+
+wait_project() {
+    echo "This is temp function....."
+}
