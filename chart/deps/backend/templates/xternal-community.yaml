@@ -1,3 +1,4 @@
+{{- .Values.community_service.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -37,4 +38,5 @@ spec:
               number: 443
         path: /api/v1/imgs_work_dir/7b2f45e2-03f9-45bf-b301-136e8b136338/.*
         pathType: ImplementationSpecific
+{{- end -}}
 {{- end -}}
