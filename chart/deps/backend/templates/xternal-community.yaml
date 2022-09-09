@@ -1,4 +1,4 @@
-{{- .Values.community_service.enabled -}}
+{{- if .Values.community_service.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
