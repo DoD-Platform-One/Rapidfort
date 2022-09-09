@@ -154,6 +154,7 @@ keycloak:
     tag: 18.0.0-legacy
   initContainers:
     init_mysql:
+      enabled: false # disable it when istio is not enabled.
       image:
         repository: "registry1.dso.mil/ironbank/opensource/mysql/mysql8"
         tag: "8.0.29"
