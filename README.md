@@ -1,6 +1,6 @@
 # rapidfort
 
-![Version: 1.1.20-bb.0](https://img.shields.io/badge/Version-1.1.20--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.20](https://img.shields.io/badge/AppVersion-1.1.20-informational?style=flat-square)
+![Version: 1.1.22-bb.0](https://img.shields.io/badge/Version-1.1.22--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.22](https://img.shields.io/badge/AppVersion-1.1.22-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -45,7 +45,7 @@ helm install rapidfort chart/
 | sc.enabled | bool | `false` |  |
 | aggregator.enabled | bool | `true` |  |
 | aggregator.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/aggregator-exe"` |  |
-| aggregator.image.tag | string | `"1.1.20-rfhardened"` |  |
+| aggregator.image.tag | string | `"1.1.19-rfhardened"` |  |
 | aggregator.initContainers.volumePermissions.image.repository | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"` |  |
 | aggregator.initContainers.volumePermissions.image.tag | string | `"8.6"` |  |
 | aggregator.imagePullSecrets[0].name | string | `"private-registry"` |  |
@@ -172,7 +172,7 @@ helm install rapidfort chart/
 | runner.enabled | bool | `true` |  |
 | runner.secret.name | string | `"rf-secret"` | Change to rf-runner-secret to internalize runner traffic |
 | runner.image.repository | string | `"registry.dso.mil/platform-one/big-bang/apps/third-party/rapidfort/runner"` |  |
-| runner.image.tag | string | `"1.1.20-rfhardened"` |  |
+| runner.image.tag | string | `"1.1.22-rfhardened"` |  |
 | runner.initContainers.init.image.repository | string | `"registry1.dso.mil/ironbank/big-bang/base"` |  |
 | runner.initContainers.init.image.tag | string | `"1.17.0"` |  |
 | runner.imagePullSecrets[0].name | string | `"private-registry"` |  |

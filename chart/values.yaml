@@ -311,7 +311,7 @@ runner:
     name: rf-secret
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/runner"
-    tag: "1.1.20-rfhardened"
+    tag: "1.1.22-rfhardened"
   initContainers:
     init:
       image:

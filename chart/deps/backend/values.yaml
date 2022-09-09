@@ -9,7 +9,7 @@ image:
   pullPolicy: IfNotPresent
 
 community_service: 
-  enabled: false
+  enabled: true
 
 initContainers:
   volumePermissions:
