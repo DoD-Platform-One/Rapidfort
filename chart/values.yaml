@@ -12,6 +12,7 @@ secret:
 global:
   # -- This field is used to update the host name in the ingress.
   rf_app_host: ""
+  allowed_rf_host: "api.rapidfort.com"
 
 # -- When internal runner traffic is enabled runner defaults to `backend` for it's url
 # if the backend service name is changed, update it here
@@ -65,6 +66,8 @@ aggregator:
 
 backend:
   enabled: true
+  community_service: 
+    enabled: false
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
     tag: "1.1.19-rfhardened"
@@ -153,6 +156,7 @@ keycloak:
     tag: 19.0.1-legacy
   initContainers:
     init_mysql:
+      enabled: true
       image:
         repository: "registry1.dso.mil/ironbank/opensource/mysql/mysql8"
         tag: "8.0.29"
@@ -335,7 +339,7 @@ istio:
     # Can be changed to STRICT after all initContainers have finished but will interfere with upgrades/pod deployments that have initContainers
     mode: PERMISSIVE
   rapidfort:
-    enabled: true
+    enabled: false
     gateways:
     - istio-system/public
     hosts:
