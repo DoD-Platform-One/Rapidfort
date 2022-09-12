@@ -1,0 +1,31 @@
+{{ if .Values.networkPolicies.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: allow-rf-community
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts: 
+  - {{ .Values.global.allowed_rf_host }}
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: allow-aws
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts: 
+  - "*.amazonaws.com"
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  # resolution: DNS
+  location: MESH_EXTERNAL  
+{{ end }}

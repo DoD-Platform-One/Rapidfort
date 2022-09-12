@@ -8,6 +8,9 @@ image:
   repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend
   pullPolicy: IfNotPresent
 
+community_service: 
+  enabled: true
+
 initContainers:
   volumePermissions:
     image:
@@ -28,6 +31,7 @@ env:
   communityUserId: "" #only applies for SAAS Prod
   communityOrgId: "" #only applies for SAAS Prod
 global:
+  allowed_rf_host: api.rapidfort.com
   rf_app_host: ""
 
 imagePullSecrets: []
