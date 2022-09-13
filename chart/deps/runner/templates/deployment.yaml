@@ -126,9 +126,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
+      {{- if .Values.initContainers.init.enabled }}
       - name: init
         image: "{{ .Values.initContainers.init.image.repository }}:{{ .Values.initContainers.init.image.tag | default .Chart.AppVersion }}"
         command:
           - "/bin/bash"
           - "-c"
           - "until [ $(curl --silent --connect-timeout 10 --max-time 15 --write-out '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo 'backend not ready'; echo; sleep 5; echo 'trying again...'; done"
+      {{- end }}    

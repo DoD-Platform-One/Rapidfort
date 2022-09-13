@@ -12,6 +12,7 @@ community_service:
   enabled: true
 
 initContainers:
+  enabled: true # this enables to add init container to keep waiting for dependent service to start
   volumePermissions:
     image:
       repository: public.ecr.aws/w9i9p8n5/init

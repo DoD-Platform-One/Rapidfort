@@ -72,6 +72,7 @@ backend:
     repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
     tag: "1.1.19-rfhardened"
   initContainers:
+    enabled: true # this enables to add init container to keep waiting for dependent service to start
     volumePermissions:
       image:
         repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
@@ -213,7 +214,7 @@ redis:
     repository: ironbank/bitnami/redis
     tag: 7.0.4
   istio:
-    enabled: true
+    enabled: false
   architecture: standalone
   fullnameOverride: "redis"
   auth:
@@ -277,6 +278,7 @@ rfapi:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfapi-exe"
     tag: "1.1.19-rfhardened"
   initContainers:
+    enabled: true # this enables to add init container to keep waiting for dependent service to start
     init:
       image:
         repository: "registry1.dso.mil/ironbank/bitnami/redis"
@@ -314,6 +316,7 @@ runner:
     tag: "1.1.23-rfhardened"
   initContainers:
     init:
+      enabled: true # this enables to add init container to keep waiting for dependent service to start
       image:
         repository: "registry1.dso.mil/ironbank/big-bang/base"
         tag: "2.0.0"
