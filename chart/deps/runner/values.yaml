@@ -11,6 +11,7 @@ image:
 
 initContainers:
   init:
+    enabled: true
     image:
       repository: public.ecr.aws/rapidfort/init
       pullPolicy: IfNotPresent

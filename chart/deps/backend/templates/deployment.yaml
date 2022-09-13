@@ -39,12 +39,14 @@ spec:
             {{ if .Values.volumeMounts }}
             {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
             {{ end }}
+        {{- if .Values.initContainers.enabled }}            
         - name: init
           image: "{{ .Values.initContainers.init.image.repository }}:{{ .Values.initContainers.init.image.tag | default .Chart.AppVersion }}"
           command:
             - "/bin/bash"
             - "-c"
             - "until [ $(curl --connect-timeout 10 -sw '%{http_code}' http://{{ .Values.keycloak.serviceName }} -o /dev/null) -eq 200 ]; do echo keycloak not ready; sleep 1; done"
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

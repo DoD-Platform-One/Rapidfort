@@ -35,12 +35,14 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+      {{- if .Values.initContainers.enabled }}
         - name: init
           image: "{{ .Values.initContainers.init.image.repository }}:{{ .Values.initContainers.init.image.tag | default .Chart.AppVersion }}"
           command:
             - "/bin/bash"
             - "-c"
             - "until [ \"$(timeout 10 redis-cli -h {{ .Values.env.redis_host }} -p {{ .Values.env.redis_port }} ping)\" == 'PONG' ]; do echo 'redis not ready'; sleep 5s; echo 'trying again...'; done"
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

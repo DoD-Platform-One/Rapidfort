@@ -9,6 +9,7 @@ image:
   pullPolicy: IfNotPresent
 
 initContainers:
+  enabled: true
   init:
     image:
       repository: public.ecr.aws/w9i9p8n5/init
