@@ -30,5 +30,5 @@ spec:
     matchLabels:
       app.kubernetes.io/name: redis
   mtls:
-    mode: STRICT    
+    mode: {{ .Values.istio.mtls.mode | default "PERMISSIVE" }} 
 {{ end }}
