@@ -160,7 +160,7 @@ keycloak:
       enabled: true
       image:
         repository: "registry1.dso.mil/ironbank/opensource/mysql/mysql8"
-        tag: "8.0.29"
+        tag: "8.0.31"
   imagePullSecrets:
   - name: private-registry
   ingress:
@@ -212,7 +212,7 @@ redis:
   image:
     registry: registry1.dso.mil
     repository: ironbank/bitnami/redis
-    tag: 7.0.4
+    tag: 7.0.5
   istio:
     enabled: false
   architecture: standalone
@@ -282,7 +282,7 @@ rfapi:
     init:
       image:
         repository: "registry1.dso.mil/ironbank/bitnami/redis"
-        tag: "7.0.4"
+        tag: "7.0.5"
   imagePullSecrets:
   - name: private-registry
   env:
