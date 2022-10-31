@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.26-bb.0]
+- Updated to RF 1.1.26
+
 ## [1.1.25-bb.0]
 - Updated to RF 1.1.25
 ## [1.1.24-bb.0]
