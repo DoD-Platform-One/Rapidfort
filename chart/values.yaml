@@ -33,7 +33,7 @@ aggregator:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/aggregator-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -70,7 +70,7 @@ backend:
     enabled: false
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
     volumePermissions:
@@ -113,7 +113,7 @@ frontrow:
   authUrl: ""
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/frontrow"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   imagePullSecrets:
   - name: private-registry
   ingress:
@@ -123,7 +123,7 @@ iso-master:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/iso-master-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -226,7 +226,7 @@ rf-scan:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rf-scan-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -276,7 +276,7 @@ rfapi:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfapi-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
     init:
@@ -297,7 +297,7 @@ rfpubsub:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   imagePullSecrets:
   - name: private-registry
   env:

@@ -29,16 +29,6 @@ spec:
       {{ tpl (toYaml (index .Values.extraVolumes )) . | nindent 6 }}
       {{ end }}
       initContainers:
-        - name: volume-permissions
-          image: "{{ .Values.initContainers.volumePermissions.image.repository }}:{{ .Values.initContainers.volumePermissions.image.tag | default .Chart.AppVersion }}"
-          command:
-          - /bin/bash
-          - -c
-          - chmod 777 /opt/rapidfort/backend/app/imgs_work_dir
-          volumeMounts:
-            {{ if .Values.volumeMounts }}
-            {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
-            {{ end }}
         {{- if .Values.initContainers.enabled }}            
         - name: init
           image: "{{ .Values.initContainers.init.image.repository }}:{{ .Values.initContainers.init.image.tag | default .Chart.AppVersion }}"
