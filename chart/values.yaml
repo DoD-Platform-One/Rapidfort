@@ -8,6 +8,7 @@ secret:
   rf_app_admin_passwd: "p@ssw0rd"
   # -- This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service
   rf_app_host: ""
+  storage_type: "s3"
 
 global:
   # -- This field is used to update the host name in the ingress.
