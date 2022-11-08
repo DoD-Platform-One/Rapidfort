@@ -3,7 +3,10 @@ secret:
   aws_secret_access_key: ""
   aws_default_region: ""
   s3_bucket: ""
+
   # -- This value must be a syntax valid email (doesn't need to be a real one, though it should be for production)
+  aws_access_key_id: FAKEID54G8A4F654GH7T
+  aws_secret_access_key: FAKEKEYxlLONi5IEMW8zA0Va4l0i9yPwfD5AMn0K
   rf_app_admin: "rfadmin@fakeemail.com"
   rf_app_admin_passwd: "p@ssw0rd"
   # -- This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service
