@@ -106,3 +106,13 @@ probeCommand:
   httpGet:
     path: /
     port: frontrow-http
+
+volumes:
+  - configMap:
+      defaultMode: 420
+      name: frontrow-config
+    name: config-env
+volumeMounts:
+  - mountPath: "/usr/share/nginx/html/app/data/env.json"
+    name: config-env
+    subPath: "env.json"

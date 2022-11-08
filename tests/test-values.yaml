@@ -6,6 +6,7 @@ secret:
   rf_app_admin: ci@repo1.dso.mil
   rf_app_admin_passwd: p@ssw0rd
   rf_app_host: rapidfort.bigbang.dev
+  storage_type: "s3"
 
 runner:
   secret:

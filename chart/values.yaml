@@ -3,11 +3,15 @@ secret:
   aws_secret_access_key: ""
   aws_default_region: ""
   s3_bucket: ""
+
   # -- This value must be a syntax valid email (doesn't need to be a real one, though it should be for production)
+  aws_access_key_id: FAKEID54G8A4F654GH7T
+  aws_secret_access_key: FAKEKEYxlLONi5IEMW8zA0Va4l0i9yPwfD5AMn0K
   rf_app_admin: "rfadmin@fakeemail.com"
   rf_app_admin_passwd: "p@ssw0rd"
   # -- This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service
   rf_app_host: ""
+  storage_type: "s3"
 
 global:
   # -- This field is used to update the host name in the ingress.
@@ -33,7 +37,7 @@ aggregator:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/aggregator-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -70,7 +74,7 @@ backend:
     enabled: false
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
     volumePermissions:
@@ -113,7 +117,7 @@ frontrow:
   authUrl: ""
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/frontrow"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   imagePullSecrets:
   - name: private-registry
   ingress:
@@ -123,7 +127,7 @@ iso-master:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/iso-master-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -226,7 +230,7 @@ rf-scan:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rf-scan-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -276,7 +280,7 @@ rfapi:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfapi-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
     init:
@@ -297,7 +301,7 @@ rfpubsub:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe"
-    tag: "1.1.19-rfhardened"
+    tag: "1.1.21-rfhardened"
   imagePullSecrets:
   - name: private-registry
   env:
