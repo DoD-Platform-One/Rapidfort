@@ -8,16 +8,20 @@ Automated Container Hardening
 * [Application Overview](docs/overview.md)
 * [Other Documentation](docs/)
 
-## Pre-Requisites
+## Prerequisites
 
-1. Kubernetes Cluster deployed
+1. Kubernetes Cluster version 1.20+
 2. Kubernetes config installed in `~/.kube/config`
-3. Helm installed
+3. [Helm](https://helm.sh/docs/intro/install/) version 3.0.0+
+4. Ingress Controller with Network Load Balancer. Below are Supported Ingress Controllers
+    * Istio Ingress Controller
+    * Nginx Ingress Controller
 4. Amazon Web Services (AWS) account
     * S3 Bucket for RapidFort data
     * IAM User with Read/Write/List permissions for the S3 bucket
         * Access Key ID
         * Secret Access Key
+
 ### AWS Resources
 RapidFort needs an S3 bucket and an IAM user and policy with Read/List/Write permissions for the S3 bucket.
 
@@ -93,8 +97,6 @@ RapidFort needs an S3 bucket and an IAM user and policy with Read/List/Write per
    }
    ```
 4. Attach the policy to the IAM user.
-
-5. Install [Helm](https://helm.sh/docs/intro/install/)
     
 ### Deploy RapidFort
 1. Clone the RapidFort Repository.
