@@ -118,26 +118,18 @@ For more information, please refer to the [RapidFort user documentation](https:/
 
 ## Parameters
 
-### Global parameters
-
-| Name                      | Description                                                    | Value           |
-| ------------------------- | -------------------------------------------------------------- | --------------- |
-| `global.rf_app_host`      | Public RapidFort service endpoint (FQDN or IP)    | `""`            |
-| `global.ingressClassName` | Ingress class name                                             | `""`            |
 
 ### Common parameters
 
 | Name                            | Description                                                                                 | Value           | Required |
 | ------------------------------- | ------------------------------------------------------------------------------------------- | --------------- | -------- |
-| `secret.aws_access_key_id`                        | AWS credentials with Read/List/Write permissions for the RapidFort S3 bucket                | `""`            | `false`   |
-| `secret.aws_secret_access_key`                    | AWS credentials with Read/List/Write permissions for the RapidFort S3 bucket                | `""`            | `false`   |
-| `secret.aws_role_arn`                    | AWS IAM Role with Read/List/Write permissions for the RapidFort S3 bucket                | `""`            | `false`   |
+| `secret.aws_access_key_id`                        | AWS credentials with Read/List/Write permissions for the RapidFort S3 bucket                | `""`            | `true`   |
+| `secret.aws_secret_access_key`                    | AWS credentials with Read/List/Write permissions for the RapidFort S3 bucket                | `""`            | `true`   |
 | `secret.aws_default_region`                       | AWS region                                                                | `""`            | `true`   |
 | `secret.s3_bucket`                                | AWS S3 bucket for Rapidfort data                                     | `""`            | `true`   |
 | `secret.rf_app_admin`                             | RapidFort application admin email address                                 | `""`            | `true`   |
 | `secret.rf_app_admin_passwd`                      | RapidFort application admin password             | `""`            | `true`   |
 | `secret.rf_app_host`                              | Public RapidFort service endpoint (FQDN or IP)   | `""`            | `true`   |
-| `secret.storage_type`                              | RapidFort Data Storage Type (s3, ls, gs)   | `""`            | `true`   |
 
 ## Contributing
 
