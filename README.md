@@ -13,9 +13,7 @@ Automated Container Hardening
 1. Kubernetes Cluster version 1.20+
 2. Kubernetes config installed in `~/.kube/config`
 3. [Helm](https://helm.sh/docs/intro/install/) version 3.0.0+
-4. Ingress Controller with Network Load Balancer. Below are Supported Ingress Controllers
-    * Istio Ingress Controller
-    * Nginx Ingress Controller
+4. Ingress Controller with Network Load Balancer.
 4. Amazon Web Services (AWS) account
     * S3 Bucket for RapidFort data
     * IAM User with Read/Write/List permissions for the S3 bucket
