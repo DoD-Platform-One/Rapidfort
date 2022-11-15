@@ -26,9 +26,9 @@ sharedPvcs:
   image-db-shared:
     storageSize: 10Gi
   imgs-work-dir-shared:
-    storageSize: 10Gi
+    storageSize: 200Gi
   local-bucket:
-    storageSize: 10Gi
+    storageSize: 200Gi
 
 sc:
   enabled: false
@@ -147,9 +147,6 @@ iso-master:
   - name: image-db
     persistentVolumeClaim:
       claimName: image-db-shared
-  - name: dockersock
-    hostPath:
-      path: /var/run/docker.sock
   - name: local-bucket
     persistentVolumeClaim:
       claimName: local-bucket
