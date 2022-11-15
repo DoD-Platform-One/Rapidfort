@@ -10,35 +10,138 @@ Automated Container Hardening
 
 ## Pre-Requisites
 
-* Kubernetes Cluster deployed
-* Kubernetes config installed in `~/.kube/config`
-* Helm installed
+1. Kubernetes Cluster deployed
+2. Kubernetes config installed in `~/.kube/config`
+3. Helm installed
+4. Amazon Web Services (AWS) account
+    * S3 Bucket for RapidFort data
+    * IAM User with Read/Write/List permissions for the S3 bucket
+        * Access Key ID
+        * Secret Access Key
+### AWS Resources
+RapidFort needs an S3 bucket and an IAM user and policy with Read/List/Write permissions for the S3 bucket.
 
-Install Helm
+1. Create an S3 bucket in the same region in which RapidFort will be deployed (e.g. <code>rapidfort-s3</code>).
+2. Create an IAM user (e.g. <code>rapidfort-user</code>). Generate and download an Access Key ID and Secret Access Key.
+3. Create an IAM policy that gives Read/List/Write permissions for the RapidFort S3 bucket using the sample JSON code.
+   ```json
+   {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "VisualEditor0",
+          "Effect": "Allow",
+          "Action": [
+            "s3:DeleteObject",
+            "s3:PutObject",
+            "s3:GetObject",
+            "s3:DescribeJob",
+            "s3:ListBucket"
+          ],
+          "Resource": [
+            "<S3_BUCKET_ARN>",
+            "<S3_BUCKET_ARN>/*"
+          ]
+        }
+      ]
+   }
+   ```
+   **Example: AWS Commercial**
+   ```json
+   {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "VisualEditor0",
+          "Effect": "Allow",
+          "Action": [
+            "s3:DeleteObject",
+            "s3:PutObject",
+            "s3:GetObject",
+            "s3:DescribeJob",
+            "s3:ListBucket"
+          ],
+          "Resource": [
+            "arn:aws:s3:::rapidfort-s3",
+            "arn:aws:s3:::rapidfort-s3/*"
+          ]
+        }
+      ]
+   }
+   ```
+   **Example: AWS GovCloud**
+   ```json
+   {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "VisualEditor0",
+          "Effect": "Allow",
+          "Action": [
+            "s3:DeleteObject",
+            "s3:PutObject",
+            "s3:GetObject",
+            "s3:DescribeJob",
+            "s3:ListBucket"
+          ],
+          "Resource": [
+            "arn:aws-gov:s3:::rapidfort-s3",
+            "arn:aws-gov:s3:::rapidfort-s3/*"
+          ]
+        }
+      ]
+   }
+   ```
+4. Attach the policy to the IAM user.
 
-https://helm.sh/docs/intro/install/
+5. Install [Helm](https://helm.sh/docs/intro/install/)
+    
+### Deploy RapidFort
+1. Clone the RapidFort Repository.
+2. Update <code>values.yaml</code> with your deployment information. For more information, please refer to [Parameters](#parameters).
+3. Run the following command to install RapidFort:
+   ```
+   cd rapidfort/chart
+   helm upgrade --install rapidfort ./ -f values.yaml -n <namespace>
+   ```
+   For example, if you would like to deploy RapidFort in the <code>rapidfort</code> namespace:
+   ```
+   cd rapidfort/chart
+   helm upgrade --install rapidfort ./ -f values.yaml -n rapidfort
+   ```
+4. Wait for a RapidFort welcome email. This will contain a link to the RapidFort dashboard.
+5. Visit the RapidFort dashboard. You will be guided through the process for contacting RapidFort Support to request a license.
 
-## Deployment
+For more information, please refer to the [RapidFort user documentation](https://docs.rapidfort.com/rapidfort-on-premises/helm-chart-aws).
 
-* Clone down the repository
-* cd into directory
-```bash
-helm install rapidfort chart/
-```
+## Parameters
+
+### Global parameters
+
+| Name                      | Description                                                    | Value           |
+| ------------------------- | -------------------------------------------------------------- | --------------- |
+| `global.rf_app_host`      | Public RapidFort service endpoint (FQDN or IP)    | `""`            |
+| `global.ingressClassName` | Ingress class name                                             | `""`            |
+
+### Common parameters
+
+| Name                            | Description                                                                                 | Value           | Required |
+| ------------------------------- | ------------------------------------------------------------------------------------------- | --------------- | -------- |
+| `secret.aws_access_key_id`                        | AWS credentials with Read/List/Write permissions for the RapidFort S3 bucket                | `""`            | `false`   |
+| `secret.aws_secret_access_key`                    | AWS credentials with Read/List/Write permissions for the RapidFort S3 bucket                | `""`            | `false`   |
+| `secret.aws_role_arn`                    | AWS IAM Role with Read/List/Write permissions for the RapidFort S3 bucket                | `""`            | `false`   |
+| `secret.aws_default_region`                       | AWS region                                                                | `""`            | `true`   |
+| `secret.s3_bucket`                                | AWS S3 bucket for Rapidfort data                                     | `""`            | `true`   |
+| `secret.rf_app_admin`                             | RapidFort application admin email address                                 | `""`            | `true`   |
+| `secret.rf_app_admin_passwd`                      | RapidFort application admin password             | `""`            | `true`   |
+| `secret.rf_app_host`                              | Public RapidFort service endpoint (FQDN or IP)   | `""`            | `true`   |
+| `secret.storage_type`                              | RapidFort Data Storage Type (s3, ls, gs)   | `""`            | `true`   |
+
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| secret.aws_access_key_id | string | `""` |  |
-| secret.aws_secret_access_key | string | `""` |  |
-| secret.aws_default_region | string | `""` |  |
-| secret.s3_bucket | string | `""` |  |
-| secret.rf_app_admin | string | `"rfadmin@fakeemail.com"` | This value must be a syntax valid email (doesn't need to be a real one, though it should be for production) |
-| secret.rf_app_admin_passwd | string | `"p@ssw0rd"` |  |
-| secret.storage_type | string | `""` |  allowed values are s3 (for Amazon AWS deployment), gs (Google Storage for GCP deployment) and ls (Local Storage)|
-| secret.rf_app_host | string | `""` | This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service |
-| global.rf_app_host | string | `""` | This field is used to update the host name in the ingress. |
 | runner_rf_app_host | string | `""` | When internal runner traffic is enabled runner defaults to `backend` for it's url if the backend service name is changed, update it here |
 | sharedPvcs.image-db-shared.storageSize | string | `"10Gi"` |  |
 | sharedPvcs.imgs-work-dir-shared.storageSize | string | `"10Gi"` |  |
