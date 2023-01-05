@@ -35,8 +35,11 @@ dependencies:
 - name: runner
   repository: file://deps/runner/
   version: 1.1.0
+- name: vulns-db
+  repository: file://deps/vulns-db/
+  version: 1.1.0
 - name: gluon
   repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
   version: 0.3.1
-digest: sha256:83f349909a5a4d8f6cfdae2155b6babd0b83e7c59f27d394bfd01a8a58041330
-generated: "2022-11-05T14:50:19.375048-07:00"
+digest: sha256:b18460e5721a70994ddb8d8ed1cd44911ef61680f16004f6bf5f2e80cf47654a
+generated: "2023-01-05T11:45:39.773307-08:00"

@@ -1,33 +1,29 @@
-# Default values for runner.
+# Default values for vulns-db.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner
+  repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-
-initContainers:
-  init:
-    enabled: true
-    image:
-      repository: public.ecr.aws/rapidfort/init
-      pullPolicy: IfNotPresent
-      # Overrides the image tag whose default is the chart appVersion.
-      tag: latest
-
-imagePullSecrets: []
-nameOverride: "runner"
-fullnameOverride: "runner"
-
 global:
   rf_app_host: ""
 
+initContainer:
+  image:
+    repository: public.ecr.aws/rapidfort/init 
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+imagePullSecrets: []
+nameOverride: "vulns-db"
+fullnameOverride: "vulns-db"
+
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -41,9 +37,6 @@ service:
   port: 80
   container_port: 8080
 
-podSecurityContext: {}
-  # fsGroup: 2000
-
 ingress:
   enabled: true
   className: ""
@@ -52,12 +45,13 @@ ingress:
   hosts:
     - host:
       paths:
-        - /runner/.*
+        - /vulns-db/.*
       paths:
-        - path: /runner/.*
+        - path: /vulns-db/.*
           pathType: ImplementationSpecific
   tls: []
 
+podSecurityContext: {}
 securityContext: {}
 
 resources: {}
@@ -85,14 +79,6 @@ tolerations: []
 
 affinity: {}
 
-secret:
-  name: rf-secret
-  keys:
-  - RF_APP_HOST
-  - AWS_DEFAULT_REGION
-  - RF_APP_ADMIN
-  - RF_APP_ADMIN_PASSWD
-
 env:
   rf_debug: false
   redis_host: "redis"
@@ -102,31 +88,19 @@ env:
   redis_port_ha: "6379"
   redis_pwd_ha: ""
   redis_db_ha: 4
-  rfvdb_host: "frontrow.rapidfort.com"
-
-volumes: {}
-  # - name: docker-tmp
-  #   hostPath:
-  #     path: /tmp
-
-volumeMounts: {}
-  # - name: docker-tmp
-  #   mountPath: "/tmp"
+  rfvdb_host: "frontrow.rapidfort.io"
 
 livenessProbe:
   periodSeconds: 30
-  initialDelaySeconds: 15
+  initialDelaySeconds: 1
   timeoutSeconds: 10
 
 probeCommand:  
   httpGet:
     path: /
-    port: runner-http
+    port: vulns-db-http
 
 readinessProbe:
   periodSeconds: 30
-  initialDelaySeconds: 15
+  initialDelaySeconds: 1
   timeoutSeconds: 10 
-
-container:
-  extra_options: {}

@@ -9,14 +9,18 @@ image:
   repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan
   pullPolicy: IfNotPresent
 
+global:
+  rf_app_host: ""
+
 initContainers:
   volumePermissions:
     image:
-      repository: public.ecr.aws/w9i9p8n5/init
-      tag: latest
-
-global:
-  rf_app_host: ""
+      repository: "public.ecr.aws/rapidfort/init"
+      tag: "latest"
+  init:
+    image:
+      repository: "public.ecr.aws/rapidfort/init"
+      tag: "latest"      
 
 env:
   backend_service_name: "backend"
@@ -117,21 +121,11 @@ secret:
     - RF_VERBOSE
 
 volumes:
-  - name: imgs-work-dir
-    hostPath:
-      path: /opt/rapidfort/data/shared/imgs_work_dir
-  - name: image-db
-    hostPath:
-      path: /opt/rapidfort/data/shared/image_db
   - name: local-bucket
     hostPath:
       path: /opt/rapidfort/local-bucket/
 
 volumeMounts:
-  - name: imgs-work-dir
-    mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
-  - name: image-db
-    mountPath: "/opt/rapidfort/iso-master/app/image_db"
   - name: local-bucket
     mountPath: "/opt/rapidfort/local-bucket"
 
@@ -139,18 +133,44 @@ container:
   extra_options: {}
 
 livenessProbe:
-  periodSeconds: 30
-  initialDelaySeconds: 15
-  timeoutSeconds: 10
-  failureThreshold: 1
+  periodSeconds: 10
+  initialDelaySeconds: 5
+  timeoutSeconds: 99
+  failureThreshold: 77
 
 readinessProbe:
-  periodSeconds: 30
-  initialDelaySeconds: 15
-  timeoutSeconds: 10
-  failureThreshold: 1
+  periodSeconds: 10
+  initialDelaySeconds: 5
+  timeoutSeconds: 99
+  failureThreshold: 77
   
 probeCommand:
   httpGet:
     path: /
-    port: rf-scan-http  
+    port: rf-scan-http
+
+init_containers:
+  - name: init-vulns
+    image: "{{ .Values.initContainers.init.image.repository }}:{{ .Values.initContainers.init.image.tag }}"
+    command:
+      - "/bin/bash"
+      - "-c"
+      - "until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://vulns-db/vulns-db/api/v1/vulnsdb -o /dev/null) -eq 200 ]; do echo vulns-db not ready; sleep 1; done"
+  - name: init-backend
+    image: "{{ .Values.initContainers.init.image.repository }}:{{ .Values.initContainers.init.image.tag }}"
+    command:
+      - "/bin/bash"
+      - "-c"
+      - "until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo backend not ready; sleep 1; done"
+  #TODO: once new build has been rolled out, we can remove this
+  - image: "{{ .Values.initContainers.volumePermissions.image.repository }}:{{ .Values.initContainers.volumePermissions.image.tag }}"
+    imagePullPolicy: Always
+    name: init-make-dir
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo "Creating imgs_work_dir"
+        mkdir -p /opt/rapidfort/iso-master/app/imgs_work_dir
+        echo "setting up the permission."
+        chmod 777 /opt/rapidfort/iso-master/app/imgs_work_dir

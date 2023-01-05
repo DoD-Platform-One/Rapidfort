@@ -28,6 +28,10 @@ spec:
       {{ if .Values.extraVolumes }}
       {{ tpl (toYaml (index .Values.extraVolumes )) . | nindent 6 }}
       {{ end }}
+      initContainers:
+      {{- if .Values.init_containers }}
+      {{ tpl (toYaml (index .Values.init_containers )) . | nindent 6 }}
+      {{- end }}      
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -48,6 +52,8 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
             {{- toYaml .Values.probeCommand | nindent 12 }}
           env:
+            - name: LC_ALL
+              value: "en_US.UTF-8"            
             - name: RF_DEBUG
               value: "{{ .Values.env.rf_debug }}"
             - name: RF_CONTAINER_ENGINE
