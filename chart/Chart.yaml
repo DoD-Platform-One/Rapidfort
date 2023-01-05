@@ -66,6 +66,11 @@ dependencies:
   name: runner
   condition: runner.enabled
 
+- repository: "file://deps/vulns-db/"
+  version: 1.1.0
+  name: vulns-db
+  condition: vulns-db.enabled
+
 - name: gluon
   version: "0.3.1"
   repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"

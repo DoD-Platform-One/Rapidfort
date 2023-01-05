@@ -77,10 +77,6 @@ backend:
     tag: "1.1.21-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
-    volumePermissions:
-      image:
-        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
-        tag: "8.6"
     init:
       image:
         repository: "registry1.dso.mil/ironbank/big-bang/base"
@@ -95,9 +91,6 @@ backend:
     backendImgsWorkDir:
       storageSize: 10Gi
   volumes:
-  - name: imgs-work-dir
-    persistentVolumeClaim:
-      claimName: imgs-work-dir-shared
   - name: local-bucket
     persistentVolumeClaim:
       claimName: local-bucket
@@ -128,6 +121,11 @@ iso-master:
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/iso-master-exe"
     tag: "1.1.21-rfhardened"
+  initContainers:
+    init:
+      image:
+        repository: "registry1.dso.mil/ironbank/big-bang/base"
+        tag: "2.0.0"    
   imagePullSecrets:
   - name: private-registry
   env:
@@ -135,11 +133,11 @@ iso-master:
     redis_host_ha: redis-master
   ingress:
     enabled: false
-  PVCs:
-    iso-masterImgsWorkDir:
-      storageSize: 10Gi
-    iso-masterImageDb:
-      storageSize: 10Gi
+  # PVCs:
+  #   iso-masterImgsWorkDir:
+  #     storageSize: 10Gi
+  #   iso-masterImageDb:
+  #     storageSize: 10Gi
   volumes:
   - name: imgs-work-dir
     persistentVolumeClaim:
@@ -233,6 +231,10 @@ rf-scan:
       image:
         repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
         tag: "8.6"
+    init:
+      image:
+        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
+        tag: "8.6"        
   imagePullSecrets:
   - name: private-registry
   env:
@@ -245,23 +247,11 @@ rf-scan:
       storageSize: 10Gi
     rf-scanImageDb:
       storageSize: 10Gi
+  # TODO: confirm the volumes and update references.      
   volumes:
-  - name: imgs-work-dir
-    persistentVolumeClaim:
-      claimName: imgs-work-dir-shared
-  - name: image-db
-    persistentVolumeClaim:
-      claimName: image-db-shared
   - name: local-bucket
     persistentVolumeClaim:
       claimName: local-bucket
-  volumeMounts:
-  - name: imgs-work-dir
-    mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
-  - name: image-db
-    mountPath: "/opt/rapidfort/iso-master/app/image_db"
-  - name: local-bucket
-    mountPath: "/opt/rapidfort/local-bucket"
   affinity:
     podAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -326,6 +316,16 @@ runner:
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
+  ingress:
+    enabled: false
+
+vulns-db:
+  enabled: true
+  image:
+    repository: "public.ecr.aws/rapidfort/vulns-db"
+    tag: "1.1.24-rfhardened"
+  env:
+    rfvdb_host: "api.rapidfort.com"
   ingress:
     enabled: false
 
