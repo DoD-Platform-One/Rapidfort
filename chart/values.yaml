@@ -322,7 +322,7 @@ runner:
 vulns-db:
   enabled: true
   image:
-    repository: "public.ecr.aws/rapidfort/vulns-db"
+    repository: "registry1.dso.mil/ironbank/rapidfort/vulns-db"
     tag: "1.1.24-rfhardened"
   env:
     rfvdb_host: "api.rapidfort.com"
