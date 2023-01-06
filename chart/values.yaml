@@ -16,7 +16,7 @@ secret:
 global:
   # -- This field is used to update the host name in the ingress.
   rf_app_host: ""
-  ingressClassName: "nginx"
+  ingressClassName: ""
   allowed_rf_host: "api.rapidfort.com"
 
 # -- When internal runner traffic is enabled runner defaults to `backend` for it's url
@@ -43,7 +43,7 @@ aggregator:
     volumePermissions:
       image:
         repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
-        tag: "8.6"
+        tag: "8.7"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -336,7 +336,7 @@ runner:
       claimName: runner-scan-volume
   - name: local-bucket
     persistentVolumeClaim:
-      claimName: local-bucket    
+      claimName: local-bucket
 
 vulns-db:
   enabled: true
