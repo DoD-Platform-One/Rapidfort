@@ -16,6 +16,7 @@ secret:
 global:
   # -- This field is used to update the host name in the ingress.
   rf_app_host: ""
+  ingressClassName: "nginx"
   allowed_rf_host: "api.rapidfort.com"
 
 # -- When internal runner traffic is enabled runner defaults to `backend` for it's url
@@ -70,7 +71,7 @@ aggregator:
 
 backend:
   enabled: true
-  community_service: 
+  community_service:
     enabled: false
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
@@ -125,7 +126,7 @@ iso-master:
     init:
       image:
         repository: "registry1.dso.mil/ironbank/big-bang/base"
-        tag: "2.0.0"    
+        tag: "2.0.0"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -220,6 +221,14 @@ redis:
     enabled: false
   # -- When enabled adds an extra service for redis to workaround an rfapi bug
   svcWorkaround: true
+  master:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2048Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
 
 rf-scan:
   enabled: true
@@ -234,7 +243,7 @@ rf-scan:
     init:
       image:
         repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
-        tag: "8.6"        
+        tag: "8.6"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -247,7 +256,7 @@ rf-scan:
       storageSize: 10Gi
     rf-scanImageDb:
       storageSize: 10Gi
-  # TODO: confirm the volumes and update references.      
+  # TODO: confirm the volumes and update references.
   volumes:
   - name: local-bucket
     persistentVolumeClaim:
@@ -318,6 +327,16 @@ runner:
     redis_host_ha: redis-master
   ingress:
     enabled: false
+  PVCs:
+    scanVolume:
+      storageSize: 10Gi    
+  volumes:
+  - name: scan-storage
+    persistentVolumeClaim:
+      claimName: runner-scan-volume
+  - name: local-bucket
+    persistentVolumeClaim:
+      claimName: local-bucket    
 
 vulns-db:
   enabled: true
@@ -327,7 +346,7 @@ vulns-db:
   env:
     rfvdb_host: "api.rapidfort.com"
     redis_host: redis-master
-    redis_host_ha: redis-master    
+    redis_host_ha: redis-master
   ingress:
     enabled: false
   imagePullSecrets:
@@ -355,7 +374,7 @@ istio:
 
 networkPolicies:
   enabled: false
-  ingressLabels: 
+  ingressLabels:
     app: istio-ingressgateway
     istio: ingressgateway
   # -- IP range of api.rapidfort.com

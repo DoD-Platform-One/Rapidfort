@@ -104,14 +104,19 @@ env:
   redis_db_ha: 4
   rfvdb_host: "frontrow.rapidfort.com"
 
-volumes: {}
-  # - name: docker-tmp
-  #   hostPath:
-  #     path: /tmp
+volumes:
+  - name: scan-storage
+    hostPath:
+      path: /tmp
+  - name: local-bucket
+    hostPath:
+      path: /opt/rapidfort/local-bucket/
 
-volumeMounts: {}
-  # - name: docker-tmp
-  #   mountPath: "/tmp"
+volumeMounts:
+  - name: scan-storage
+    mountPath: "/tmp"
+  - name: local-bucket
+    mountPath: "/opt/rapidfort/local-bucket"
 
 livenessProbe:
   periodSeconds: 30
