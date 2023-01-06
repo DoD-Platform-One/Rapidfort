@@ -16,6 +16,7 @@ secret:
 global:
   # -- This field is used to update the host name in the ingress.
   rf_app_host: ""
+  ingressClassName: "nginx"
   allowed_rf_host: "api.rapidfort.com"
 
 # -- When internal runner traffic is enabled runner defaults to `backend` for it's url
@@ -220,6 +221,14 @@ redis:
     enabled: false
   # -- When enabled adds an extra service for redis to workaround an rfapi bug
   svcWorkaround: true
+  master:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2048Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
 
 rf-scan:
   enabled: true
