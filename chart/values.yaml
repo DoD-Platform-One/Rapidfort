@@ -326,8 +326,12 @@ vulns-db:
     tag: "1.1.24-rfhardened"
   env:
     rfvdb_host: "api.rapidfort.com"
+    redis_host: redis-master
+    redis_host_ha: redis-master    
   ingress:
     enabled: false
+  imagePullSecrets:
+  - name: private-registry
 
 logger:
   enabled: false
