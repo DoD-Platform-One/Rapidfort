@@ -58,7 +58,8 @@ ingress:
           pathType: ImplementationSpecific
   tls: []
 
-securityContext: {}
+securityContext:
+  privileged: true
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
