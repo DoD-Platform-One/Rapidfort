@@ -28,8 +28,8 @@ cleanUpgrade:
       memory: 256Mi
       cpu: 100m
     limits:
-      memory: 256Mi
-      cpu: 100m
+      memory: 2Gi
+      cpu: 1000m
 
 # NOTE: We default this to true in case packages consuming Redis forget to turn it on and have API traffic blocked
 networkPolicies:
