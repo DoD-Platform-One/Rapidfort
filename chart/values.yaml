@@ -27,9 +27,9 @@ sharedPvcs:
   image-db-shared:
     storageSize: 10Gi
   imgs-work-dir-shared:
-    storageSize: 10Gi
+    storageSize: 200Gi
   local-bucket:
-    storageSize: 10Gi
+    storageSize: 200Gi
 
 sc:
   enabled: false
