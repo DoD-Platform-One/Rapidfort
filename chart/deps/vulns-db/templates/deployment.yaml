@@ -89,9 +89,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
+      {{- if .Values.initContainers.init.enabled }}      
       - name: init
         image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
         command:
           - "/bin/bash"
           - "-c"
           - "while timeout 1 nc -vz {{ .Values.env.redis_host }} {{ .Values.env.redis_port }} > /dev/null 2>&1; [ $? -ne 0 ]; do echo $(date +%s) waiting redis; done"
+      {{- end }}
