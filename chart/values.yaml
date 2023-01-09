@@ -347,8 +347,8 @@ vulns-db:
     init:
       enabled: true
       image:
-        repository: "registry1.dso.mil/ironbank/big-bang/base"
-        tag: "2.0.0"    
+        repository: "registry1.dso.mil/ironbank/bitnami/redis"
+        tag: "7.0.5"  
   env:
     rfvdb_host: "api.rapidfort.com"
     redis_host: redis-master

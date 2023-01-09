@@ -95,5 +95,5 @@ spec:
         command:
           - "/bin/bash"
           - "-c"
-          - "while timeout 1 nc -vz {{ .Values.env.redis_host }} {{ .Values.env.redis_port }} > /dev/null 2>&1; [ $? -ne 0 ]; do echo $(date +%s) waiting redis; done"
+          - "until [ \"$(timeout 10 redis-cli -h {{ .Values.env.redis_host }} -p {{ .Values.env.redis_port }} ping)\" == 'PONG' ]; do echo 'redis not ready'; sleep 5s; echo 'trying again...'; done"
       {{- end }}
