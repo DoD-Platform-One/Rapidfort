@@ -343,6 +343,12 @@ vulns-db:
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/vulns-db"
     tag: "1.1.24-rfhardened"
+  initContainers:
+    init:
+      enabled: true
+      image:
+        repository: "registry1.dso.mil/ironbank/big-bang/base"
+        tag: "2.0.0"    
   env:
     rfvdb_host: "api.rapidfort.com"
     redis_host: redis-master
