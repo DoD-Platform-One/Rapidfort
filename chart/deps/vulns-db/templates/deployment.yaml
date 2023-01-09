@@ -91,7 +91,7 @@ spec:
       initContainers:
       {{- if .Values.initContainers.init.enabled }}      
       - name: init
-        image: "{{ .Values.initContainer.image.repository }}:{{ .Values.initContainer.image.tag | default .Chart.AppVersion }}"
+        image: "{{ .Values.initContainer.init.image.repository }}:{{ .Values.initContainer.init.image.tag | default .Chart.AppVersion }}"
         command:
           - "/bin/bash"
           - "-c"
