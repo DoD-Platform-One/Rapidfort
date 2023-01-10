@@ -86,5 +86,6 @@ twistlock:
 promtail:
   enabled: false
 
-minio:
-  enabled: false
+addons:
+  minio:
+    enabled: false
