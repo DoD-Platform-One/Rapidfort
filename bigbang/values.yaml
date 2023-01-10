@@ -85,3 +85,6 @@ twistlock:
 
 promtail:
   enabled: false
+
+minio:
+  enabled: false
