@@ -158,3 +158,28 @@ bigbang.dev/istioVersion: {{ .Values.istio.git.tag | trimSuffix (regexFind "-bb.
 bigbang.dev/istioVersion: {{ .Values.istio.git.branch }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Check for git ref, given package values map
+*/}}
+{{- define "checkGitRef" -}}
+{{- $git := (dig "git" dict .) -}}
+{{- if not $git.repo -}}
+false
+{{- else -}}
+{{- if $git.commit -}}
+{{- if not $git.branch -}}
+false
+{{- end -}}
+true
+{{- else if $git.semver -}}
+true
+{{- else if $git.tag -}}
+true
+{{- else if $git.branch -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end -}}
+{{- end -}}
