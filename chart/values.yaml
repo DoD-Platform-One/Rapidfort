@@ -401,3 +401,7 @@ bbtests:
     envs:
       URL: 'http://test.test'
       # URL: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
+
+addons:
+  minio:
+    enabled: false
