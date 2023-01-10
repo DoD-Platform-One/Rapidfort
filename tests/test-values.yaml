@@ -43,3 +43,7 @@ bbtests:
   enabled: false
 
 bb-version: master
+
+addons:
+  minio:
+    enabled: false
