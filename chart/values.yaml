@@ -256,7 +256,6 @@ rf-scan:
       storageSize: 10Gi
     rf-scanImageDb:
       storageSize: 10Gi
-  # TODO: confirm the volumes and update references.
   volumes:
   - name: local-bucket
     persistentVolumeClaim:
