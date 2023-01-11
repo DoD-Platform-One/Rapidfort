@@ -1,10 +1,10 @@
 secret:
-  aws_access_key_id: FAKEID54G8A4F654GH7T
-  aws_secret_access_key: FAKEKEYxlLONi5IEMW8zA0Va4l0i9yPwfD5AMn0K
+  aws_access_key_id: ""
+  aws_secret_access_key: ""
   aws_default_region: us-east-1
   s3_bucket: fakebucket
   rf_app_admin: ci@repo1.dso.mil
-  rf_app_admin_passwd: p@ssw0rd
+  rf_app_admin_passwd: ""
   rf_app_host: rapidfort.bigbang.dev
   storage_type: "s3"
 
