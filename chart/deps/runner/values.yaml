@@ -109,15 +109,10 @@ volumes:
   - name: scan-storage
     hostPath:
       path: /tmp
-  - name: local-bucket
-    hostPath:
-      path: /opt/rapidfort/local-bucket/
 
 volumeMounts:
   - name: scan-storage
     mountPath: "/tmp"
-  - name: local-bucket
-    mountPath: "/opt/rapidfort/local-bucket"
 
 livenessProbe:
   periodSeconds: 30

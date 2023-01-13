@@ -120,14 +120,9 @@ secret:
     - DEPLOY_MODE
     - RF_VERBOSE
 
-volumes:
-  - name: local-bucket
-    hostPath:
-      path: /opt/rapidfort/local-bucket/
+volumes: {}
 
-volumeMounts:
-  - name: local-bucket
-    mountPath: "/opt/rapidfort/local-bucket"
+volumeMounts: {}
 
 container:
   extra_options: {}
