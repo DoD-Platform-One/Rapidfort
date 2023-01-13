@@ -126,13 +126,8 @@ autoscaling:
 container:
   extra_options: {}
 
-volumes:
-  - name: local-bucket
-    hostPath:
-      path: /opt/rapidfort/local-bucket/
-volumeMounts:
-  - name: local-bucket
-    mountPath: "/opt/rapidfort/local-bucket"
+volumes: {}
+volumeMounts: {}
 
 livenessProbe:
   periodSeconds: 30

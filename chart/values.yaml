@@ -24,11 +24,7 @@ global:
 runner_rf_app_host: ""
 
 sharedPvcs:
-  image-db-shared:
-    storageSize: 10Gi
   imgs-work-dir-shared:
-    storageSize: 200Gi
-  local-bucket:
     storageSize: 200Gi
 
 sc:
@@ -55,19 +51,6 @@ aggregator:
   - name: raid-volume
     persistentVolumeClaim:
       claimName: aggregator-raid-volume
-  - name: local-bucket
-    persistentVolumeClaim:
-      claimName: local-bucket
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: 'app.kubernetes.io/name'
-            operator: In
-            values:
-            - iso-master
-        topologyKey: "kubernetes.io/hostname"
 
 backend:
   enabled: true
@@ -91,20 +74,8 @@ backend:
   PVCs:
     backendImgsWorkDir:
       storageSize: 10Gi
-  volumes:
-  - name: local-bucket
-    persistentVolumeClaim:
-      claimName: local-bucket
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: 'app.kubernetes.io/name'
-            operator: In
-            values:
-            - iso-master
-        topologyKey: "kubernetes.io/hostname"
+  volumes: {}
+  
 
 frontrow:
   enabled: true
@@ -143,12 +114,7 @@ iso-master:
   - name: imgs-work-dir
     persistentVolumeClaim:
       claimName: imgs-work-dir-shared
-  - name: image-db
-    persistentVolumeClaim:
-      claimName: image-db-shared
-  - name: local-bucket
-    persistentVolumeClaim:
-      claimName: local-bucket
+
 
 keycloak:
   enabled: true
@@ -251,25 +217,6 @@ rf-scan:
     redis_host_ha: redis-master
   ingress:
     enabled: false
-  PVCs:
-    rf-scanImgsWorkDir:
-      storageSize: 10Gi
-    rf-scanImageDb:
-      storageSize: 10Gi
-  volumes:
-  - name: local-bucket
-    persistentVolumeClaim:
-      claimName: local-bucket
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: 'app.kubernetes.io/name'
-            operator: In
-            values:
-            - iso-master
-        topologyKey: "kubernetes.io/hostname"
 
 rfapi:
   enabled: true
