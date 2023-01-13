@@ -280,9 +280,6 @@ runner:
   - name: scan-storage
     persistentVolumeClaim:
       claimName: runner-scan-volume
-  - name: local-bucket
-    persistentVolumeClaim:
-      claimName: local-bucket
 
 vulns-db:
   enabled: true
