@@ -16,6 +16,7 @@ secret:
 global:
   # -- This field is used to update the host name in the ingress.
   rf_app_host: ""
+  ingressClassName: ""
   allowed_rf_host: "api.rapidfort.com"
 
 # -- When internal runner traffic is enabled runner defaults to `backend` for it's url
@@ -23,11 +24,7 @@ global:
 runner_rf_app_host: ""
 
 sharedPvcs:
-  image-db-shared:
-    storageSize: 10Gi
   imgs-work-dir-shared:
-    storageSize: 200Gi
-  local-bucket:
     storageSize: 200Gi
 
 sc:
@@ -37,12 +34,12 @@ aggregator:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/aggregator-exe"
-    tag: "1.1.21-rfhardened"
+    tag: "1.1.24-rfhardened"
   initContainers:
     volumePermissions:
       image:
         repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
-        tag: "8.6"
+        tag: "8.7"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -54,33 +51,16 @@ aggregator:
   - name: raid-volume
     persistentVolumeClaim:
       claimName: aggregator-raid-volume
-  - name: local-bucket
-    persistentVolumeClaim:
-      claimName: local-bucket
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: 'app.kubernetes.io/name'
-            operator: In
-            values:
-            - iso-master
-        topologyKey: "kubernetes.io/hostname"
 
 backend:
   enabled: true
-  community_service: 
+  community_service:
     enabled: false
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
-    tag: "1.1.21-rfhardened"
+    tag: "1.1.24-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
-    volumePermissions:
-      image:
-        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
-        tag: "8.6"
     init:
       image:
         repository: "registry1.dso.mil/ironbank/big-bang/base"
@@ -94,30 +74,15 @@ backend:
   PVCs:
     backendImgsWorkDir:
       storageSize: 10Gi
-  volumes:
-  - name: imgs-work-dir
-    persistentVolumeClaim:
-      claimName: imgs-work-dir-shared
-  - name: local-bucket
-    persistentVolumeClaim:
-      claimName: local-bucket
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: 'app.kubernetes.io/name'
-            operator: In
-            values:
-            - iso-master
-        topologyKey: "kubernetes.io/hostname"
+  volumes: {}
+  
 
 frontrow:
   enabled: true
   authUrl: ""
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/frontrow"
-    tag: "1.1.21-rfhardened"
+    tag: "1.1.24-rfhardened"
   imagePullSecrets:
   - name: private-registry
   ingress:
@@ -127,7 +92,12 @@ iso-master:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/iso-master-exe"
-    tag: "1.1.21-rfhardened"
+    tag: "1.1.24-rfhardened"
+  initContainers:
+    init:
+      image:
+        repository: "registry1.dso.mil/ironbank/big-bang/base"
+        tag: "2.0.0"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -135,21 +105,16 @@ iso-master:
     redis_host_ha: redis-master
   ingress:
     enabled: false
-  PVCs:
-    iso-masterImgsWorkDir:
-      storageSize: 10Gi
-    iso-masterImageDb:
-      storageSize: 10Gi
+  # PVCs:
+  #   iso-masterImgsWorkDir:
+  #     storageSize: 10Gi
+  #   iso-masterImageDb:
+  #     storageSize: 10Gi
   volumes:
   - name: imgs-work-dir
     persistentVolumeClaim:
       claimName: imgs-work-dir-shared
-  - name: image-db
-    persistentVolumeClaim:
-      claimName: image-db-shared
-  - name: local-bucket
-    persistentVolumeClaim:
-      claimName: local-bucket
+
 
 keycloak:
   enabled: true
@@ -222,14 +187,26 @@ redis:
     enabled: false
   # -- When enabled adds an extra service for redis to workaround an rfapi bug
   svcWorkaround: true
+  master:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2048Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
 
 rf-scan:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rf-scan-exe"
-    tag: "1.1.21-rfhardened"
+    tag: "1.1.24-rfhardened"
   initContainers:
     volumePermissions:
+      image:
+        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
+        tag: "8.6"
+    init:
       image:
         repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
         tag: "8.6"
@@ -240,44 +217,12 @@ rf-scan:
     redis_host_ha: redis-master
   ingress:
     enabled: false
-  PVCs:
-    rf-scanImgsWorkDir:
-      storageSize: 10Gi
-    rf-scanImageDb:
-      storageSize: 10Gi
-  volumes:
-  - name: imgs-work-dir
-    persistentVolumeClaim:
-      claimName: imgs-work-dir-shared
-  - name: image-db
-    persistentVolumeClaim:
-      claimName: image-db-shared
-  - name: local-bucket
-    persistentVolumeClaim:
-      claimName: local-bucket
-  volumeMounts:
-  - name: imgs-work-dir
-    mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
-  - name: image-db
-    mountPath: "/opt/rapidfort/iso-master/app/image_db"
-  - name: local-bucket
-    mountPath: "/opt/rapidfort/local-bucket"
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: 'app.kubernetes.io/name'
-            operator: In
-            values:
-            - iso-master
-        topologyKey: "kubernetes.io/hostname"
 
 rfapi:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfapi-exe"
-    tag: "1.1.21-rfhardened"
+    tag: "1.1.24-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
     init:
@@ -298,7 +243,7 @@ rfpubsub:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe"
-    tag: "1.1.21-rfhardened"
+    tag: "1.1.24-rfhardened"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -314,7 +259,7 @@ runner:
     name: rf-secret
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/runner"
-    tag: "1.1.23-rfhardened"
+    tag: "1.1.24-rfhardened"
   initContainers:
     init:
       enabled: true # this enables to add init container to keep waiting for dependent service to start
@@ -328,6 +273,33 @@ runner:
     redis_host_ha: redis-master
   ingress:
     enabled: false
+  PVCs:
+    scanVolume:
+      storageSize: 10Gi    
+  volumes:
+  - name: scan-storage
+    persistentVolumeClaim:
+      claimName: runner-scan-volume
+
+vulns-db:
+  enabled: true
+  image:
+    repository: "registry1.dso.mil/ironbank/rapidfort/vulns-db"
+    tag: "1.1.24-rfhardened"
+  initContainers:
+    init:
+      enabled: true
+      image:
+        repository: "registry1.dso.mil/ironbank/bitnami/redis"
+        tag: "7.0.5"  
+  env:
+    rfvdb_host: "api.rapidfort.com"
+    redis_host: redis-master
+    redis_host_ha: redis-master
+  ingress:
+    enabled: false
+  imagePullSecrets:
+  - name: private-registry
 
 logger:
   enabled: false
@@ -351,7 +323,7 @@ istio:
 
 networkPolicies:
   enabled: false
-  ingressLabels: 
+  ingressLabels:
     app: istio-ingressgateway
     istio: ingressgateway
   # -- IP range of api.rapidfort.com
@@ -372,3 +344,6 @@ bbtests:
     envs:
       URL: 'http://test.test'
       # URL: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
+  addons:
+    minio:
+      enabled: false

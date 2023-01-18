@@ -158,3 +158,53 @@ bigbang.dev/istioVersion: {{ .Values.istio.git.tag | trimSuffix (regexFind "-bb.
 bigbang.dev/istioVersion: {{ .Values.istio.git.branch }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Check for git ref, given package values map
+*/}}
+{{- define "checkGitRef" -}}
+{{- $git := (dig "git" dict .) -}}
+{{- if not $git.repo -}}
+false
+{{- else -}}
+{{- if $git.commit -}}
+{{- if not $git.branch -}}
+false
+{{- end -}}
+true
+{{- else if $git.semver -}}
+true
+{{- else if $git.tag -}}
+true
+{{- else if $git.branch -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- /* Returns a space separated string of unique namespaces where `<package>.enabled` and key held in `.constraint` are true */ -}}
+{{- /* [Optional] Set `.constraint` to the key under <package> holding a boolean that must be true to be enabled */ -}}
+{{- /* [Optional] Set `.default` to `true` to enable a `true` result when the `constraint` key is not found */ -}}
+{{- /* To use: $ns := compact (splitList " " (include "uniqueNamespaces" (merge (dict "constraint" "some.boolean" "default" true) .))) */ -}}
+{{- define "uniqueNamespaces" -}}
+  {{- $namespaces := list -}}
+  {{- range $pkg, $vals := .Values.packages -}}
+    {{- if (dig "enabled" true $vals) -}}
+      {{- $constraint := $vals -}}
+      {{- range $key := split "." (default "" $.constraint) -}}
+        {{- $constraint = (dig $key dict $constraint) -}}
+      {{- end -}}
+      {{- if (ternary $constraint (default false $.default) (kindIs "bool" $constraint)) -}}
+        {{- $namespaces = append $namespaces (dig "namespace" "name" (include "resourceName" $pkg) $vals) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- join " " (uniq $namespaces) | trim -}}
+{{- end -}}
+
+{{- /* Prints istio version */ -}}
+{{- define "istioVersion" -}}
+{{ regexReplaceAll "-bb.+$" (coalesce .Values.istio.git.semver .Values.istio.git.tag .Values.istio.git.branch) "" }}
+{{- end -}}

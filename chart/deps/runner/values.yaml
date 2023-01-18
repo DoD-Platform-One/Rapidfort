@@ -58,7 +58,8 @@ ingress:
           pathType: ImplementationSpecific
   tls: []
 
-securityContext: {}
+securityContext:
+  privileged: true
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -105,17 +106,12 @@ env:
   rfvdb_host: "frontrow.rapidfort.com"
 
 volumes:
-  - name: dockersock
-    hostPath:
-      path: /var/run/docker.sock
-  - name: docker-tmp
+  - name: scan-storage
     hostPath:
       path: /tmp
 
 volumeMounts:
-  - name: dockersock
-    mountPath: "/var/run/docker.sock"
-  - name: docker-tmp
+  - name: scan-storage
     mountPath: "/tmp"
 
 livenessProbe:

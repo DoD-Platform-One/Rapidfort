@@ -1,27 +1,29 @@
-# Default values for aggregator.
+# Default values for vulns-db.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository:  274057717848.dkr.ecr.us-east-1.amazonaws.com/aggregator
+  repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
+global:
+  rf_app_host: ""
 
-initContainers:
-  volumePermissions:
-    image:
-      repository: public.ecr.aws/w9i9p8n5/init
-      tag: latest
+initContainer:
+  image:
+    repository: public.ecr.aws/rapidfort/init 
+    pullPolicy: IfNotPresent
+    tag: "latest"
 
 imagePullSecrets: []
-nameOverride: "aggregator"
-fullnameOverride: "aggregator"
+nameOverride: "vulns-db"
+fullnameOverride: "vulns-db"
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -30,16 +32,27 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
+service:
+  type: ClusterIP
+  port: 80
+  container_port: 8080
 
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  hosts:
+    - host:
+      paths:
+        - /vulns-db/.*
+      paths:
+        - path: /vulns-db/.*
+          pathType: ImplementationSpecific
+  tls: []
+
+podSecurityContext: {}
 securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -68,32 +81,26 @@ affinity: {}
 
 env:
   rf_debug: false
-  rf_api_server: iso-master
-  redis_host: redis
+  redis_host: "redis"
   redis_port: "6379"
   redis_pwd: ""
+  redis_host_ha: "redis"
+  redis_port_ha: "6379"
+  redis_pwd_ha: ""
+  redis_db_ha: 4
+  rfvdb_host: "frontrow.rapidfort.io"
 
-secret:
-  name: "rf-secret"
-  keys:
-    - RF_S3_BUCKET
-    - RF_STORAGE_TYPE
-    - AWS_ACCESS_KEY_ID
-    - AWS_DEFAULT_REGION
-    - AWS_SECRET_ACCESS_KEY
-    - RF_GS_CREDS
-    - RF_ROLE_ARN
-    - RF_APP_HOST
-    - DEPLOY_MODE
-    - RF_VERBOSE    
+livenessProbe:
+  periodSeconds: 30
+  initialDelaySeconds: 1
+  timeoutSeconds: 10
 
-container:
-  extra_options: {}
+probeCommand:  
+  httpGet:
+    path: /
+    port: vulns-db-http
 
-volumes:
-  - name: raid-volume
-    hostPath:
-      path: /opt/rapidfort/data/shared/aggregator/
-volumeMounts:
-  - name: raid-volume
-    mountPath: "/mnt/raid"
+readinessProbe:
+  periodSeconds: 30
+  initialDelaySeconds: 1
+  timeoutSeconds: 10 

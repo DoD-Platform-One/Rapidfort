@@ -35,16 +35,9 @@ spec:
       {{ tpl (toYaml (index .Values.volumes )) . | nindent 6 }}
       {{ end }}
       initContainers:
-        - name: volume-permissions
-          image: "{{ .Values.initContainers.volumePermissions.image.repository }}:{{ .Values.initContainers.volumePermissions.image.tag | default .Chart.AppVersion }}"
-          command:
-          - /bin/bash
-          - -c
-          - chmod 777 /opt/rapidfort/iso-master/app/imgs_work_dir
-          volumeMounts:
-            {{ if .Values.volumeMounts }}
-            {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
-            {{ end }}       
+      {{- if .Values.init_containers }}
+      {{ tpl (toYaml (index .Values.init_containers )) . | nindent 6 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -67,6 +60,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: LC_ALL
+              value: "en_US.UTF-8"          
             - name: RF_DEBUG
               value: "{{ .Values.env.rf_debug }}"
             #start: Tunneling stub env vars

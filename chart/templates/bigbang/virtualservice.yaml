@@ -70,6 +70,16 @@ spec:
           number: {{ index .Values "rf-scan" "service" "port" | default "80" }}
         host: rf-scan
 
+  - name: vulns-db
+    match:
+    - uri:
+        regex: "/vulns-db/.*"
+    route:
+    - destination:
+        port:
+          number: {{ index .Values "vulns-db" "service" "port" | default "80" }}
+        host: vulns-db
+
   - name: rfapi-websocket
     match:
     - uri:

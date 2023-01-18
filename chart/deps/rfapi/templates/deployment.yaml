@@ -64,6 +64,8 @@ spec:
             {{ tpl (toYaml (index .Values.extraVolumeMounts )) . | nindent 12 }}
             {{ end }}      
           env:
+            - name: LC_ALL
+              value: "en_US.UTF-8"            
             - name: RF_API_PORT
               value: "{{ .Values.service.container_port }}"
             - name: "RF_DEBUG"

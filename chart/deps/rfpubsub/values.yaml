@@ -111,8 +111,8 @@ tolerations: []
 
 affinity: {}
 
-volumes:
-volumeMounts:
+volumes: {}
+volumeMounts: {}
 
 container:
   extra_options: {}
