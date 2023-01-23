@@ -20,7 +20,7 @@ spec:
         command:
           - "/bin/sh"
           - "-c"
-          # - "mysql --host={{ .Values.mysql.mysqlServer}} --user=root --password={{ .Values.mysql.auth.rootPassword }} < /data/init.sql"
+          - "mysql --host={{ .Values.mysql.mysqlServer}} --user=root --password={{ .Values.mysql.auth.rootPassword }} < /data/init.sql"
           - sleep 3600
         volumeMounts:
         - name: init-config
