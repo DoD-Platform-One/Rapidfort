@@ -18,13 +18,17 @@ networkPolicies:
 
 secret:
 {{- with .Values.rapidfort.objectStorage }}
-{{- if and .accessKey .accessSecret .bucket }}
+{{- if and .aws_access_key_id .aws_secret_access_key .s3_bucket }}
   aws_access_key_id: {{ .aws_access_key_id }}
   aws_secret_access_key: {{ .aws_secret_access_key }}
   aws_default_region: {{ .aws_default_region }}
   s3_bucket: {{ .s3_bucket }}
+  rf_app_admin: {{ .rf_app_admin }}
+  rf_app_admin_password: {{ .rf_app_admin_password }}
+  storage_type: {{ .storage_type }}  
 {{- end }}
 {{- end }}
+
   rf_app_host: {{printf "%s.%s" "rapidfort" .Values.domain }}
 
 {{ if eq .Values.domain "bigbang.dev" }}
