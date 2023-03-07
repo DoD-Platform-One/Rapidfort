@@ -28,7 +28,7 @@ spec:
     protocol: HTTPS
   # resolution: DNS
   location: MESH_EXTERNAL
-{{ if .Values.secret.db.isExternalDb }}
+{{ if not .Values.mysql.enabled }}
 apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
@@ -36,7 +36,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
-  - {{ .Values.secret.db.host }}
+  - {{ .Values.mysql.auth.host }}
   ports:
   - number: 3306
     name: mysql
@@ -44,3 +44,4 @@ spec:
   resolution: DNS
   location: MESH_EXTERNAL
 {{ end }}
+{{ end }} 
