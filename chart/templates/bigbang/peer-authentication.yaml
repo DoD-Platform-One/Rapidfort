@@ -8,6 +8,7 @@ spec:
   mtls:
     mode: {{ .Values.istio.mtls.mode | default "PERMISSIVE" }}
 ---
+{{- if .Values.mysql.enabled }}
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
@@ -19,6 +20,7 @@ spec:
       app.kubernetes.io/name: mysql
   mtls:
     mode: STRICT
+{{ end }}
 ---
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication

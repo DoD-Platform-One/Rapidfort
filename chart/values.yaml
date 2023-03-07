@@ -172,6 +172,8 @@ mysql:
     ## NOTE: When it's set the auth.rootPassword, auth.password, auth.replicationPassword are ignored.
     ##
     existingSecret: ""
+    host: mysql
+    port: 3306
 
 redis:
   enabled: true

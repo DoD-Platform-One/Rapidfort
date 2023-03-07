@@ -1,0 +1,17 @@
+{{- if and ( .Values.networkPolicies.enabled ) ( not .Values.mysql.enabled) ( .Values.secret.db.isExternalDb ) }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-rds
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector: 
+    matchExpressions:
+    - {key: app.kubernetes.io/name, operator: In, values: [aggregator, backend, iso-master, rf-scan, rfpubsub, keycloak]}
+  policyTypes:
+  - Egress
+  egress:
+  - ports:
+    - port: {{ .Values.mysql.auth.port }}
+      protocol: TCP
+{{- end }}

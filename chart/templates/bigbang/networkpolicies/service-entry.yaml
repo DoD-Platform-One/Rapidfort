@@ -27,5 +27,20 @@ spec:
     name: https
     protocol: HTTPS
   # resolution: DNS
-  location: MESH_EXTERNAL  
+  location: MESH_EXTERNAL
+{{ if .Values.secret.db.isExternalDb }}
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: allow-external-rds
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts:
+  - {{ .Values.secret.db.host }}
+  ports:
+  - number: 3306
+    name: mysql
+    protocol: TCP
+  resolution: DNS
+  location: MESH_EXTERNAL
 {{ end }}

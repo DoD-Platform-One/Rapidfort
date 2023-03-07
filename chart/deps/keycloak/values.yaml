@@ -96,6 +96,7 @@ db:
   addr: "mysql"
   user: "keycloak"
   password: "RF-123579"
+  port: "3306"
   jdbc_params: "useSSL=false"
   proxy_address_forwarding: "true"
   java_opts_append: "-Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled"
