@@ -27,7 +27,18 @@ global:
   rf_app_host: ""
 
 mysql:
-  auth: {}
+  auth:
+    host: "mysql"
+    username: "keycloak"
+    password: "RF-123579"
+    port: "3306"
+
+db:
+  vendor: "MYSQL"
+  jdbc_params: "useSSL=false"
+  proxy_address_forwarding: "true"
+  java_opts_append: "-Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled"
+
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -93,16 +104,6 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-db:
-  vendor: "MYSQL"
-  addr: "mysql"
-  user: "keycloak"
-  password: "RF-123579"
-  port: "3306"
-  jdbc_params: "useSSL=false"
-  proxy_address_forwarding: "true"
-  java_opts_append: "-Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled"
 
 env:
   public_ingress_class: true
