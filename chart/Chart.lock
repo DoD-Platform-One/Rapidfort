@@ -39,7 +39,7 @@ dependencies:
   repository: file://deps/vulns-db/
   version: 1.1.0
 - name: gluon
-  repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
+  repository: oci://registry1.dso.mil/bigbang
   version: 0.3.1
-digest: sha256:b18460e5721a70994ddb8d8ed1cd44911ef61680f16004f6bf5f2e80cf47654a
-generated: "2023-01-05T11:45:39.773307-08:00"
+digest: sha256:7778ae56882c3ad160b8d2b26e73410e0b42cb56aa3f72954c993c0e3dcdb8ab
+generated: "2023-03-07T11:41:12.602157-08:00"

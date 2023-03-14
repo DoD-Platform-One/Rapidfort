@@ -1,6 +1,6 @@
 # rapidfort
 
-![Version: 1.1.29-bb.0](https://img.shields.io/badge/Version-1.1.27--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.27](https://img.shields.io/badge/AppVersion-1.1.27-informational?style=flat-square)
+![Version: 1.1.30-bb.0](https://img.shields.io/badge/Version-1.1.30--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.30](https://img.shields.io/badge/AppVersion-1.1.30-informational?style=flat-square)
 
 Automated Container Hardening
 

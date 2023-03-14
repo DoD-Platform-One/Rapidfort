@@ -61,3 +61,7 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{ define "db_url" }}
+{{- printf "mysql+mysqldb://%s:%s@%s:%s/%s" .Values.global.db.auth.username .Values.global.db.auth.password .Values.global.db.auth.host .Values.global.db.auth.port .Values.global.db.auth.database }}
+{{- end }}
