@@ -20,8 +20,9 @@ spec:
         command:
           - "/bin/sh"
           - "-c"
-          - "mysql --host={{ .Values.mysql.mysqlServer}} --user=root --password={{ .Values.mysql.auth.rootPassword }} < /data/init.sql"
-          - sleep 3600
+          - |
+            mysql --port={{ .Values.global.db.auth.port }} --host={{ .Values.global.db.auth.host }} --user={{ .Values.global.db.auth.username }} --password={{ .Values.global.db.auth.password }} < /data/init.sql
+            x=$(echo $?); curl -fsI -X POST http://localhost:15020/quitquitquit && exit $x
         volumeMounts:
         - name: init-config
           mountPath: /data
