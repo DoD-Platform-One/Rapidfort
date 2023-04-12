@@ -5,8 +5,14 @@ domain: {{ default .Values.domain .Values.hostname }}
 istio:
   enabled: {{ .Values.istio.enabled }}
   rapidfort:
+    enabled: {{ .Values.istio.enabled }}
     gateways:
     - istio-system/{{ default "public" .Values.rapidfort.ingress.gateway }}
+
+keycloak:
+  initContainers:
+    init_mysql:
+      enabled: false
 
 networkPolicies:
   enabled: {{ .Values.networkPolicies.enabled }}

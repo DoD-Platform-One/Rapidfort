@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.30-bb.1]
+- Updated Rapidfort Flux Helm Chart.
+
 ## [1.1.30-bb.0]
 - Updated Rapidfort Bigbang Helmchart for supporting External RDS Database Connection.
 
