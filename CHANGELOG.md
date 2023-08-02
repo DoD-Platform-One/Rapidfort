@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.30-bb.2]
+- Updating the README to point at the main RapidFort documentation.
+
 ## [1.1.30-bb.1]
 - Updated Rapidfort Flux Helm Chart.
 
