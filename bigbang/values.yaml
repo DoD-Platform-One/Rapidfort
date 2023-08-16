@@ -31,11 +31,47 @@ domain: bigbang.dev
 networkPolicies:
   enabled: true
 
-istiooperator:
+istioOperator:
   enabled: true
 
 istio:
   enabled: true
+
+neuvector:
+  enabled: false
+
+kyvernoPolicies:
+  values:
+    policies:
+      disallow-privileged-containers:
+        parameters:
+          excludeContainers:
+            - iso-master*
+            - runner*
+      restrict-host-path-mount-pv:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed paths for hostPath volumes to mount
+          allow:
+            - /var/run/docker.sock
+            - /tmp
+      restrict-host-path-mount:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed paths for hostPath volumes to mount
+          allow:
+            - /var/run/docker.sock
+            - /tmp
+      restrict-host-path-write:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          # -- List of allowed paths for hostPath volumes to mount as read/write
+          allow:
+            - /var/run/docker.sock
+            - /tmp
 
 gatekeeper:
   enabled: true
@@ -45,6 +81,7 @@ gatekeeper:
         parameters:
           excludedResources:
           - 'rapidfort/iso-master'
+          - 'rapidfort/runner'
       allowedHostFilesystem:
         parameters:
           allowedHostPaths:
@@ -83,16 +120,19 @@ promtail:
 loki:
   enabled: false
 
-eckoperator:
+eckOperator:
   enabled: false
 
-logging:
+elasticsearchKibana:
   enabled: false
 
 fluentbit:
   enabled: false
 
 monitoring:
+  enabled: false
+
+grafana:
   enabled: false
 
 twistlock:
