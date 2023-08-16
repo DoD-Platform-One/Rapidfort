@@ -38,7 +38,7 @@ istio:
   enabled: true
 
 neuvector:
-  enabled: true
+  enabled: false
 
 gatekeeper:
   enabled: true
