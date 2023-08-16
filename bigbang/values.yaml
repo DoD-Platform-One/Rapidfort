@@ -31,7 +31,7 @@ domain: bigbang.dev
 networkPolicies:
   enabled: true
 
-istiooperator:
+istioOperator:
   enabled: true
 
 istio:
@@ -84,10 +84,10 @@ promtail:
 loki:
   enabled: false
 
-eckoperator:
+eckOperator:
   enabled: false
 
-logging:
+elasticsearchKibana:
   enabled: false
 
 fluentbit:
