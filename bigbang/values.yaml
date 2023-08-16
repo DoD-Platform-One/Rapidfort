@@ -99,6 +99,9 @@ fluentbit:
 monitoring:
   enabled: false
 
+grafana:
+  enabled: false
+
 twistlock:
   enabled: false
 
