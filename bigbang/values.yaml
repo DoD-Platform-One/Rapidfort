@@ -37,6 +37,9 @@ istioOperator:
 istio:
   enabled: true
 
+neuvector:
+  enabled: true
+
 gatekeeper:
   enabled: true
   values:
