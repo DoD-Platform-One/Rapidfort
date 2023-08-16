@@ -45,6 +45,7 @@ gatekeeper:
         parameters:
           excludedResources:
           - 'rapidfort/iso-master'
+          - 'rapidfort/runner'
       allowedHostFilesystem:
         parameters:
           allowedHostPaths:
