@@ -8,7 +8,7 @@ image:
   repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-global:
+rf_global:
   rf_app_host: ""
 
 initContainer:

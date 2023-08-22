@@ -31,7 +31,7 @@ env:
   rf_debug: "false"
   communityUserId: "" #only applies for SAAS Prod
   communityOrgId: "" #only applies for SAAS Prod
-global:
+rf_global:
   allowed_rf_host: api.rapidfort.com
   rf_app_host: ""
 

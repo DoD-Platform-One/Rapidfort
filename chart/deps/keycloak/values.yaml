@@ -23,7 +23,7 @@ imagePullSecrets: []
 nameOverride: "keycloak"
 fullnameOverride: "keycloak"
 
-global:
+rf_global:
   rf_app_host: ""
 
 mysql:

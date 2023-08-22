@@ -29,7 +29,7 @@ secret:
     - DEPLOY_MODE
     - RF_VERBOSE    
 
-global:
+rf_global:
   rf_app_host: ""
 
 imagePullSecrets: []
