@@ -28,6 +28,19 @@ rapidfort:
 # Big Bang 
 domain: bigbang.dev
 
+global:
+  # -- This field is used to update the host name in the ingress.
+  rf_app_host: ""
+  ingressClassName: ""
+  allowed_rf_host: "api.rapidfort.com"
+  db:
+    auth:
+      host: "mysql"
+      username: "mysql"
+      password: "mysql"
+      port: "3306"
+      database: "standalone"  
+
 networkPolicies:
   enabled: true
 
