@@ -1,7 +1,7 @@
 {{- if .Values.ingress.websocket.enabled -}}
 {{- $fullName := include "rfapi.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- $rf_host := .Values.global.rf_app_host }}
+{{- $rf_host := .Values.rf_global.rf_app_host }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -13,7 +13,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: {{ default .Values.ingress.websocket.className .Values.global.ingressClassName }}
+  ingressClassName: {{ default .Values.ingress.websocket.className .Values.rf_global.ingressClassName }}
   {{- if .Values.ingress.websocket.tls }}
   tls:
     {{- range .Values.ingress.websocket.tls }}
@@ -48,7 +48,7 @@ spec:
 {{- if .Values.ingress.http.enabled -}}
 {{- $fullName := include "rfapi.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- $rf_host := .Values.global.rf_app_host }}
+{{- $rf_host := .Values.rf_global.rf_app_host }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -60,7 +60,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: {{ default .Values.ingress.http.className .Values.global.ingressClassName }}
+  ingressClassName: {{ default .Values.ingress.http.className .Values.rf_global.ingressClassName }}
   {{- if .Values.ingress.http.tls }}
   tls:
     {{- range .Values.ingress.http.tls }}

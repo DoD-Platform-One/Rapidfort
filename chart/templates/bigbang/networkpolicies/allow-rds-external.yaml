@@ -12,6 +12,6 @@ spec:
   - Egress
   egress:
   - ports:
-    - port: {{ .Values.global.db.auth.port }}
+    - port: {{ .Values.rf_global.db.auth.port }}
       protocol: TCP
 {{- end }}

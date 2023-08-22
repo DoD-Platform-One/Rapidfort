@@ -28,7 +28,7 @@ rapidfort:
 # Big Bang 
 domain: bigbang.dev
 
-global:
+rf_global:
   # -- This field is used to update the host name in the ingress.
   rf_app_host: ""
   ingressClassName: ""

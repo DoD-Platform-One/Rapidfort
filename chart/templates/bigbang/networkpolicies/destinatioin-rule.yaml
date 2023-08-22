@@ -5,7 +5,7 @@
 #   name: community-service
 #   namespace: {{ .Release.Namespace }}
 # spec:
-#     host: {{ .Values.global.allowed_rf_host }}
+#     host: {{ .Values.rf_global.allowed_rf_host }}
 #     trafficPolicy:
 #       tls:
 #         mode: SIMPLE

@@ -1,7 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "iso-master.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- $rf_host := .Values.global.rf_app_host }}
+{{- $rf_host := .Values.rf_global.rf_app_host }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -13,7 +13,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: {{ default .Values.ingress.className .Values.global.ingressClassName }}
+  ingressClassName: {{ default .Values.ingress.className .Values.rf_global.ingressClassName }}
 {{- if .Values.ingress.tls }}
   tls:
   {{- range .Values.ingress.tls }}
