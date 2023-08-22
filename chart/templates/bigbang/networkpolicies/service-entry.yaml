@@ -37,9 +37,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
-  - {{ .Values.mysql.auth.host }}
+  - {{ .Values.global.db.auth.host }}
   ports:
-  - number: 3306
+  - number: {{ .Values.global.db.auth.port }}
     name: mysql
     protocol: TCP
   resolution: DNS

@@ -1,6 +1,4 @@
 secret:
-  aws_access_key_id: ""
-  aws_secret_access_key: ""
   aws_default_region: ""
   s3_bucket: ""
 
@@ -18,6 +16,13 @@ global:
   rf_app_host: ""
   ingressClassName: ""
   allowed_rf_host: "api.rapidfort.com"
+  db:
+    auth:
+      host: "mysql"
+      username: "mysql"
+      password: "mysql"
+      port: "3306"
+      database: "standalone"
 
 # -- When internal runner traffic is enabled runner defaults to `backend` for it's url
 # if the backend service name is changed, update it here
@@ -152,11 +157,14 @@ mysql:
   initdbScriptsConfigMap: "init-db-configuration"
   fullnameOverride: "mysql"
 
+  image:
+    registry: "registry1.dso.mil/ironbank"
+    repository: "bitnami/mysql8"
+    tag: "8.0.29-debian-10-r37"
+    pullSecrets:
+    - private-registry
+
   auth:
-    ## @param auth.rootPassword Password for the `root` user. Ignored if existing secret is provided
-    ## ref: https://github.com/bitnami/bitnami-docker-mysql#setting-the-root-password-on-first-run
-    ##
-    rootPassword: "mysql"
     ## @param auth.database Name for a custom database to create
     ## ref: https://github.com/bitnami/bitnami-docker-mysql/blob/master/README.md#creating-a-database-on-first-run
     ##

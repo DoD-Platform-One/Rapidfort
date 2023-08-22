@@ -1,15 +1,22 @@
 # rapidfort
 
-![Version: 1.1.29-bb.0](https://img.shields.io/badge/Version-1.1.27--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.27](https://img.shields.io/badge/AppVersion-1.1.27-informational?style=flat-square)
+![Version: 1.1.30-bb.3](https://img.shields.io/badge/Version-1.1.30--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.30](https://img.shields.io/badge/AppVersion-1.1.30-informational?style=flat-square)
 
-Automated Container Hardening
+Automated Container Optimization
 
-## Learn More
-* [Application Overview](docs/overview.md)
-* [Other Documentation](docs/)
+## Introduction
+This is README is a short summary of the RapidFort platform and what is required to deploy RapidFort.
+
+RapidFort perfectly compliments the Big Bang initiative in two major ways:
+1. It forms part of the DevSecOps (DSOP) Stack to improve security in customers build pipelines
+2. Images hardened by RapidFort (IronBank) can provide the base infrastructure within the DSOP Software Factory.
+
+For more information see:
+* [RapidFort Documentation](https://docs.rapidfort.com/)
+* [RapidFort Big Bang Documentation](https://docs.rapidfort.com/federal-zone/big-bang-platform-one)
+
 
 ## Prerequisites
-
 1. Kubernetes Cluster version 1.20+
 2. Kubernetes config installed in `~/.kube/config`
 3. [Helm](https://helm.sh/docs/intro/install/) version 3.0.0+
@@ -20,102 +27,18 @@ Automated Container Hardening
         * Access Key ID
         * Secret Access Key
 
+
 ### AWS Resources
 RapidFort needs an S3 bucket and an IAM user and policy with Read/List/Write permissions for the S3 bucket.
+Please refer to the [RapidFort AWS s3 documentation](https://docs.rapidfort.com/rapidfort-on-premises/rapidfort-aws-prerequisites#s3-bucket) for full details.
 
-1. Create an S3 bucket in the same region in which RapidFort will be deployed (e.g. <code>rapidfort-s3</code>).
-2. Create an IAM user (e.g. <code>rapidfort-user</code>). Generate and download an Access Key ID and Secret Access Key.
-3. Create an IAM policy that gives Read/List/Write permissions for the RapidFort S3 bucket using the sample JSON code.
-   ```json
-   {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Sid": "VisualEditor0",
-          "Effect": "Allow",
-          "Action": [
-            "s3:DeleteObject",
-            "s3:PutObject",
-            "s3:GetObject",
-            "s3:DescribeJob",
-            "s3:ListBucket"
-          ],
-          "Resource": [
-            "<S3_BUCKET_ARN>",
-            "<S3_BUCKET_ARN>/*"
-          ]
-        }
-      ]
-   }
-   ```
-   **Example: AWS Commercial**
-   ```json
-   {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Sid": "VisualEditor0",
-          "Effect": "Allow",
-          "Action": [
-            "s3:DeleteObject",
-            "s3:PutObject",
-            "s3:GetObject",
-            "s3:DescribeJob",
-            "s3:ListBucket"
-          ],
-          "Resource": [
-            "arn:aws:s3:::rapidfort-s3",
-            "arn:aws:s3:::rapidfort-s3/*"
-          ]
-        }
-      ]
-   }
-   ```
-   **Example: AWS GovCloud**
-   ```json
-   {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Sid": "VisualEditor0",
-          "Effect": "Allow",
-          "Action": [
-            "s3:DeleteObject",
-            "s3:PutObject",
-            "s3:GetObject",
-            "s3:DescribeJob",
-            "s3:ListBucket"
-          ],
-          "Resource": [
-            "arn:aws-gov:s3:::rapidfort-s3",
-            "arn:aws-gov:s3:::rapidfort-s3/*"
-          ]
-        }
-      ]
-   }
-   ```
-4. Attach the policy to the IAM user.
     
 ### Deploy RapidFort
-1. Clone the RapidFort Repository.
-2. Update <code>values.yaml</code> with your deployment information. For more information, please refer to [Parameters](#parameters).
-3. Run the following command to install RapidFort:
-   ```
-   cd rapidfort/chart
-   helm upgrade --install rapidfort ./ -f values.yaml -n <namespace>
-   ```
-   For example, if you would like to deploy RapidFort in the <code>rapidfort</code> namespace:
-   ```
-   cd rapidfort/chart
-   helm upgrade --install rapidfort ./ -f values.yaml -n rapidfort
-   ```
-4. Wait for a RapidFort welcome email. This will contain a link to the RapidFort dashboard.
-5. Visit the RapidFort dashboard. You will be guided through the process for contacting RapidFort Support to request a license.
+Please refer to the [RapidFort Big Bang documentation](https://docs.rapidfort.com/federal-zone/big-bang-platform-one) for full details.
+For more Helm Chart information, please refer to [RapidFort Helm documentation](https://docs.rapidfort.com/rapidfort-on-premises/helm-chart-aws).
 
-For more information, please refer to the [RapidFort user documentation](https://docs.rapidfort.com/rapidfort-on-premises/helm-chart-aws).
 
 ## Parameters
-
 
 ### Common parameters
 

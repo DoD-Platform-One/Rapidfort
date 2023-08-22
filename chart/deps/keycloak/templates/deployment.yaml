@@ -39,7 +39,7 @@ spec:
         command:
           - "/bin/sh"
           - "-c"
-          - "until mysql --host=mysql --user={{ .Values.db.user }} --password={{ .Values.db.password }} --connect-timeout=10 --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
+          - "until mysql --host={{ default .Values.mysql.auth.host .Values.global.db.auth.host }} --user={{ default .Values.mysql.auth.username }} --password={{ default .Values.mysql.auth.password }} --connect-timeout=10 --execute=\"SELECT 1;\"; do echo waiting for mysql; sleep 1; done;"
       {{- end }}       
       containers:
         - name: {{ .Chart.Name }}
@@ -51,13 +51,13 @@ spec:
           - name: "DB_VENDOR"
             value: "{{ .Values.db.vendor }}"
           - name: "DB_ADDR"
-            value: "{{ .Values.mysql.auth.host }}"
+            value: "{{ default .Values.mysql.auth.host .Values.global.db.auth.host }}"
           - name: "DB_USER"
-            value: "{{ .Values.mysql.auth.username }}"
+            value: "{{ default .Values.mysql.auth.username }}"
           - name: "DB_PASSWORD"
-            value: "{{ .Values.mysql.auth.password }}"
+            value: "{{ default .Values.mysql.auth.password }}"
           - name: "DB_PORT"
-            value: "{{ .Values.mysql.auth.port }}"            
+            value: "{{ default .Values.mysql.auth.port .Values.global.db.auth.port }}"            
           - name: "JDBC_PARAMS"
             value: "{{ .Values.db.jdbc_params }}"
           - name: "PROXY_ADDRESS_FORWARDING"
