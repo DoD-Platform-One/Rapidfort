@@ -39,8 +39,8 @@ global:
       username: "mysql"
       password: "mysql"
       port: "3306"
-      database: "standalone"  
-
+      database: "standalone"
+      
 networkPolicies:
   enabled: true
 
