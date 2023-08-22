@@ -25,7 +25,10 @@ fullnameOverride: "keycloak"
 
 rf_global:
   rf_app_host: ""
-  db: {}
+  db:
+    auth:
+      host: ""
+      port: ""  
 
 mysql:
   auth:
