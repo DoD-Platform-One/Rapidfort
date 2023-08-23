@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts: 
-  - {{ .Values.rf_global.allowed_rf_host }}
+  - {{ .Values.global.allowed_rf_host }}
   ports:
   - number: 443
     name: https
@@ -37,9 +37,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
-  - {{ .Values.rf_global.db.auth.host }}
+  - {{ .Values.global.db.auth.host }}
   ports:
-  - number: {{ .Values.rf_global.db.auth.port }}
+  - number: {{ .Values.global.db.auth.port }}
     name: mysql
     protocol: TCP
   resolution: DNS

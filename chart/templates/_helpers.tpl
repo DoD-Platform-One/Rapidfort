@@ -63,5 +63,5 @@ Create the name of the service account to use
 {{- end }}
 
 {{ define "db_url" }}
-{{- printf "mysql+mysqldb://%s:%s@%s:%s/%s" .Values.rf_global.db.auth.username .Values.rf_global.db.auth.password .Values.rf_global.db.auth.host .Values.rf_global.db.auth.port .Values.rf_global.db.auth.database }}
+{{- printf "mysql+mysqldb://%s:%s@%s:%s/%s" .Values.global.db.auth.username .Values.global.db.auth.password .Values.global.db.auth.host .Values.global.db.auth.port .Values.global.db.auth.database }}
 {{- end }}

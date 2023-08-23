@@ -12,12 +12,12 @@ imagePullSecrets: []
 nameOverride: "frontrow"
 fullnameOverride: "frontrow"
 
-rf_global:
+global:
   rf_app_host: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
