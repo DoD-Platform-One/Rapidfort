@@ -2,7 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [1.1.30-bb.4]
+## [1.1.30-bb.5]
+- Update Helm chart for adding annotation for service account iam role access
+
+## [1.1.30-bb.5]
 - Update Helm chart to support External DB.
 
 ## [1.1.30-bb.3]
