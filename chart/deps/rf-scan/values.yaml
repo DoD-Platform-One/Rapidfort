@@ -9,7 +9,7 @@ image:
   repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan
   pullPolicy: IfNotPresent
 
-global:
+rf_global:
   rf_app_host: ""
 
 initContainers:

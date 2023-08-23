@@ -14,7 +14,7 @@ initContainers:
       repository: "public.ecr.aws/rapidfort/init"
       tag: "latest"
 
-global:
+rf_global:
   rf_app_host:
   container_engine: "podman"
 

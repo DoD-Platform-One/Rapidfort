@@ -22,7 +22,7 @@ imagePullSecrets: []
 nameOverride: "runner"
 fullnameOverride: "runner"
 
-global:
+rf_global:
   rf_app_host: ""
 
 serviceAccount:

@@ -12,7 +12,7 @@ imagePullSecrets: []
 nameOverride: "frontrow"
 fullnameOverride: "frontrow"
 
-global:
+rf_global:
   rf_app_host: ""
 
 serviceAccount:

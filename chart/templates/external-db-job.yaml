@@ -21,7 +21,7 @@ spec:
           - "/bin/sh"
           - "-c"
           - |
-            mysql --port={{ .Values.global.db.auth.port }} --host={{ .Values.global.db.auth.host }} --user={{ .Values.global.db.auth.username }} --password={{ .Values.global.db.auth.password }} < /data/init.sql
+            mysql --port={{ .Values.rf_global.db.auth.port }} --host={{ .Values.rf_global.db.auth.host }} --user={{ .Values.rf_global.db.auth.username }} --password={{ .Values.rf_global.db.auth.password }} < /data/init.sql
             x=$(echo $?); curl -fsI -X POST http://localhost:15020/quitquitquit && exit $x
         volumeMounts:
         - name: init-config

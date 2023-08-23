@@ -57,7 +57,7 @@ spec:
             - name: RF_DEBUG
               value: "{{ .Values.env.rf_debug }}"
             - name: RF_CONTAINER_ENGINE
-              value: "{{ default "podman" .Values.global.container_engine }}"              
+              value: "{{ default "podman" .Values.rf_global.container_engine }}"              
             #start: Tunneling stub env vars
             {{ if .Values.tunnelStubendabled }}
             - name: AMI_IMAGE_ID

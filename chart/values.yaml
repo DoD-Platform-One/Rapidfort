@@ -11,7 +11,7 @@ secret:
   rf_app_host: ""
   storage_type: "s3"
 
-global:
+rf_global:
   # -- This field is used to update the host name in the ingress.
   rf_app_host: ""
   ingressClassName: ""

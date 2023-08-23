@@ -27,7 +27,7 @@ rapidfort:
 
 # Big Bang 
 domain: bigbang.dev
-
+      
 networkPolicies:
   enabled: true
 

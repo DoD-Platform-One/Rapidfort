@@ -19,7 +19,7 @@ imagePullSecrets: []
 nameOverride: "rfapi"
 fullnameOverride: "rfapi"
 
-global:
+rf_global:
   rf_app_host: ""
 
 serviceAccount:
