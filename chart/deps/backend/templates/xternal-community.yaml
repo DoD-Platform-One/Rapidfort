@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   type: ExternalName
-  externalName: {{ default .Values.allowed_rf_host .Values.rf_global.allowed_rf_host }}
+  externalName: {{ default .Values.allowed_rf_host .Values.global.allowed_rf_host }}
   ports:
   - port: 443
 ---
@@ -18,9 +18,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/upstream-vhost: {{ default .Values.allowed_rf_host .Values.rf_global.allowed_rf_host }}
+    nginx.ingress.kubernetes.io/upstream-vhost: {{ default .Values.allowed_rf_host .Values.global.allowed_rf_host }}
 spec:
-  ingressClassName: {{ default .Values.ingress.className .Values.rf_global.ingressClassName }}
+  ingressClassName: {{ default .Values.ingress.className .Values.global.ingressClassName }}
   rules:
   - http:
       paths:

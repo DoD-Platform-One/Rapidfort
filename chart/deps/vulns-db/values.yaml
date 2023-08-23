@@ -8,7 +8,7 @@ image:
   repository: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-rf_global:
+global:
   rf_app_host: ""
 
 initContainer:
@@ -23,7 +23,7 @@ fullnameOverride: "vulns-db"
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.

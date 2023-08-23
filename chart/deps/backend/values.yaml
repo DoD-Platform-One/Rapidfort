@@ -31,7 +31,7 @@ env:
   rf_debug: "false"
   communityUserId: "" #only applies for SAAS Prod
   communityOrgId: "" #only applies for SAAS Prod
-rf_global:
+global:
   allowed_rf_host: api.rapidfort.com
   rf_app_host: ""
 
@@ -41,7 +41,7 @@ fullnameOverride: "backend"
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
