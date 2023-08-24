@@ -17,8 +17,6 @@ global:
   rf_app_host: ""
   ingressClassName: ""
   allowed_rf_host: "api.rapidfort.com"
-  # rf role arn annotation for service account to provide role based access to pod only. replace rf-role with actual role arn
-  aws_role_arn: "rf-role"
   db:
     auth:
       host: "mysql"
@@ -30,6 +28,9 @@ global:
 # -- When internal runner traffic is enabled runner defaults to `backend` for it's url
 # if the backend service name is changed, update it here
 runner_rf_app_host: ""
+
+serviceAccount:
+  annotations: {}
 
 sharedPvcs:
   imgs-work-dir-shared:
