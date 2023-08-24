@@ -61,3 +61,15 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Service Account Annotations
+*/}}
+{{- define "backend.serviceAccountAnnotations" -}}
+{{- with .Values.serviceAccount.annotations }}
+{{- toYaml . }}
+{{- end -}}
+{{- if .Values.global.aws_role_arn -}}
+    eks.amazonaws.com/role-arn: {{ .Values.global.aws_role_arn }}
+{{- end -}}
+{{- end -}}

@@ -10,12 +10,15 @@ secret:
   # -- This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service
   rf_app_host: ""
   storage_type: "s3"
+  aws_role_arn: ""
 
 global:
   # -- This field is used to update the host name in the ingress.
   rf_app_host: ""
   ingressClassName: ""
   allowed_rf_host: "api.rapidfort.com"
+  # rf role arn annotation for service account to provide role based access to pod only. replace rf-role with actual role arn
+  aws_role_arn: "rf-role"
   db:
     auth:
       host: "mysql"

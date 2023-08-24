@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.30-bb.7]
+- Update Helm chart for addning annotation using global value
+
 ## [1.1.30-bb.6]
 - Update Helm chart for MYSQL Address for keycloak
 
