@@ -43,7 +43,7 @@ aggregator:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/aggregator-exe"
-    tag: "1.1.24-rfhardened"
+    tag: "1.1.33-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -53,6 +53,8 @@ aggregator:
   - name: private-registry
   env:
     redis_host: redis-master
+    redis_host_files: files-redis-master
+    redis_host_lock: lock-redis-master
   PVCs:
     aggregatorRaidVolume:
       storageSize: 3Gi
@@ -67,7 +69,7 @@ backend:
     enabled: false
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
-    tag: "1.1.24-rfhardened"
+    tag: "1.1.33-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
     init:
@@ -91,7 +93,7 @@ frontrow:
   authUrl: ""
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/frontrow"
-    tag: "1.1.24-rfhardened"
+    tag: "1.1.33-rfhardened"
   imagePullSecrets:
   - name: private-registry
   ingress:
@@ -101,7 +103,7 @@ iso-master:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/iso-master-exe"
-    tag: "1.1.24-rfhardened"
+    tag: "1.1.33-rfhardened"
   initContainers:
     init:
       image:
@@ -112,6 +114,8 @@ iso-master:
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
+    redis_host_files: files-redis-master
+    redis_host_lock: lock-redis-master
   ingress:
     enabled: false
   # PVCs:
@@ -200,7 +204,6 @@ redis:
   auth:
     enabled: false
   # -- When enabled adds an extra service for redis to workaround an rfapi bug
-  svcWorkaround: true
   master:
     resources:
       limits:
@@ -210,11 +213,57 @@ redis:
         cpu: 100m
         memory: 256Mi
 
+lock-redis:
+  enable: true
+  image:
+    registry: registry1.dso.mil
+    repository: ironbank/bitnami/redis
+    tag: 7.0.5
+  istio:
+    enabled: false
+  architecture: standalone
+  fullnameOverride: "lock-redis"
+  auth:
+    enabled: false
+  # -- When enabled adds an extra service for redis to workaround an rfapi bug
+  # svcWorkaround: true
+  master:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2048Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+files-redis:
+  enable: true
+  image:
+    registry: registry1.dso.mil
+    repository: ironbank/bitnami/redis
+    tag: 7.0.5
+  istio:
+    enabled: false
+  architecture: standalone
+  fullnameOverride: "files-redis"
+  auth:
+    enabled: false
+  # -- When enabled adds an extra service for redis to workaround an rfapi bug
+  # svcWorkaround: true
+  master:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2048Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi  
+
 rf-scan:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rf-scan-exe"
-    tag: "1.1.24-rfhardened"
+    tag: "1.1.33-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -229,6 +278,8 @@ rf-scan:
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
+    redis_host_files: files-redis-master
+    redis_host_lock: lock-redis-master
   ingress:
     enabled: false
 
@@ -236,7 +287,7 @@ rfapi:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfapi-exe"
-    tag: "1.1.24-rfhardened"
+    tag: "1.1.33-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
     init:
@@ -247,6 +298,8 @@ rfapi:
   - name: private-registry
   env:
     redis_host: redis-master
+    redis_host_files: files-redis-master
+    redis_host_lock: lock-redis-master
   ingress:
     websocket:
       enabled: false
@@ -257,12 +310,14 @@ rfpubsub:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe"
-    tag: "1.1.24-rfhardened"
+    tag: "1.1.33-rfhardened"
   imagePullSecrets:
   - name: private-registry
   env:
     redis_host: redis-master
     redis_host_ha: redis-master
+    redis_host_files: files-redis-master
+    redis_host_lock: lock-redis-master
   ingress:
     enabled: false
 
@@ -273,7 +328,7 @@ runner:
     name: rf-secret
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/runner"
-    tag: "1.1.24-rfhardened"
+    tag: "1.1.33-rfhardened"
   initContainers:
     init:
       enabled: true # this enables to add init container to keep waiting for dependent service to start
@@ -299,7 +354,7 @@ vulns-db:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/vulns-db"
-    tag: "1.1.24-rfhardened"
+    tag: "1.1.33-rfhardened"
   initContainers:
     init:
       enabled: true

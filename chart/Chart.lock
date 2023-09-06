@@ -23,6 +23,12 @@ dependencies:
 - name: redis
   repository: file://deps/redis-bb/
   version: 16.9.2-bb.0
+- name: lock-redis
+  repository: file://deps/lock-redis/
+  version: 16.9.2-bb.0
+- name: files-redis
+  repository: file://deps/files-redis/
+  version: 16.9.2-bb.0
 - name: rf-scan
   repository: file://deps/rf-scan/
   version: 1.1.0
@@ -41,5 +47,5 @@ dependencies:
 - name: gluon
   repository: oci://registry1.dso.mil/bigbang
   version: 0.3.1
-digest: sha256:7778ae56882c3ad160b8d2b26e73410e0b42cb56aa3f72954c993c0e3dcdb8ab
-generated: "2023-03-07T11:41:12.602157-08:00"
+digest: sha256:201c34e80d05a713873cff7ac7bdb20cb73299af4562cace2c64d21a19e249d5
+generated: "2023-09-06T11:15:42.896465846-07:00"

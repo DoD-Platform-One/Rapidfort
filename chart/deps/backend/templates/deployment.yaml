@@ -57,6 +57,10 @@ spec:
               value: {{ default "" .Values.env.communityUserId | quote}}
             - name: COMMUNITY_ORG_ID
               value: {{ default "" .Values.env.communityOrgId | quote }}
+            - name: CLOUDVM_ORCHESTRATOR_SERVICE_HOST
+              value: "cloudvm-orchestrator"
+            - name: CLOUDVM_ORCHESTRATOR_SERVICE_PORT
+              value: "80"              
             #NOTE: not using secret as secret goes for all the containers.
             - name: RF_DEBUG
               value:  "{{ .Values.env.rf_debug }}"

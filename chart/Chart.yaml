@@ -3,8 +3,8 @@ apiVersion: v2
 name: rapidfort
 description: Automated Container Hardening
 type: application
-version: 1.1.30-bb.8
-appVersion: 1.1.30
+version: 1.1.33-bb.0
+appVersion: 1.1.33
 dependencies:
 - repository: "file://deps/aggregator/"
   version: 1.1.0
@@ -45,6 +45,16 @@ dependencies:
   version: 16.9.2-bb.0
   name: redis
   condition: redis.enabled
+
+- repository: "file://deps/lock-redis/"
+  version: 16.9.2-bb.0
+  name: lock-redis
+  condition: lock-redis.enabled
+
+- repository: "file://deps/files-redis/"
+  version: 16.9.2-bb.0
+  name: files-redis
+  condition: files-redis.enabled
 
 - repository: "file://deps/rf-scan/"
   version: 1.1.0
