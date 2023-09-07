@@ -202,7 +202,6 @@ redis:
   auth:
     enabled: false
   # -- When enabled adds an extra service for redis to workaround an rfapi bug
-  svcWorkaround: true
   master:
     resources:
       limits:
@@ -225,7 +224,6 @@ lock-redis:
   auth:
     enabled: false
   # -- When enabled adds an extra service for redis to workaround an rfapi bug
-  svcWorkaround: true
   master:
     resources:
       limits:
@@ -248,7 +246,6 @@ files-redis:
   auth:
     enabled: false
   # -- When enabled adds an extra service for redis to workaround an rfapi bug
-  svcWorkaround: true
   master:
     resources:
       limits:
