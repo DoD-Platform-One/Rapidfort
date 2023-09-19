@@ -43,7 +43,7 @@ aggregator:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/aggregator-exe"
-    tag: "1.1.33-rfhardened"
+    tag: "1.1.34-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -69,7 +69,7 @@ backend:
     enabled: false
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
-    tag: "1.1.33-rfhardened"
+    tag: "1.1.34-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
     init:
@@ -92,7 +92,7 @@ frontrow:
   authUrl: ""
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/frontrow"
-    tag: "1.1.33-rfhardened"
+    tag: "1.1.34-rfhardened"
   imagePullSecrets:
   - name: private-registry
   ingress:
@@ -102,7 +102,7 @@ iso-master:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/iso-master-exe"
-    tag: "1.1.33-rfhardened"
+    tag: "1.1.34-rfhardened"
   initContainers:
     init:
       image:
@@ -259,7 +259,7 @@ rf-scan:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rf-scan-exe"
-    tag: "1.1.33-rfhardened"
+    tag: "1.1.34-rfhardened"
   initContainers:
     volumePermissions:
       image:
@@ -283,7 +283,7 @@ rfapi:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfapi-exe"
-    tag: "1.1.33-rfhardened"
+    tag: "1.1.34-rfhardened"
   initContainers:
     enabled: true # this enables to add init container to keep waiting for dependent service to start
     init:
@@ -306,7 +306,7 @@ rfpubsub:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe"
-    tag: "1.1.33-rfhardened"
+    tag: "1.1.34-rfhardened"
   imagePullSecrets:
   - name: private-registry
   env:
@@ -324,7 +324,7 @@ runner:
     name: rf-secret
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/runner"
-    tag: "1.1.33-rfhardened"
+    tag: "1.1.34-rfhardened"
   initContainers:
     init:
       enabled: true # this enables to add init container to keep waiting for dependent service to start
@@ -350,7 +350,7 @@ vulns-db:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/vulns-db"
-    tag: "1.1.33-rfhardened"
+    tag: "1.1.34-rfhardened"
   initContainers:
     init:
       enabled: true
