@@ -72,7 +72,30 @@ kyvernoPolicies:
           allow:
             - /var/run/docker.sock
             - /tmp
+      require-run-as-nonroot:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          excludeContainers:
+            - iso-master*
+            - runner*
+      restrict-capabilities:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          excludeContainers:
+            - iso-master*
 
+      require-non-root-group:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          excludeContainers:
+            - mysql*
+            - redis*
+            - files-redis*
+            - lock-redis*
+            - keycloak*
 gatekeeper:
   enabled: true
   values:

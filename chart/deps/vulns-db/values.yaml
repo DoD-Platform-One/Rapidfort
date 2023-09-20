@@ -52,7 +52,14 @@ ingress:
   tls: []
 
 podSecurityContext: {}
-securityContext: {}
+securityContext:
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsGroup: 65534
+  # runAsUser: 1000
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

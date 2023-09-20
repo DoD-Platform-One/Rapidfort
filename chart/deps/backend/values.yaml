@@ -48,7 +48,14 @@ serviceAccount:
 
 podSecurityContext: {}
 
-securityContext: {}
+securityContext:
+  runAsGroup: 65534
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  # runAsUser: 1000
 
 service:
   type: ClusterIP

@@ -36,6 +36,8 @@ spec:
       {{- if .Values.initContainers.init_mysql.enabled }}
       - name: init-mysql
         image: "{{ .Values.initContainers.init_mysql.image.repository }}:{{ .Values.initContainers.init_mysql.image.tag | default .Chart.AppVersion }}"
+        securityContext:
+          runAsNonRoot: true
         command:
           - "/bin/sh"
           - "-c"
