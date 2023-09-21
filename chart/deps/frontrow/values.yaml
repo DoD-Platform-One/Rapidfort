@@ -28,13 +28,12 @@ podSecurityContext: {}
   # fsGroup: 2000
 
 securityContext:
-  runAsGroup: 65534
+  runAsGroup: 995
   # capabilities:
   #   drop:
   #   - ALL
   # readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  # runAsUser: 1000
+  runAsUser: 997
 
 service:
   type: ClusterIP

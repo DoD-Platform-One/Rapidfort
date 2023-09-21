@@ -96,6 +96,8 @@ kyvernoPolicies:
             - files-redis*
             - lock-redis*
             - keycloak*
+            - runner*
+            - iso-master*
 gatekeeper:
   enabled: true
   values:

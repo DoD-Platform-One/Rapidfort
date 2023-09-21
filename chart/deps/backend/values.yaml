@@ -54,8 +54,7 @@ securityContext:
   #   drop:
   #   - ALL
   # readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  # runAsUser: 1000
+  runAsUser: 65534
 
 service:
   type: ClusterIP
