@@ -79,13 +79,13 @@ kyvernoPolicies:
           excludeContainers:
             - iso-master*
             - runner*
+            - vulns-db*
       restrict-capabilities:
         enabled: true
         validationFailureAction: audit
         parameters:
           excludeContainers:
             - iso-master*
-
       require-non-root-group:
         enabled: true
         validationFailureAction: audit
@@ -98,6 +98,7 @@ kyvernoPolicies:
             - keycloak*
             - runner*
             - iso-master*
+            - vulns-db*
 gatekeeper:
   enabled: true
   values:

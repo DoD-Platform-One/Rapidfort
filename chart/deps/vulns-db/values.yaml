@@ -53,13 +53,13 @@ ingress:
 
 podSecurityContext: {}
 
-securityContext:
-  runAsGroup: 65534
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  runAsUser: 65534
+securityContext: {}
+  # runAsGroup: 65534
+  # # capabilities:
+  # #   drop:
+  # #   - ALL
+  # # readOnlyRootFilesystem: true
+  # runAsUser: 65534
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
