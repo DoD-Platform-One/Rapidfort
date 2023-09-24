@@ -41,6 +41,7 @@ neuvector:
   enabled: false
 
 kyvernoPolicies:
+  enabled: false
   values:
     policies:
       disallow-privileged-containers:
@@ -72,35 +73,35 @@ kyvernoPolicies:
           allow:
             - /var/run/docker.sock
             - /tmp
-      # require-run-as-nonroot:
-      #   enabled: true
-      #   validationFailureAction: audit
-      #   parameters:
-      #     excludeContainers:
-      #       - iso-master*
-      #       - runner*
-      #       - vulns-db*
-#       restrict-capabilities:
-#         enabled: true
-#         validationFailureAction: audit
-#         parameters:
-#           excludeContainers:
-#             - iso-master*
-#       require-non-root-group:
-#         enabled: true
-#         validationFailureAction: audit
-#         parameters:
-#           excludeContainers:
-#             - mysql*
-#             - redis*
-#             - files-redis*
-#             - lock-redis*
-#             - keycloak*
-#             - runner*
-#             - iso-master*
-#             - vulns-db*
+      require-non-root-user:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          excludeContainers:
+            - iso-master*
+            - runner*
+            - vulns-db*
+      restrict-capabilities:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          excludeContainers:
+            - iso-master*
+      require-non-root-group:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          excludeContainers:
+            - mysql*
+            - redis*
+            - files-redis*
+            - lock-redis*
+            - keycloak*
+            - runner*
+            - iso-master*
+            - vulns-db*
 gatekeeper:
-  enabled: true
+  enabled: false
   values:
     violations:
       noPrivilegedContainers:
