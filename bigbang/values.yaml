@@ -55,7 +55,6 @@ kyvernoPolicies:
         parameters:
           # -- List of allowed paths for hostPath volumes to mount
           allow:
-            - /var/run/docker.sock
             - /tmp
       restrict-host-path-mount:
         enabled: true
@@ -63,7 +62,6 @@ kyvernoPolicies:
         parameters:
           # -- List of allowed paths for hostPath volumes to mount
           allow:
-            - /var/run/docker.sock
             - /tmp
       restrict-host-path-write:
         enabled: true
@@ -71,7 +69,6 @@ kyvernoPolicies:
         parameters:
           # -- List of allowed paths for hostPath volumes to mount as read/write
           allow:
-            - /var/run/docker.sock
             - /tmp
       require-non-root-user:
         enabled: true
