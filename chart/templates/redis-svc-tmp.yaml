@@ -20,4 +20,48 @@ spec:
   type: ClusterIP
 status:
   loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "rapidfort.labels" . | nindent 4 }}
+  name: files-redis
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: tcp-redis
+    port: 6379
+    protocol: TCP
+    targetPort: redis
+  selector:
+    app.kubernetes.io/component: master
+    app.kubernetes.io/instance: {{ .Release.Namespace | quote }}
+    app.kubernetes.io/name: files-redis
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "rapidfort.labels" . | nindent 4 }}
+  name: lock-redis
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: tcp-redis
+    port: 6379
+    protocol: TCP
+    targetPort: redis
+  selector:
+    app.kubernetes.io/component: master
+    app.kubernetes.io/instance: {{ .Release.Namespace | quote }}
+    app.kubernetes.io/name: lock-redis
+  type: ClusterIP
+status:
+  loadBalancer: {}  
 {{ end }}
