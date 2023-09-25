@@ -22,8 +22,6 @@ initContainers:
       repository: public.ecr.aws/w9i9p8n5/init
       tag: latest
 
-tunnelStubendabled: false
-
 env:
   redis_host: redis
   backend_service_name: "backend"
@@ -50,7 +48,13 @@ serviceAccount:
 
 podSecurityContext: {}
 
-securityContext: {}
+securityContext:
+  runAsGroup: 65534
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  runAsUser: 65534
 
 service:
   type: ClusterIP
@@ -115,6 +119,7 @@ secret:
     - RF_APP_ADMIN
     - RF_APP_ADMIN_PASSWD
     - RF_VERBOSE
+    - RF_AZURE_CONNECTION_STRING    
     
 autoscaling:
   enabled: false

@@ -52,7 +52,14 @@ ingress:
   tls: []
 
 podSecurityContext: {}
+
 securityContext: {}
+  # runAsGroup: 65534
+  # # capabilities:
+  # #   drop:
+  # #   - ALL
+  # # readOnlyRootFilesystem: true
+  # runAsUser: 65534
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -88,7 +95,7 @@ env:
   redis_port_ha: "6379"
   redis_pwd_ha: ""
   redis_db_ha: 4
-  rfvdb_host: "frontrow.rapidfort.io"
+  rfvdb_host: "api.rapidfort.com"
 
 livenessProbe:
   periodSeconds: 30

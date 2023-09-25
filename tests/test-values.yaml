@@ -8,9 +8,9 @@ secret:
   rf_app_host: rapidfort.bigbang.dev
   storage_type: "s3"
 
-runner:
-  secret:
-    name: rf-runner-secret
+# runner:
+#   secret:
+#     name: rf-runner-secret
 
 # -- Big Bang Values
 domain: bigbang.dev

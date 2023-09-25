@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.34-bb.0]
+- Update Helm Chart for Release 1.1.34
+
 ## [1.1.30-bb.8]
 - Update Helm chart for addning annotation using global service account
 

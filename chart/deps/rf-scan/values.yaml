@@ -27,12 +27,14 @@ env:
   debug: off
   rf_debug: false
   redis_host: "redis"
+  redis_host_locks: lock-redis-master
+  redis_host_files: files-redis-master
   redis_port: "6379"
   redis_pwd: "" 
   redis_host_ha: "redis"
   redis_port_ha: "6379"
   redis_pwd_ha: ""
-  redis_db_ha: 4
+  redis_db_ha: 4   
 
 imagePullSecrets: []
 nameOverride: "rf-scan"
@@ -52,7 +54,13 @@ podAnnotations: {}
 podSecurityContext:
   {}
 
-securityContext: {}
+securityContext:
+  runAsGroup: 65534
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  runAsUser: 65534
 
 service:
   type: ClusterIP
@@ -119,6 +127,7 @@ secret:
     - RF_APP_HOST
     - DEPLOY_MODE
     - RF_VERBOSE
+    - RF_AZURE_CONNECTION_STRING   
 
 volumes: {}
 
@@ -157,15 +166,3 @@ init_containers:
       - "/bin/bash"
       - "-c"
       - "until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo backend not ready; sleep 1; done"
-  #TODO: once new build has been rolled out, we can remove this
-  - image: "{{ .Values.initContainers.volumePermissions.image.repository }}:{{ .Values.initContainers.volumePermissions.image.tag }}"
-    imagePullPolicy: Always
-    name: init-make-dir
-    command:
-      - /bin/bash
-      - -c
-      - |
-        echo "Creating imgs_work_dir"
-        mkdir -p /opt/rapidfort/iso-master/app/imgs_work_dir
-        echo "setting up the permission."
-        chmod 777 /opt/rapidfort/iso-master/app/imgs_work_dir
