@@ -190,6 +190,7 @@ mysql:
     port: 3306
 
 redis:
+  svcWorkaround: true
   enabled: true
   image:
     registry: registry1.dso.mil
