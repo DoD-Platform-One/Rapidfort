@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.40-bb.0]
+- RapidFort Release 1.1.40
+
 ## [1.1.34-bb.1]
 - Update Helm Chart for release patch for redis service creation
 
