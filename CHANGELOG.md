@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.40-bb.1]
+- RapidFort Release 1.1.40 Patch for RF-SCAN
+
 ## [1.1.40-bb.0]
 - RapidFort Release 1.1.40
 
