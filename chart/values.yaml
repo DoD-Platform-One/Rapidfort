@@ -43,7 +43,7 @@ aggregator:
   enabled: true
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/aggregator-exe"
-    tag: "1.1.40-rfhardened"
+    tag: "1.1.40-1-rfhardened"
   initContainers:
     volumePermissions:
       image:
