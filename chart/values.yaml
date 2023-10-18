@@ -92,7 +92,7 @@ frontrow:
   authUrl: ""
   image:
     repository: "registry1.dso.mil/ironbank/rapidfort/frontrow"
-    tag: "1.1.40-rfhardened"
+    tag: "1.1.40-1-rfhardened"
   imagePullSecrets:
   - name: private-registry
   ingress:

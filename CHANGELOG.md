@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.40-bb.4]
+- RapidFort Release 1.1.40 Patch for RapidFort CLI Service
+
 ## [1.1.40-bb.3]
 - RapidFort Release 1.1.40 Patch for Image Hardening
 
