@@ -1,4 +1,4 @@
-{{ if or (index .Values "iso-master" "enabled") (index .Values "rf-scan" "enabled") (.Values.backend.enabled) }}
+{{ if or (index .Values "iso-master" "enabled") }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,4 +9,26 @@ spec:
   resources:
     requests:
       storage: {{ index .Values "sharedPvcs" "imgs-work-dir-shared" "storageSize" }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iso-master-container-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ index .Values "sharedPvcs" "iso-master-container-storage" "storageSize" }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iso-master-tmp-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ index .Values "sharedPvcs" "iso-master-tmp-storage" "storageSize" }}      
 {{ end }}

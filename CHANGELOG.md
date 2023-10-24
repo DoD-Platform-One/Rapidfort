@@ -2,6 +2,12 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.1.40-bb.6]
+- RapidFort Release 1.1.40 Patch for RapidFort Deployment storage
+
+## [1.1.40-bb.5]
+- RapidFort Release 1.1.40 Patch for RapidFort Deployment
+
 ## [1.1.40-bb.4]
 - RapidFort Release 1.1.40 Patch for RapidFort CLI Service
 
