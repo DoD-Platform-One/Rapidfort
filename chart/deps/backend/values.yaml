@@ -132,7 +132,10 @@ container:
   extra_options: {}
 
 volumes: {}
-volumeMounts: {}
+
+volumeMounts:
+  - name: imgs-work-dir
+    mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
 
 livenessProbe:
   periodSeconds: 30

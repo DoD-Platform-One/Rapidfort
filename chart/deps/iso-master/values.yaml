@@ -18,7 +18,6 @@ global:
   rf_app_host:
   container_engine: "podman"
 
-tunnelStubendabled: false
 env:
   backend_service_name: "backend"
   debug: off
@@ -86,8 +85,9 @@ resources:
   #   cpu: 100m
   #   memory: 128Mi
   requests:
-    cpu: 600m
-    memory: 1024Mi
+    cpu: 1500m
+    memory: 3072Mi
+    ephemeral-storage: 10Gi
 
 autoscaling:
   enabled: false
@@ -149,11 +149,21 @@ secret:
     - RF_AZURE_CONNECTION_STRING    
 
 volumes:
+  - name: rapidfort-tmp-storage
+    emptyDir:
+      sizeLimit: 50Gi
+  - name: rapidfort-tmp-container-storage
+    emptyDir:
+      sizeLimit: 50Gi
   - name: imgs-work-dir
-    hostPath:
-      path: /opt/rapidfort/data/shared/imgs_work_dir
-
+    emptyDir:
+      sizeLimit: 200Gi
+      
 volumeMounts:
+  - name: rapidfort-tmp-container-storage
+    mountPath: "/var/lib/containers"
+  - name: rapidfort-tmp-storage
+    mountPath: "/var/tmp"    
   - name: imgs-work-dir
     mountPath: "/opt/rapidfort/iso-master/app/imgs_work_dir"
 

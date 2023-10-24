@@ -35,6 +35,10 @@ serviceAccount:
 sharedPvcs:
   imgs-work-dir-shared:
     storageSize: 200Gi
+  iso-master-container-storage:
+    storageSize: 50Gi
+  iso-master-tmp-storage:
+    storageSize: 50Gi        
 
 sc:
   enabled: false
@@ -82,10 +86,10 @@ backend:
     redis_host: redis-master
   ingress:
     enabled: false
-  PVCs:
-    backendImgsWorkDir:
-      storageSize: 10Gi
-  volumes: {}
+  volumes:
+  - name: imgs-work-dir
+    emptyDir:
+      sizeLimit: 10Gi 
 
 frontrow:
   enabled: true
@@ -98,6 +102,7 @@ frontrow:
   ingress:
     enabled: false
 
+#Done
 iso-master:
   enabled: true
   image:
@@ -123,6 +128,12 @@ iso-master:
   #   iso-masterImageDb:
   #     storageSize: 10Gi
   volumes:
+  - name: rapidfort-tmp-storage
+    persistentVolumeClaim:
+      claimName: iso-master-tmp-storage
+  - name: rapidfort-tmp-container-storage
+    persistentVolumeClaim:
+      claimName: iso-master-container-storage
   - name: imgs-work-dir
     persistentVolumeClaim:
       claimName: imgs-work-dir-shared
@@ -256,6 +267,7 @@ files-redis:
         cpu: 100m
         memory: 256Mi  
 
+#Done
 rf-scan:
   enabled: true
   image:

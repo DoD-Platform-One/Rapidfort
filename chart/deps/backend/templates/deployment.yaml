@@ -38,6 +38,76 @@ spec:
             - "until [ $(curl --connect-timeout 10 -sw '%{http_code}' http://{{ .Values.keycloak.serviceName }} -o /dev/null) -eq 200 ]; do echo keycloak not ready; sleep 1; done"
         {{- end }}
       containers:
+        - name: {{ .Chart.Name }}-cleanup
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{ if .Values.container.extra_options }}
+          {{- toYaml .Values.container.extra_options | nindent 10 }}
+          {{ end }}
+          command:
+          - /bin/bash
+          - -c
+          - |
+            #!/bin/bash
+            pushd /opt/rapidfort/iso-master/app > /dev/null
+              while true;
+              do
+                bash cleanup.sh
+                sleep 86400
+              done
+            popd          
+          env:
+            - name: LC_ALL
+              value: "en_US.UTF-8"            
+            - name: BACKEND_APP_PORT
+              value: "{{ .Values.service.container_port }}"
+            - name: AUTH_SERVER_ROOT_URL
+              value: "http://{{ .Values.keycloak.serviceName }}"
+            - name: COMMUNITY_USER_ID
+              value: {{ default "" .Values.env.communityUserId | quote}}
+            - name: COMMUNITY_ORG_ID
+              value: {{ default "" .Values.env.communityOrgId | quote }}
+            - name: CLOUDVM_ORCHESTRATOR_SERVICE_HOST
+              value: "cloudvm-orchestrator"
+            - name: CLOUDVM_ORCHESTRATOR_SERVICE_PORT
+              value: "80"              
+            #NOTE: not using secret as secret goes for all the containers.
+            - name: RF_DEBUG
+              value:  "{{ .Values.env.rf_debug }}"
+            - name: RF_VERSION_FILE
+              value:  "/opt/rapidfort/env.config"
+            #inject create values as env variable.
+            {{ if .Values.secret.name }}
+            {{- $secretName := .Values.secret.name }}
+            {{- range .Values.secret.keys }}
+            - name: {{ . | quote}}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secretName }}
+                  key: {{ . | quote}}
+            {{- end }}
+            {{ end }}
+          volumeMounts:
+            {{ if .Values.volumeMounts }}
+            {{ tpl (toYaml (index .Values.volumeMounts )) . | nindent 12 }}
+            {{ end }}
+            {{ if .Values.extraVolumeMounts }}
+            {{ tpl (toYaml (index .Values.extraVolumeMounts )) . | nindent 12 }}
+            {{ end }}
+          ports:
+            - name: backend-http
+              containerPort: {{ .Values.service.container_port }}
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+              - /bin/true  
+          readinessProbe:
+            exec:
+              command:
+              - /bin/true 
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
