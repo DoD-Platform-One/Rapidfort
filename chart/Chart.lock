@@ -1,51 +1,6 @@
 dependencies:
-- name: aggregator
-  repository: file://deps/aggregator/
-  version: 1.1.0
-- name: backend
-  repository: file://deps/backend/
-  version: 1.1.0
-- name: fluent-bit
-  repository: file://deps/fluent-bit/
-  version: 1.1.0
-- name: frontrow
-  repository: file://deps/frontrow/
-  version: 1.1.0
-- name: iso-master
-  repository: file://deps/iso-master/
-  version: 1.1.0
-- name: keycloak
-  repository: file://deps/keycloak/
-  version: 1.1.0
-- name: mysql
-  repository: file://deps/mysql-bb/
-  version: 9.1.7-bb.0
-- name: redis
-  repository: file://deps/redis-bb/
-  version: 16.9.2-bb.0
-- name: lock-redis
-  repository: file://deps/lock-redis/
-  version: 16.9.2-bb.0
-- name: files-redis
-  repository: file://deps/files-redis/
-  version: 16.9.2-bb.0
-- name: rf-scan
-  repository: file://deps/rf-scan/
-  version: 1.1.0
-- name: rfapi
-  repository: file://deps/rfapi/
-  version: 1.1.0
-- name: rfpubsub
-  repository: file://deps/rfpubsub/
-  version: 1.1.0
-- name: runner
-  repository: file://deps/runner/
-  version: 1.1.0
-- name: vulns-db
-  repository: file://deps/vulns-db/
-  version: 1.1.0
 - name: gluon
   repository: oci://registry1.dso.mil/bigbang
   version: 0.4.0
-digest: sha256:70393bf1baf9df85a8e65bcb2aa11b11b8bcece21ad2dca3d482ad5c83c2025e
-generated: "2023-09-06T18:58:19.276612974-07:00"
+digest: sha256:6e561e3b6ea31a0549c77b991bf299d02779aa605c1ac4d7973929ef292693d3
+generated: "2023-12-07T11:37:37.435571566-08:00"

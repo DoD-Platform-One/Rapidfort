@@ -7,7 +7,7 @@ metadata:
 spec:
   podSelector: 
     matchExpressions:
-    - {key: app.kubernetes.io/name, operator: In, values: [aggregator, backend, iso-master, rf-scan, rfpubsub, keycloak]}
+    - {key: app.kubernetes.io/name, operator: In, values: [aggregator, backend, isomaster, rfscan, rfpubsub, keycloak, fileupload]}
   policyTypes:
   - Egress
   egress:

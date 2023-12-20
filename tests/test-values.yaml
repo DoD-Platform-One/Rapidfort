@@ -1,13 +1,106 @@
-secret:
-  aws_access_key_id: FAKEID54G8A4F654GH7T
-  aws_secret_access_key: FAKEKEYxlLONi5IEMW8zA0Va4l0i9yPwfD5AMn0K
-  aws_default_region: us-east-1
-  s3_bucket: fakebucket
-  rf_app_admin: ci@repo1.dso.mil
-  rf_app_admin_passwd: p@ssw0rd
-  rf_app_host: rapidfort.bigbang.dev
-  storage_type: "s3"
+global:
+  aws:
+    aws_access_key_id: FAKEID54G8A4F654GH7T
+    aws_secret_access_key: FAKEKEYxlLONi5IEMW8zA0Va4l0i9yPwfD5AMn0K
+    region: us-east-1
+    storage: fakebucket
+  admin: ci@repo1.dso.mil
+  passwd: p@ssw0rd
+  hostname: rapidfort.bigbang.dev
+  cloud: "kind"
 
+#
+# aggregator
+#
+aggregator:
+  ephemeralVolumeClaimTemplates:
+  - name: aggregator-data
+    accessMode: "ReadWriteOnce"
+    size: 10Gi
+  - name: aggregator-data-local-bucket
+    accessMode: "ReadWriteOnce"
+    size: 10Gi
+  resources: {}
+    # limits:
+    #   cpu: "2000m"
+    #   memory: "4096Mi"
+    # requests:
+    #   cpu: "500m"
+    #   memory: "512Mi"
+
+#
+# backend
+#
+backend:
+  resources: {}
+  ephemeralVolumeClaimTemplates:
+  - name: backend-data
+    accessMode: "ReadWriteOnce"
+    size: 10Gi
+    # limits:
+    #   cpu: "2000m"
+    #   memory: "4096Mi"
+    # requests:
+    #   cpu: "500m"
+    #   memory: "512Mi"
+
+filesredis:
+  volumeClaimTemplates:
+  - name: "redis-data"
+    accessMode: "ReadWriteOnce"
+    size: "10Gi"
+
+fileupload:
+  enabled: true
+  ephemeralVolumeClaimTemplates:
+  - name: fileupload-data
+    accessMode: "ReadWriteOnce"
+    size: 10Gi
+
+isomaster:
+  initContainers:
+    - name: wait-backend
+      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+      command: ["/bin/sh", "-c"]
+      args:
+      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
+  ephemeralVolumeClaimTemplates:
+  - name: imgs-work-dir
+    accessMode: "ReadWriteOnce"
+    size: 10Gi
+
+mysql:
+  volumeClaimTemplates:
+  - name: "mysql-data"
+    accessMode: "ReadWriteOnce"
+    size: "10Gi"
+
+redis:
+  volumeClaimTemplates:
+  - name: "redis-data"
+    accessMode: "ReadWriteOnce"
+    size: "10Gi"
+
+rfscan:
+  initContainers:
+    - name: wait-backend
+      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+      command: ["/bin/sh", "-c"]
+      args:
+      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
+  ephemeralVolumeClaimTemplates:
+  - name: imgs-work-dir
+    accessMode: "ReadWriteOnce"
+    size: 10Gi
+
+runner:
+  ephemeralVolumeClaimTemplates:
+  - name: var-lib-containers
+    accessMode: "ReadWriteOnce"
+    size: 10Gi
+  - name: imgs-work-dir
+    accessMode: "ReadWriteOnce"
+    size: 10Gi
 # runner:
 #   secret:
 #     name: rf-runner-secret

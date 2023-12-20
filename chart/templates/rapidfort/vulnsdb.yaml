@@ -1,0 +1,149 @@
+{{- /*
+  Copyright RapidFort, Inc.
+*/}}
+{{- if .Values.vulnsdb.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vulnsdb
+  labels:
+    app.kubernetes.io/name: vulnsdb    
+spec:
+  replicas: {{ .Values.vulnsdb.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vulnsdb
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vulnsdb        
+    spec:
+      {{- if .Values.vulnsdb.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.vulnsdb.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.vulnsdb.volumes }}
+      volumes:
+        {{- tpl (toYaml (index .Values.vulnsdb.volumes )) . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.vulnsdb.initContainers }}
+      initContainers:
+        {{- toYaml (index .Values.vulnsdb.initContainers ) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.global.imagePullSecrets }}
+      {{- end }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
+      serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}           
+      containers:
+        - name: vulnsdb
+          {{- if .Values.vulnsdb.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.vulnsdb.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          image: {{ .Values.vulnsdb.image }}
+          imagePullPolicy: IfNotPresent
+          {{- if .Values.vulnsdb.volumeMounts }}
+          volumeMounts:
+            {{- toYaml (index .Values.vulnsdb.volumeMounts ) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.vulnsdb.ports }}
+          ports: {{- toYaml .Values.vulnsdb.ports | nindent 12 }}
+          {{- end }}
+          {{- if or $.Values.vulnsdb.envVars $.Values.vulnsdb.envVarsSecret }}
+          env:
+            {{- range $key, $value := $.Values.vulnsdb.envVars }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- range .Values.vulnsdb.envVarsSecret }}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: rapidfort-secret
+                  key: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.vulnsdb.resources}}
+          resources:
+            {{- toYaml .Values.vulnsdb.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.vulnsdb.startupProbe}}
+          startupProbe:
+            {{- toYaml .Values.vulnsdb.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.vulnsdb.livenessProbe}}
+          livenessProbe:
+            {{- toYaml .Values.vulnsdb.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.vulnsdb.readinessProbe}}
+          readinessProbe:
+            {{- toYaml .Values.vulnsdb.readinessProbe | nindent 12 }}
+          {{- end }}
+      {{- with .Values.vulnsdb.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.vulnsdb.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.vulnsdb.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vulnsdb
+  labels:
+    app.kubernetes.io/name: vulnsdb    
+spec:
+  type: {{ .Values.vulnsdb.service.type }}
+  ports:
+    - port: {{ .Values.vulnsdb.service.port }}
+      protocol: TCP
+      name: http
+      targetPort: {{ .Values.vulnsdb.service.targetPort }}
+  selector:
+    app.kubernetes.io/name: vulnsdb
+{{- if .Values.global.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vulnsdb
+  labels:
+    app.kubernetes.io/name: vulnsdb    
+  annotations:
+  {{- with .Values.vulnsdb.ingress.annotations }}  
+    {{- toYaml . | nindent 4 }}  
+  {{- end }}
+  {{- with .Values.global.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
+spec:
+  ingressClassName: {{ default .Values.vulnsdb.ingress.ingressClassName .Values.global.ingress.className }}
+  {{- if .Values.global.ingress.tls }}
+    {{ include "rapidfort-platform.ingress.tls" . | nindent 2 }}
+  {{- end }}
+  rules:
+    {{- range .Values.vulnsdb.ingress.hosts }}
+    - host: {{ include "prefix.isFQDN" $.Values.global.hostname | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: vulnsdb
+                port:
+                  number: {{ $.Values.vulnsdb.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}

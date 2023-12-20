@@ -1,0 +1,157 @@
+{{- /*
+  Copyright RapidFort, Inc.
+*/}}
+{{- if .Values.runner.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: runner
+  labels:
+    app.kubernetes.io/name: runner    
+spec:
+  replicas: {{ .Values.runner.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: runner
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: runner        
+    spec:
+      {{- if .Values.runner.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.runner.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.runner.volumes }}
+      volumes:
+        {{- tpl (toYaml (index .Values.runner.volumes )) . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.runner.ephemeralVolumeClaimTemplates }}
+      {{- if not .Values.runner.volumes }}
+      volumes:
+      {{- end }}
+      {{- range .Values.runner.ephemeralVolumeClaimTemplates -}}
+          {{ include "rapidfort-platform.singleEphemeralVolumeClaim" . | nindent 8 }}
+      {{- end }}
+      {{- end }}    
+      {{- if .Values.runner.initContainers }}
+      initContainers:
+        {{- toYaml (index .Values.runner.initContainers ) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.global.imagePullSecrets }}
+      {{- end }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
+      serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}           
+      containers:
+        - name: runner
+          {{- if .Values.runner.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.runner.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          image: {{ .Values.runner.image }}
+          imagePullPolicy: IfNotPresent
+          {{- if .Values.runner.volumeMounts }}
+          volumeMounts:
+            {{- toYaml (index .Values.runner.volumeMounts ) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.runner.ports }}
+          ports: {{- toYaml .Values.runner.ports | nindent 12 }}
+          {{- end }}
+          {{- if or $.Values.runner.envVars $.Values.runner.envVarsSecret }}
+          env:
+            {{- range $key, $value := $.Values.runner.envVars }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- range .Values.runner.envVarsSecret }}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: rapidfort-secret
+                  key: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.runner.resources}}
+          resources:
+            {{- toYaml .Values.runner.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.runner.startupProbe}}
+          startupProbe:
+            {{- toYaml .Values.runner.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.runner.livenessProbe}}
+          livenessProbe:
+            {{- toYaml .Values.runner.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.runner.readinessProbe}}
+          readinessProbe:
+            {{- toYaml .Values.runner.readinessProbe | nindent 12 }}
+          {{- end }}
+      {{- with .Values.runner.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.runner.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.runner.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: runner
+  labels:
+    app.kubernetes.io/name: runner    
+spec:
+  type: {{ .Values.runner.service.type }}
+  ports:
+    - port: {{ .Values.runner.service.port }}
+      protocol: TCP
+      name: http
+      targetPort: {{ .Values.runner.service.targetPort }}
+  selector:
+    app.kubernetes.io/name: runner
+{{- if .Values.global.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: runner
+  labels:
+    app.kubernetes.io/name: runner    
+  annotations:
+  {{- with .Values.runner.ingress.annotations }}  
+    {{- toYaml . | nindent 4 }}  
+  {{- end }}
+  {{- with .Values.global.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
+spec:
+  ingressClassName: {{ default .Values.runner.ingress.ingressClassName .Values.global.ingress.className }}
+  {{- if .Values.global.ingress.tls }}
+    {{ include "rapidfort-platform.ingress.tls" . | nindent 2 }}
+  {{- end }}
+  rules:
+    {{- range .Values.runner.ingress.hosts }}
+    - host: {{ include "prefix.isFQDN" $.Values.global.hostname | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: runner
+                port:
+                  number: {{ $.Values.runner.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}

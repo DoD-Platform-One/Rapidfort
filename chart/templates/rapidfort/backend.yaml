@@ -1,0 +1,206 @@
+{{- /*
+  Copyright RapidFort, Inc.
+*/}}
+{{- if .Values.backend.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app.kubernetes.io/name: backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: backend
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: backend     
+    spec:
+      {{- if .Values.backend.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.backend.volumes }}
+      volumes:
+        {{- tpl (toYaml (index .Values.backend.volumes )) . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.backend.ephemeralVolumeClaimTemplates }}
+      {{- if not .Values.backend.volumes }}
+      volumes:
+      {{- end }}
+      {{- range .Values.backend.ephemeralVolumeClaimTemplates -}}
+          {{ include "rapidfort-platform.singleEphemeralVolumeClaim" . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.backend.initContainers }}
+      initContainers:
+        {{- toYaml (index .Values.backend.initContainers ) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
+      serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}      
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.global.imagePullSecrets }}
+      {{- end }}
+      containers:
+        - name: backend
+          {{- if .Values.backend.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.backend.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          image: {{ .Values.backend.image }}
+          imagePullPolicy: IfNotPresent
+          {{- if .Values.backend.volumeMounts }}
+          volumeMounts:
+            {{- toYaml (index .Values.backend.volumeMounts ) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.backend.ports }}
+          ports: {{- toYaml .Values.backend.ports | nindent 12 }}
+          {{- end }}
+          {{- if or $.Values.backend.envVars $.Values.backend.envVarsSecret }}
+          env:
+            {{- range $key, $value := $.Values.backend.envVars }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- range .Values.backend.envVarsSecret }}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: rapidfort-secret
+                  key: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.backend.resources}}
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.backend.startupProbe}}
+          startupProbe:
+            {{- toYaml .Values.backend.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.backend.livenessProbe}}
+          livenessProbe:
+            {{- toYaml .Values.backend.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.backend.readinessProbe}}
+          readinessProbe:
+            {{- toYaml .Values.backend.readinessProbe | nindent 12 }}
+          {{- end }}
+      {{- with .Values.backend.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backend.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backend.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  labels:
+    app.kubernetes.io/name: backend 
+spec:
+  type: {{ .Values.backend.service.type }}
+  ports:
+    - port: {{ .Values.backend.service.port }}
+      protocol: TCP
+      name: http
+      targetPort: {{ .Values.backend.service.targetPort }}
+  selector:
+    app.kubernetes.io/name: backend
+{{- if .Values.global.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend
+  labels:
+    app.kubernetes.io/name: backend 
+  annotations:
+  {{- with .Values.backend.ingress.annotations }}  
+    {{- toYaml . | nindent 4 }}  
+  {{- end }}
+  {{- with .Values.global.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }} 
+spec:
+  ingressClassName: {{ default .Values.backend.ingress.ingressClassName .Values.global.ingress.className }}
+  {{- if .Values.global.ingress.tls }}
+    {{ include "rapidfort-platform.ingress.tls" . | nindent 2 }}
+  {{- end }}
+  rules:
+    {{- range .Values.backend.ingress.hosts }}
+    - host: {{ include "prefix.isFQDN" $.Values.global.hostname | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: backend
+                port:
+                  number: {{ $.Values.backend.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- if .Values.global.communityservice.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: community-service
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: api.rapidfort.com
+  ports:
+  - port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: community-service
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/upstream-vhost: api.rapidfort.com
+  {{- with .Values.global.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}        
+spec:
+  ingressClassName: {{ default .Values.backend.ingress.ingressClassName .Values.global.ingress.className }}
+  {{- if .Values.global.ingress.tls }}
+    {{ include "rapidfort-platform.ingress.tls" . | nindent 2 }}
+  {{- end }}
+  rules:
+  - http:
+      paths: 
+      - backend:
+          service:
+            name: community-service
+            port:
+              number: 443
+        path: /api/v1/community/
+        pathType: Prefix
+      - backend:
+          service:
+            name: community-service
+            port:
+              number: 443
+        # this is for the production to use.
+        path: /api/v1/imgs_work_dir/7b2f45e2-03f9-45bf-b301-136e8b136338/
+        pathType: Prefix
+{{- end }}
+{{- end }}

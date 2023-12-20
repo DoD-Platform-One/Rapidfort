@@ -1,0 +1,115 @@
+{{- /*
+  Copyright RapidFort, Inc.
+*/}}
+{{- if .Values.filesredis.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: files-redis
+  labels:
+    app.kubernetes.io/name: files-redis
+spec:
+  serviceName: files-redis
+  replicas: {{ .Values.filesredis.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: files-redis
+  {{- if .Values.filesredis.volumeClaimTemplates }}
+  volumeClaimTemplates:
+  {{- range .Values.filesredis.volumeClaimTemplates -}}
+      {{ include "rapidfort-platform.singleVolumeClaim" . | nindent 2 }}
+  {{- end }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: files-redis
+    spec:
+      {{- if .Values.filesredis.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.filesredis.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.filesredis.volumes }}
+      volumes:
+        {{- tpl (toYaml (index .Values.filesredis.volumes )) . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.filesredis.initContainers }}
+      initContainers:
+        {{- toYaml (index .Values.filesredis.initContainers ) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.global.imagePullSecrets }}
+      {{- end }}      
+      containers:
+        - name: files-redis
+          {{- if .Values.filesredis.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.filesredis.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          image: {{ .Values.filesredis.image }}
+          imagePullPolicy: IfNotPresent
+          {{- if .Values.filesredis.volumeMounts }}
+          volumeMounts:
+            {{- toYaml (index .Values.filesredis.volumeMounts ) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.filesredis.ports }}
+          ports: {{- toYaml .Values.filesredis.ports | nindent 12 }}
+          {{- end }}
+          {{- if or $.Values.filesredis.envVars $.Values.filesredis.envVarsSecret }}
+          env:
+            {{- range $key, $value := $.Values.filesredis.envVars }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- range .Values.filesredis.envVarsSecret }}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: rapidfort-secret
+                  key: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.filesredis.resources}}
+          resources:
+            {{- toYaml .Values.filesredis.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.filesredis.startupProbe}}
+          startupProbe:
+            {{- toYaml .Values.filesredis.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.filesredis.livenessProbe}}
+          livenessProbe:
+            {{- toYaml .Values.filesredis.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.filesredis.readinessProbe}}
+          readinessProbe:
+            {{- toYaml .Values.filesredis.readinessProbe | nindent 12 }}
+          {{- end }}
+      {{- with .Values.filesredis.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.filesredis.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.filesredis.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: files-redis
+  labels:
+    app.kubernetes.io/name: files-redis
+spec:
+  type: {{ .Values.filesredis.service.type }}
+  ports:
+    - port: {{ .Values.filesredis.service.port }}
+      protocol: TCP
+      name: redis
+  selector:
+    app.kubernetes.io/name: files-redis
+{{- end }}

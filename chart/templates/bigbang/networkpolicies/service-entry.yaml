@@ -6,7 +6,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   hosts: 
-  - {{ .Values.global.allowed_rf_host }}
+  #TODO: update to values.yaml reference
+  - us01.rapidfort.com
   ports:
   - number: 443
     name: https
