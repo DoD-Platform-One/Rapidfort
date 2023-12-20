@@ -1,86 +1,10 @@
----
 apiVersion: v2
 name: rapidfort
 description: Automated Container Hardening
 type: application
-version: 1.1.40-bb.6
-appVersion: 1.1.40
+version: 1.2.0-bb.0
+appVersion: 1.1.41
 dependencies:
-- repository: "file://deps/aggregator/"
-  version: 1.1.0
-  name: aggregator
-  condition: aggregator.enabled
-
-- repository: "file://deps/backend/"
-  version: 1.1.0
-  name: backend
-  condition: backend.enabled
-
-- repository: "file://deps/fluent-bit/"
-  version: 1.1.0
-  name: fluent-bit
-  condition: logger.enabled
-
-- repository: "file://deps/frontrow/"
-  version: 1.1.0
-  name: frontrow
-  condition: frontrow.enabled
-
-- repository: "file://deps/iso-master/"
-  version: 1.1.0
-  name: iso-master
-  condition: iso-master.enabled
-
-- repository: "file://deps/keycloak/"
-  version: 1.1.0
-  name: keycloak
-  condition: keycloak.enabled
-
-- repository: "file://deps/mysql-bb/"
-  version: 9.1.7-bb.0
-  name: mysql
-  condition: mysql.enabled
-
-- repository: "file://deps/redis-bb/"
-  version: 16.9.2-bb.0
-  name: redis
-  condition: redis.enabled
-
-- repository: "file://deps/lock-redis/"
-  version: 16.9.2-bb.0
-  name: lock-redis
-  condition: lock-redis.enabled
-
-- repository: "file://deps/files-redis/"
-  version: 16.9.2-bb.0
-  name: files-redis
-  condition: files-redis.enabled
-
-- repository: "file://deps/rf-scan/"
-  version: 1.1.0
-  name: rf-scan
-  condition: rf-scan.enabled
-
-- repository: "file://deps/rfapi/"
-  version: 1.1.0
-  name: rfapi
-  condition: rfapi.enabled
-
-- repository: "file://deps/rfpubsub/"
-  version: 1.1.0
-  name: rfpubsub
-  condition: rfpubsub.enabled
-
-- repository: "file://deps/runner/"
-  version: 1.1.0
-  name: runner
-  condition: runner.enabled
-
-- repository: "file://deps/vulns-db/"
-  version: 1.1.0
-  name: vulns-db
-  condition: vulns-db.enabled
-
 - name: gluon
   version: "0.4.0"
   repository: "oci://registry1.dso.mil/bigbang"

@@ -1,386 +1,1014 @@
-secret:
-  aws_default_region: ""
-  s3_bucket: ""
-
-  # -- This value must be a syntax valid email (doesn't need to be a real one, though it should be for production)
-  aws_access_key_id: FAKEID54G8A4F654GH7T
-  aws_secret_access_key: FAKEKEYxlLONi5IEMW8zA0Va4l0i9yPwfD5AMn0K
-  rf_app_admin: "rfadmin@fakeemail.com"
-  rf_app_admin_passwd: "p@ssw0rd"
-  # -- This field is used to provide the rapidfort service FQDN (if FQDN is not available use IP ADDRESS) to internal service
-  rf_app_host: ""
-  storage_type: "s3"
-  aws_role_arn: ""
-
+#
+# init user data
+#
 global:
-  # -- This field is used to update the host name in the ingress.
-  rf_app_host: ""
-  ingressClassName: ""
-  allowed_rf_host: "api.rapidfort.com"
-  db:
-    auth:
-      host: "mysql"
-      username: "mysql"
-      password: "mysql"
-      port: "3306"
-      database: "standalone"
+  admin: "rf@rapidfort.com"
+  passwd: "Fiery.123!"
+  hostname: "test.rapidfort.com"
+  cloud: "eks"
+  type: ""
+  communityservice:
+    enabled: false
+  imagePullSecrets: "private-registry"
+  ingress:
+    enabled: false
+    className: "nginx"
+    annotations: {}
+      # cert-manager.io/cluster-issuer: letsencrypt
+    tls: []
+      # secretName: rapidfort-tls-cert
+  aws: 
+    aws_access_key_id: AKI***
+    aws_secret_access_key: Fh***
+    region: us-east-1
+    storage: rapidfort-standalone
 
-# -- When internal runner traffic is enabled runner defaults to `backend` for it's url
-# if the backend service name is changed, update it here
-runner_rf_app_host: ""
-
+#Rapidfort Service Account
 serviceAccount:
-  annotations: {}
+  create: true
 
-sharedPvcs:
-  imgs-work-dir-shared:
-    storageSize: 200Gi
-  iso-master-container-storage:
-    storageSize: 50Gi
-  iso-master-tmp-storage:
-    storageSize: 50Gi        
-
-sc:
-  enabled: false
-
+#
+# aggregator
+#
 aggregator:
   enabled: true
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/aggregator-exe"
-    tag: "1.1.40-1-rfhardened"
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.41-1-rfhardened
+  ports: {}
+  ephemeralVolumeClaimTemplates:
+  - name: aggregator-data
+    accessMode: "ReadWriteOnce"
+    size: 512Gi
+  - name: aggregator-data-local-bucket
+    accessMode: "ReadWriteOnce"
+    size: 512Gi
+  volumes: []
+  volumeMounts:
+    - name: aggregator-data
+      mountPath: /mnt/raid/aggregator
+    - name: aggregator-data-local-bucket
+      mountPath: /opt/rapidfort/local-bucket
   initContainers:
-    volumePermissions:
-      image:
-        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
-        tag: "8.8"
-  imagePullSecrets:
-  - name: private-registry
-  env:
-    redis_host: redis-master
-    redis_host_files: files-redis-master
-    redis_host_lock: lock-redis-master
-  PVCs:
-    aggregatorRaidVolume:
-      storageSize: 3Gi
-  volumes:
-  - name: raid-volume
-    persistentVolumeClaim:
-      claimName: aggregator-raid-volume
+  - name: wait-files-redis
+    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+    command: ["/bin/sh", "-c"]
+    args:
+    - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
+  - name: wait-lock-redis
+    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+    command: ["/bin/sh", "-c"]
+    args:
+    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
+  # TODO: fix the security context
+  # podSecurityContext:
+  #   runAsUser: 1000
+  #   runAsGroup: 1000
+  #   fsGroup: 1000
+  containerSecurityContext: {}
+  service: {}
+  ingress: {}
+  resources:
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+  envVars:
+    RF_API_SERVER: iso-master
+    RF_DEBUG: "no"
+  envVarsSecret:
+    - RF_S3_BUCKET
+    - RF_STORAGE_TYPE
+    - AWS_ACCESS_KEY_ID
+    - AWS_DEFAULT_REGION
+    - AWS_SECRET_ACCESS_KEY
+    - RF_GS_CREDS
+    - RF_ROLE_ARN
+    - RF_APP_HOST
+    - DEPLOY_MODE
+    - RF_VERBOSE
+    - RF_AZURE_CONNECTION_STRING
+  startupProbe: {}
+  livenessProbe: {}
+  readinessProbe: {}
 
+#
+# backend
+#
 backend:
   enabled: true
-  community_service:
-    enabled: false
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/backend-exe"
-    tag: "1.1.40-rfhardened"
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  ephemeralVolumeClaimTemplates:
+  - name: backend-data
+    accessMode: "ReadWriteOnce"
+    size: 128Gi
+  volumes: []
+  volumeMounts:
+    - name: backend-data
+      mountPath: /opt/rapidfort/local-bucket
   initContainers:
-    enabled: true # this enables to add init container to keep waiting for dependent service to start
-    init:
-      image:
-        repository: "registry1.dso.mil/ironbank/big-bang/base"
-        tag: "2.0.0"
-  imagePullSecrets:
-  - name: private-registry
-  env:
-    redis_host: redis-master
+    - name: wait-keycloak
+      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+      command: ["/bin/sh", "-c"]
+      args:
+      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://keycloak -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for keycloak; sleep .3; done;
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
   ingress:
-    enabled: false
-  volumes:
-  - name: imgs-work-dir
-    emptyDir:
-      sizeLimit: 10Gi 
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    hosts:
+      - host:
+        paths:
+          - path: /api/v1/
+            pathType: Prefix
+  resources:
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+  envVars:
+    AUTH_SERVER_ROOT_URL: http://keycloak
+    LC_ALL: en_US.UTF-8
+  envVarsSecret:
+    - RF_APP_HOST
+    - DB_URL
+    - DEPLOY_MODE
+    - RF_VERBOSE
+    - RF_APP_ADMIN
+    - RF_APP_ADMIN_PASSWD
+    - RF_STORAGE_TYPE
+    - RF_S3_BUCKET
+    - AWS_ACCESS_KEY_ID
+    - AWS_DEFAULT_REGION
+    - AWS_SECRET_ACCESS_KEY
+    - RF_ROLE_ARN
+    - RF_GS_CREDS
+    - RF_AZURE_CONNECTION_STRING
+    - KEYCLOAK_JWT_PUB_KEY
+    - KEYCLOAK_CLIENT_ID
+    - KEYCLOAK_REALM
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
 
+#
+# files-redis
+#
+filesredis:
+  enabled: true
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+  ports:
+  - containerPort: 6379
+    name: redis
+  volumeClaimTemplates:
+  - name: "redis-data"
+    accessMode: "ReadWriteOnce"
+    size: "512Gi"
+  volumeMounts:
+  - name: redis-data
+    mountPath: /bitnami/redis/data
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/files-redis
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 6379
+  ingress: {}
+  resources: {}
+  envVars:
+    ALLOW_EMPTY_PASSWORD: "yes"
+  envVarsSecret: {}
+  startupProbe: {}
+  livenessProbe:
+    exec:
+      command: ["redis-cli", "ping"]
+    failureThreshold: 10
+  readinessProbe:
+    exec:
+      command: ["redis-cli", "ping"]
+    failureThreshold: 10
+
+#
+# fileupload
+#
+fileupload:
+  enabled: true
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  ephemeralVolumeClaimTemplates:
+  - name: fileupload-data
+    accessMode: "ReadWriteOnce"
+    size: 512Gi
+  volumes: []
+  volumeMounts:
+      - name: fileupload-data
+        mountPath: /opt/rapidfort/local-bucket
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "65534", "/opt/rapidfort/local-bucket"]
+    volumeMounts:
+      - name: fileupload-data
+        mountPath: /opt/rapidfort/local-bucket
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  ingress:
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-buffering: "off"
+      nginx.ingress.kubernetes.io/proxy-body-size: 10240m
+      nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    hosts:
+      - host:
+        paths:
+          - path: /upload
+            pathType: Exact
+          - path: /download
+            pathType: Prefix
+  resources: {}
+  envVars: {}
+  envVarsSecret:
+    - DB_URL
+    - RF_S3_BUCKET
+    - RF_STORAGE_TYPE
+    - KEYCLOAK_JWT_PUB_KEY
+    - KEYCLOAK_CLIENT_ID
+    - KEYCLOAK_REALM
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET
+    - AWS_DEFAULT_REGION
+    - AWS_ACCESS_KEY_ID
+    - RF_ROLE_ARN
+    - RF_GS_CREDS
+    - RF_AZURE_CONNECTION_STRING
+    - AWS_SECRET_ACCESS_KEY
+    - RF_VERBOSE
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 99
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 99
+
+#
+# frontrow
+#
 frontrow:
   enabled: true
-  authUrl: ""
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/frontrow"
-    tag: "1.1.40-1-rfhardened"
-  imagePullSecrets:
-  - name: private-registry
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  volumes: {}
+  volumeMounts: {}
+  initContainers: {}
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
   ingress:
-    enabled: false
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host:
+        paths:
+          - path: /
+            pathType: Prefix
+          - path: /cli
+            pathType: Prefix
+  resources: {}
+  envVars: {}
+  envVarsSecret:
+    - RF_APP_HOST
+    - DEPLOY_MODE
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
 
-#Done
-iso-master:
+#
+# iso-master
+#
+isomaster:
   enabled: true
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/iso-master-exe"
-    tag: "1.1.40-rfhardened"
-  initContainers:
-    init:
-      image:
-        repository: "registry1.dso.mil/ironbank/big-bang/base"
-        tag: "2.0.0"
-  imagePullSecrets:
-  - name: private-registry
-  env:
-    redis_host: redis-master
-    redis_host_ha: redis-master
-    redis_host_files: files-redis-master
-    redis_host_lock: lock-redis-master
-  ingress:
-    enabled: false
-  # PVCs:
-  #   iso-masterImgsWorkDir:
-  #     storageSize: 10Gi
-  #   iso-masterImageDb:
-  #     storageSize: 10Gi
-  volumes:
-  - name: rapidfort-tmp-storage
-    persistentVolumeClaim:
-      claimName: iso-master-tmp-storage
-  - name: rapidfort-tmp-container-storage
-    persistentVolumeClaim:
-      claimName: iso-master-container-storage
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
-    persistentVolumeClaim:
-      claimName: imgs-work-dir-shared
+    accessMode: "ReadWriteOnce"
+    size: 512Gi
+  volumes: []
+  volumeMounts:
+    - name: imgs-work-dir
+      mountPath: /opt/rapidfort/local-bucket
+  initContainers:
+    - name: wait-backend
+      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+      command: ["/bin/sh", "-c"]
+      args:
+      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
+    - name: wait-vulnsdb
+      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+      command: ["/bin/sh", "-c"]
+      args:
+      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://vulnsdb/vulns-db/api/v1/status  -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for vulnsdb; sleep .3; done;
+  serviceAccount: {}
+  podSecurityContext: {}
+  containerSecurityContext:
+    privileged: true
+    capabilities:
+      add: ["SYS_ADMIN"]
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  ingress:
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    hosts:
+      - host:
+        paths:
+          - path: /iso-master/
+            pathType: Prefix
+  resources: {}
+  envVars:
+    LC_ALL: en_US.UTF-8
+  envVarsSecret:
+    - DB_URL
+    - AWS_DEFAULT_REGION
+    - RF_S3_BUCKET
+    - RF_STORAGE_TYPE
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - RF_ROLE_ARN
+    - RF_GS_CREDS
+    - RF_AZURE_CONNECTION_STRING
+    - RF_APP_HOST
+    - DEPLOY_MODE
+    - RF_VERBOSE
+    - KEYCLOAK_JWT_PUB_KEY
+    - KEYCLOAK_CLIENT_ID
+    - KEYCLOAK_REALM
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
 
+#
+# keycloak
+#
 keycloak:
   enabled: true
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/keycloak"
-    tag: 18.0.0-legacy
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/keycloak:18.0.0-legacy
+  ports:
+    - name: http
+      containerPort: 8080
+  volumes: {}
+  volumeMounts: {}
   initContainers:
-    init_mysql:
-      enabled: true
-      image:
-        repository: "registry1.dso.mil/ironbank/opensource/mysql/mysql8"
-        tag: "8.0.31"
-  imagePullSecrets:
-  - name: private-registry
+  - name: wait-mysql
+    image: registry1.dso.mil/ironbank/opensource/mysql/mysql8:8.0.31
+    command: ["/bin/sh", "-c"]
+    args:
+    - until mysql --host=mysql --user=root --password=RF-123579 --execute="SELECT 1;"; do echo $(date +"%Y-%m-%d %T,%3N") waiting for mysql; sleep .3; done;
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
   ingress:
-    enabled: false
+    className: ""
+    annotations:
+    hosts:
+      - host:
+        paths:
+          - path: /auth/
+            pathType: Prefix
+  resources: {}
+  envVars:
+    DB_VENDOR: MYSQL
+    DB_ADDR: mysql
+    DB_USER: keycloak
+    DB_PASSWORD: RF-123579
+    JDBC_PARAMS: "useSSL=false"
+    PROXY_ADDRESS_FORWARDING: true
+    JAVA_OPTS_APPEND: "-Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled"
+  envVarsSecret: {}
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
 
+#
+# lock-redis
+#
+lockredis:
+  enabled: true
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+  ports:
+  - containerPort: 6379
+    name: redis
+  volumeClaimTemplates:
+  - name: "redis-data"
+    accessMode: "ReadWriteOnce"
+    size: "64Gi"
+  volumeMounts:
+  - name: redis-data
+    mountPath: /bitnami/redis/data
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/lock-redis"]
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/lock-redis
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 6379
+  ingress: {}
+  resources: {}
+  envVars:
+    ALLOW_EMPTY_PASSWORD: "yes"
+  envVarsSecret: {}
+  startupProbe: {}
+  livenessProbe:
+    exec:
+      command: ["redis-cli", "ping"]
+    failureThreshold: 10
+  readinessProbe:
+    exec:
+      command: ["redis-cli", "ping"]
+    failureThreshold: 10
+
+#
+# mysql
+#
 mysql:
-  # -- Set 'enabled' to true if you want to deploy a local (in-cluster) mysql instance
   enabled: true
-  # To use an external mysql instance, set enabled to false and uncomment
-  # the line below:
-  # mysqlServer: ""
-
-  # -- Seeding database required on intial run. Set to false if conducting a new install with existing data.
-  # Ensure this is also set in the keycloak db.addr value
-  seedDatabase: true
-
-  # To use an external secret for the password for an external mysql
-  # instance, set enabled to false and provide the name of the secret on the
-  # line below:
-  # existingSecret: ""
-  # existingSecretPasswordKey: "mysql-password"
-
-  initdbScriptsConfigMap: "init-db-configuration"
-  fullnameOverride: "mysql"
-
-  image:
-    registry: "registry1.dso.mil/ironbank"
-    repository: "bitnami/mysql8"
-    tag: "8.0.29-debian-10-r37"
-    pullSecrets:
-    - private-registry
-
-  auth:
-    ## @param auth.database Name for a custom database to create
-    ## ref: https://github.com/bitnami/bitnami-docker-mysql/blob/master/README.md#creating-a-database-on-first-run
-    ##
-    database: standalone
-    ## @param auth.username Name for a custom user to create
-    ## ref: https://github.com/bitnami/bitnami-docker-mysql/blob/master/README.md#creating-a-database-user-on-first-run
-    ##
-    username: "mysql"
-    ## @param auth.password Password for the new user. Ignored if existing secret is provided
-    ##
-    password: "mysql"
-    ## @param auth.existingSecret Use existing secret for password details. The secret has to contain the keys `mysql-root-password`, `mysql-replication-password` and `mysql-password`
-    ## NOTE: When it's set the auth.rootPassword, auth.password, auth.replicationPassword are ignored.
-    ##
-    existingSecret: ""
-    host: mysql
-    port: 3306
-
-redis:
-  svcWorkaround: true
-  enabled: true
-  image:
-    registry: registry1.dso.mil
-    repository: ironbank/bitnami/redis
-    tag: 7.0.11
-  istio:
-    enabled: false
-  architecture: standalone
-  fullnameOverride: "redis"
-  auth:
-    enabled: false
-  # -- When enabled adds an extra service for redis to workaround an rfapi bug
-  master:
-    resources:
-      limits:
-        cpu: 1000m
-        memory: 2048Mi
-      requests:
-        cpu: 100m
-        memory: 256Mi
-
-lock-redis:
-  enable: true
-  image:
-    registry: registry1.dso.mil
-    repository: ironbank/bitnami/redis
-    tag: 7.0.11
-  istio:
-    enabled: false
-  architecture: standalone
-  fullnameOverride: "lock-redis"
-  auth:
-    enabled: false
-  # -- When enabled adds an extra service for redis to workaround an rfapi bug
-  master:
-    resources:
-      limits:
-        cpu: 1000m
-        memory: 2048Mi
-      requests:
-        cpu: 100m
-        memory: 256Mi
-
-files-redis:
-  enable: true
-  image:
-    registry: registry1.dso.mil
-    repository: ironbank/bitnami/redis
-    tag: 7.0.11
-  istio:
-    enabled: false
-  architecture: standalone
-  fullnameOverride: "files-redis"
-  auth:
-    enabled: false
-  # -- When enabled adds an extra service for redis to workaround an rfapi bug
-  master:
-    resources:
-      limits:
-        cpu: 1000m
-        memory: 2048Mi
-      requests:
-        cpu: 100m
-        memory: 256Mi  
-
-#Done
-rf-scan:
-  enabled: true
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/rf-scan-exe"
-    tag: "1.1.40-1-rfhardened"
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/bitnami/mysql8:8.0.29-debian-10-r37
+  ports:
+    - name: mysql
+      containerPort: 3306
+  volumes:
+    - name: mysql-initdb
+      configMap:
+        name: mysql-initdb-config
+  volumeMounts:
+    - name: mysql-data
+      mountPath: /bitnami/mysql/data
+    - name: mysql-initdb
+      mountPath: /docker-entrypoint-initdb.d
+  volumeClaimTemplates:
+  - name: "mysql-data"
+    accessMode: "ReadWriteOnce"
+    size: "512Gi"
   initContainers:
-    volumePermissions:
-      image:
-        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
-        tag: "8.8"
-    init:
-      image:
-        repository: "registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"
-        tag: "8.8"
-  imagePullSecrets:
-  - name: private-registry
-  env:
-    redis_host: redis-master
-    redis_host_ha: redis-master
-    redis_host_files: files-redis-master
-    redis_host_lock: lock-redis-master
-  ingress:
-    enabled: false
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
+    volumeMounts:
+      - name: mysql-data
+        mountPath: /opt/rapidfort/local-bucket/data/mysql
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  ingress: {}
+  resources: {}
+  envVars:
+    MYSQL_DATABASE: keycloak
+    MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+    MYSQL_ROOT_PASSWORD: RF-123579
+  envVarsSecret: {}
+  startupProbe: {}
+  livenessProbe:
+    exec:
+      command: ["mysql", "-h", "localhost", "-u", "root", "-pRF-123579", "-e", "SHOW DATABASES;"]
+    failureThreshold: 10
+  readinessProbe:
+    exec:
+      command: ["mysql", "-h", "localhost", "-u", "root", "-pRF-123579", "-e", "SHOW DATABASES;"]
+    failureThreshold: 10
 
+#
+# redis
+#
+redis:
+  enabled: true
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+  ports:
+  - containerPort: 6379
+    name: redis
+  volumeMounts:
+  - name: redis-data
+    mountPath: /bitnami/redis/data
+  volumeClaimTemplates:
+  - name: "redis-data"
+    accessMode: "ReadWriteOnce"
+    size: "128Gi"
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/redis"]
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/redis
+  # - name: init-vulnsdb
+  #   image: registry1.dso.mil/ironbank/rapidfort/init:1.1.11 #TODO: update iamge.
+  #   command: ["/bin/sh", "-c", "unxz /dump.rdb.xz && cp /dump.rdb /opt/rapidfort/local-bucket/data/redis && chown 1001 /opt/rapidfort/local-bucket/data/redis/dump.rdb"]
+  #   volumeMounts:
+  #     - name: redis-data
+  #       mountPath: /opt/rapidfort/local-bucket/data/redis
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 6379
+  ingress: {}
+  resources: {}
+  envVars:
+    ALLOW_EMPTY_PASSWORD: "yes"
+    REDIS_AOF_ENABLED: "no"
+  envVarsSecret: {}
+  startupProbe: {}
+  livenessProbe:
+    exec:
+      command: ["redis-cli", "ping"]
+    failureThreshold: 10
+  readinessProbe:
+    exec:
+      command: ["redis-cli", "ping"]
+    failureThreshold: 10
+
+#
+# rf-scan
+#
+rfscan:
+  enabled: true
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  ephemeralVolumeClaimTemplates:
+  - name: imgs-work-dir
+    accessMode: "ReadWriteOnce"
+    size: 512Gi
+  volumes: []
+  volumeMounts:
+    - name: imgs-work-dir
+      mountPath: /opt/rapidfort/local-bucket
+  initContainers:
+    - name: wait-backend
+      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+      command: ["/bin/sh", "-c"]
+      args:
+      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
+    - name: wait-vulnsdb
+      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+      command: ["/bin/sh", "-c"]
+      args:
+      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://vulnsdb/vulns-db/api/v1/status -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for vulnsdb; sleep .3; done;
+  serviceAccount: {}
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  ingress:
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    hosts:
+      - host:
+        paths:
+          - path: /rf-scan/
+            pathType: Prefix
+  resources: {}
+  envVars:
+    LC_ALL: en_US.UTF-8
+  envVarsSecret:
+    - AWS_DEFAULT_REGION
+    - DB_URL
+    - RF_S3_BUCKET
+    - RF_STORAGE_TYPE
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - RF_ROLE_ARN
+    - RF_GS_CREDS
+    - KEYCLOAK_JWT_PUB_KEY
+    - KEYCLOAK_REALM
+    - KEYCLOAK_CLIENT_ID
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID
+    - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET
+    - RF_APP_HOST
+    - DEPLOY_MODE
+    - RF_VERBOSE
+    - RF_AZURE_CONNECTION_STRING
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+
+#
+# rfapi
+#
 rfapi:
   enabled: true
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/rfapi-exe"
-    tag: "1.1.40-rfhardened"
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  volumes: {}
+  volumeMounts: {}
   initContainers:
-    enabled: true # this enables to add init container to keep waiting for dependent service to start
-    init:
-      image:
-        repository: "registry1.dso.mil/ironbank/bitnami/redis"
-        tag: "7.0.11"
-  imagePullSecrets:
-  - name: private-registry
-  env:
-    redis_host: redis-master
-    redis_host_files: files-redis-master
-    redis_host_lock: lock-redis-master
+  - name: wait-files-redis
+    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+    command: ["/bin/sh", "-c"]
+    args:
+    - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
+  - name: wait-lock-redis
+    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+    command: ["/bin/sh", "-c"]
+    args:
+    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
   ingress:
-    websocket:
-      enabled: false
+    ingressClassName: ""
     http:
-      enabled: false
+      annotations:
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      hosts:
+        - host:
+          paths:
+            - path: /rfapi/
+              pathType: Prefix
+    websocket:
+      annotations:
+        nginx.ingress.kubernetes.io/configuration-snippet: |
+          proxy_set_header Upgrade "websocket";
+          proxy_set_header Connection "Upgrade";
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+        nginx.ingress.kubernetes.io/server-snippets: |
+          location /rfapi/events {
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header Host $host;
+          }
+      hosts:
+        - host:
+          paths:
+            - path: /rfapi/events
+              pathType: Prefix 
+  resources: {}
+  envVars: {}
+  envVarsSecret: {}
+  startupProbe: {}
+  livenessProbe: {}
+  readinessProbe: {}
 
+#
+# rfpubsub
+#
 rfpubsub:
   enabled: true
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe"
-    tag: "1.1.40-rfhardened"
-  imagePullSecrets:
-  - name: private-registry
-  env:
-    redis_host: redis-master
-    redis_host_ha: redis-master
-    redis_host_files: files-redis-master
-    redis_host_lock: lock-redis-master
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  volumes: {}
+  volumeMounts: {}
+  initContainers:
+  - name: wait-files-redis
+    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+    command: ["/bin/sh", "-c"]
+    args:
+    - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
+  - name: wait-lock-redis
+    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+    command: ["/bin/sh", "-c"]
+    args:
+    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
   ingress:
-    enabled: false
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        proxy_set_header Upgrade "websocket";
+        proxy_set_header Connection "Upgrade";
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+      nginx.ingress.kubernetes.io/server-snippets: |
+        location /rfpubsub/events {
+          proxy_set_header X-Forwarded-Host $http_host;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_set_header X-Forwarded-For $remote_addr;
+          proxy_set_header Host $host;
+        }
+    hosts:
+      - host:
+        paths:
+          - path: /rfpubsub
+            pathType: Prefix
+  resources: {}
+  envVars:
+    RFPUBSUB_WS_PORT: 8080
+    API_KEY: 03f4b34739f506f88c9bbc3410b5d070
+    RF_API_SERVER: iso-master
+  envVarsSecret: {}
+  startupProbe: {}
+  livenessProbe: {}
+  readinessProbe: {}
 
+#
+# runner
+#
 runner:
   enabled: true
-  secret:
-    # -- Change to rf-runner-secret to internalize runner traffic
-    name: rf-secret
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/runner"
-    tag: "1.1.40-rfhardened"
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/runner:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  ephemeralVolumeClaimTemplates:
+  - name: var-lib-containers
+    accessMode: "ReadWriteOnce"
+    size: 512Gi
+  - name: imgs-work-dir
+    accessMode: "ReadWriteOnce"
+    size: 512Gi
+  volumes: []
+  volumeMounts:
+    - name: imgs-work-dir
+      mountPath: /opt/rapidfort/local-bucket
+    - name: var-lib-containers
+      mountPath: /var/lib/containers
   initContainers:
-    init:
-      enabled: true # this enables to add init container to keep waiting for dependent service to start
-      image:
-        repository: "registry1.dso.mil/ironbank/big-bang/base"
-        tag: "2.0.0"
-  imagePullSecrets:
-  - name: private-registry
-  env:
-    redis_host: redis-master
-    redis_host_ha: redis-master
+    - name: wait-iso-master
+      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+      command: ["/bin/sh", "-c"]
+      args:
+      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://iso-master -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for iso-master; sleep .3; done;
+  podSecurityContext: {}
+  containerSecurityContext:
+    privileged: true
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
   ingress:
-    enabled: false
-  PVCs:
-    scanVolume:
-      storageSize: 10Gi    
-  volumes:
-  - name: scan-storage
-    persistentVolumeClaim:
-      claimName: runner-scan-volume
+    className: ""
+    annotations:
+    hosts:
+      - host:
+        paths:
+          - path: /runner/
+            pathType: Prefix
+  resources: {}
+  envVars:
+    RFVDB_HOST: frontrow.rapidfort.com
+    RF_CONTAINER_ENGINE: podman
+    RF_INTERNAL: 1
+    RF_DEBUG: no
+  envVarsSecret:
+    - RF_APP_HOST
+    - DB_URL
+    - DEPLOY_MODE
+    - RF_VERBOSE
+    - RF_APP_ADMIN
+    - RF_APP_ADMIN_PASSWD
+    - RF_STORAGE_TYPE
+    - RF_S3_BUCKET
+    - AWS_ACCESS_KEY_ID
+    - AWS_DEFAULT_REGION
+    - AWS_SECRET_ACCESS_KEY
+    - RF_ROLE_ARN
+    - RF_GS_CREDS
+    - RF_AZURE_CONNECTION_STRING
+    - KEYCLOAK_JWT_PUB_KEY
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
 
-vulns-db:
-  enabled: true
-  image:
-    repository: "registry1.dso.mil/ironbank/rapidfort/vulns-db"
-    tag: "1.1.40-rfhardened"
-  initContainers:
-    init:
-      enabled: true
-      image:
-        repository: "registry1.dso.mil/ironbank/bitnami/redis"
-        tag: "7.0.11"  
-  env:
-    rfvdb_host: "api.rapidfort.com"
-    redis_host: redis-master
-    redis_host_ha: redis-master
-  ingress:
-    enabled: false
-  imagePullSecrets:
-  - name: private-registry
-
-logger:
+#
+# rfvdb
+#
+rfvdb:
   enabled: false
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/rfvdb:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  volumes: {}
+  volumeMounts: {}
+  initContainers:
+  - name: wait-redis
+    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+    command: ["/bin/sh", "-c"]
+    args:
+    - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  ingress:
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: "1250m"
+    hosts:
+      - host:
+        paths:
+          - path: /rfvdb/
+            pathType: Prefix
+  resources: {}
+  envVars:
+    RF_DEBUG: "no"
+    RF_RFVDB_PORT: "8080"
+  envVarsSecret:
+    - RF_S3_BUCKET
+    - RF_STORAGE_TYPE
+    - AWS_ACCESS_KEY_ID
+    - AWS_DEFAULT_REGION
+    - AWS_SECRET_ACCESS_KEY
+    - RF_GS_CREDS
+    - RF_ROLE_ARN
+    - RF_APP_HOST
+    - DEPLOY_MODE
+    - RF_VERBOSE
+    - RF_AZURE_CONNECTION_STRING
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+
+#
+# vulns-db
+#
+vulnsdb:
+  enabled: true
+  replicaCount: 1
+  image: registry1.dso.mil/ironbank/rapidfort/vulns-db:1.1.41-1-rfhardened
+  ports:
+    - name: http
+      containerPort: 8080
+  volumes: {}
+  volumeMounts: {}
+  initContainers:
+  - name: wait-redis
+    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
+    command: ["/bin/sh", "-c"]
+    args:
+    - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  ingress:
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: "250m"
+    hosts:
+      - host:
+        paths:
+          - path: /vulns-db/
+            pathType: Prefix
+  resources: {}
+  envVars:
+    RFVDB_HOST: vulndb-beta.rapidfort.com
+    RF_DEBUG: no
+    REDIS_AOF_ENABLED: no
+  envVarsSecret: {}
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
 
 # -- Big Bang Values
 domain: bigbang.dev
@@ -394,6 +1022,7 @@ istio:
     mode: PERMISSIVE
   rapidfort:
     enabled: false
+    allowed_rf_host: "frontrow.rapidfort.com"
     gateways:
     - istio-system/public
     hosts:
@@ -416,12 +1045,12 @@ bbtests:
     artifacts: true
     envs:
       # dummy values for now
-      # cypress_url: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
+      # cypress_url: 'http://{{ template "rapidfort-platform.name" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
       cypress_url: 'http://test.test'
   scripts:
     envs:
       URL: 'http://test.test'
-      # URL: 'http://{{ template "rapidfort.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
+      # URL: 'http://{{ template "rapidfort-platform.name" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.frontrow.service.port }}'
   addons:
     minio:
       enabled: false

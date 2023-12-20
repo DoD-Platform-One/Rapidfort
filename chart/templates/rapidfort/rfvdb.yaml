@@ -1,0 +1,145 @@
+{{- /*
+  Copyright RapidFort, Inc.
+*/}}
+{{- if .Values.rfvdb.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rfvdb
+  labels:
+    app.kubernetes.io/name: rfvdb    
+spec:
+  replicas: {{ .Values.rfvdb.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rfvdb
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rfvdb        
+    spec:
+      {{- if .Values.rfvdb.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.rfvdb.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.rfvdb.volumes }}
+      volumes:
+        {{- tpl (toYaml (index .Values.rfvdb.volumes )) . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.rfvdb.initContainers }}
+      initContainers:
+        {{- toYaml (index .Values.rfvdb.initContainers ) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.global.imagePullSecrets }}
+      {{- end }}
+      containers:
+        - name: rfvdb
+          {{- if .Values.rfvdb.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.rfvdb.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          image: {{ .Values.rfvdb.image }}
+          imagePullPolicy: IfNotPresent
+          {{- if .Values.rfvdb.volumeMounts }}
+          volumeMounts:
+            {{- toYaml (index .Values.rfvdb.volumeMounts ) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.rfvdb.ports }}
+          ports: {{- toYaml .Values.rfvdb.ports | nindent 12 }}
+          {{- end }}
+          {{- if or $.Values.rfvdb.envVars $.Values.rfvdb.envVarsSecret }}
+          env:
+            {{- range $key, $value := $.Values.rfvdb.envVars }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- range .Values.rfvdb.envVarsSecret }}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: rapidfort-secret
+                  key: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.rfvdb.resources}}
+          resources:
+            {{- toYaml .Values.rfvdb.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.rfvdb.startupProbe}}
+          startupProbe:
+            {{- toYaml .Values.rfvdb.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.rfvdb.livenessProbe}}
+          livenessProbe:
+            {{- toYaml .Values.rfvdb.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.rfvdb.readinessProbe}}
+          readinessProbe:
+            {{- toYaml .Values.rfvdb.readinessProbe | nindent 12 }}
+          {{- end }}
+      {{- with .Values.rfvdb.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.rfvdb.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.rfvdb.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rfvdb
+  labels:
+    app.kubernetes.io/name: rfvdb    
+spec:
+  type: {{ .Values.rfvdb.service.type }}
+  ports:
+    - port: {{ .Values.rfvdb.service.port }}
+      protocol: TCP
+      name: http
+      targetPort: {{ .Values.rfvdb.service.targetPort }}
+  selector:
+    app.kubernetes.io/name: rfvdb
+{{- if .Values.global.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rfvdb
+  labels:
+    app.kubernetes.io/name: rfvdb    
+  annotations:
+  {{- with .Values.rfvdb.ingress.annotations }}  
+    {{- toYaml . | nindent 4 }}  
+  {{- end }}
+  {{- with .Values.global.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
+spec:
+  ingressClassName: {{ default .Values.rfvdb.ingress.ingressClassName .Values.global.ingress.className }}
+  {{- if .Values.global.ingress.tls }}
+    {{ include "rapidfort-platform.ingress.tls" . | nindent 2 }}
+  {{- end }}
+  rules:
+    {{- range .Values.rfvdb.ingress.hosts }}
+    - host: {{ include "prefix.isFQDN" $.Values.global.hostname | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: rfvdb
+                port:
+                  number: {{ $.Values.rfvdb.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}

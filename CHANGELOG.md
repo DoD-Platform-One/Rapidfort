@@ -2,7 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [1.1.40-bb.6]
+## [1.2.0-bb.0]
+- RapidFort Release 1.1.41 with Rapidfort helm chart version 1.2.0
+
+## [1.1.41-bb.0]
 - RapidFort Release 1.1.40 Patch for RapidFort Deployment storage
 
 ## [1.1.40-bb.5]

@@ -116,8 +116,13 @@ gatekeeper:
       volumeTypes:
         parameters:
           excludedResources:
-          - 'rapidfort/iso-master-.*'
-          - 'rapidfort/runner-.*'
+            - 'rapidfort/aggregator-.*'
+            - 'rapidfort/backend-.*'
+            - 'rapidfort/fileupload-.*'
+            - 'rapidfort/isomaster-.*'
+            - 'rapidfort/rfscan-.*'
+            - 'rapidfort/runner-.*'
+            - 'rapidfort/runnerbeat-.*'
 
 # Toggle for Bigbang Core packages set true to install
 jaeger:

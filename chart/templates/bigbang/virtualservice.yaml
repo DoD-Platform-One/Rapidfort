@@ -2,11 +2,11 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ template "rapidfort.fullname" . }}
+  name: {{ template "rapidfort-platform.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include (printf "rapidfort.labels") . | nindent 4 }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include (printf "rapidfort-platform.labels") . | nindent 4 }}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
 spec:
   gateways:
   {{- range .Values.istio.rapidfort.gateways }}
@@ -47,7 +47,7 @@ spec:
     route:
     - destination:
         port:
-          number: {{ index .Values "iso-master" "service" "port" | default "80" }}
+          number: {{ index .Values "isomaster" "service" "port" | default "80" }}
         host: iso-master
 
   - name: keycloak
@@ -67,18 +67,18 @@ spec:
     route:
     - destination:
         port:
-          number: {{ index .Values "rf-scan" "service" "port" | default "80" }}
+          number: {{ index .Values "rfscan" "service" "port" | default "80" }}
         host: rf-scan
 
-  - name: vulns-db
+  - name: vulnsdb
     match:
     - uri:
         regex: "/vulns-db/.*"
     route:
     - destination:
         port:
-          number: {{ index .Values "vulns-db" "service" "port" | default "80" }}
-        host: vulns-db
+          number: {{ index .Values "vulnsdb" "service" "port" | default "80" }}
+        host: vulnsdb
 
   - name: rfapi-websocket
     match:
@@ -134,7 +134,6 @@ spec:
         #     X-Forwarded-For: $remote_addr
         #     Host: $host;
 
-  {{ if .Values.runner.enabled }}
   - name: runner
     match:
     - uri:
@@ -144,7 +143,18 @@ spec:
         port:
           number: {{ .Values.runner.service.port | default "80" }}
         host: runner
-  {{ end }}
+
+  - name: fileupload
+    match:
+    - uri:
+        exact: "/upload"
+    - uri:
+        prefix: "/download"
+    route:
+    - destination:
+        port:
+          number: {{ index .Values "fileupload" "service" "port" | default "80" }}
+        host: fileupload
 
   - name: catchall-redirect-frontrow
     match:
@@ -153,7 +163,6 @@ spec:
     redirect:
       uri: "/app/"
 {{- end }}
-
 # Header modification notes:
 # https://istio.io/latest/docs/reference/config/networking/envoy-filter/
 # https://istio.io/latest/blog/2020/wasm-announce/
