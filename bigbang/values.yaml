@@ -1,10 +1,14 @@
 rapidfort:
   enabled: true 
-
+  sourceType: git
   git:
     repo: https://repo1.dso.mil/platform-one/big-bang/apps/third-party/rapidfort
     branch: main
     path: chart
+  helmRepo:
+    repoName: "registry1"
+    chartName: "rapidfort"
+    tag: "1.2.0-bb.1"
 
   flux: {}
 
@@ -24,6 +28,16 @@ rapidfort:
 
     # -- Bucket name to use for RapidFort
     s3_bucket: ""
+    
+    rf_app_admin: ""
+    
+    rf_app_admin_password: ""
+    
+    # optional. default set to private-registry
+    imagePullSecret: ""
+    
+    # role arn for connecting to object storage endpoint.
+    aws_role_arn: ""
 
 # Big Bang 
 domain: bigbang.dev

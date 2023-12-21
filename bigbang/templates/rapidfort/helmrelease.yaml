@@ -1,54 +1,69 @@
-{{- $pkg := "rapidfort" }}
-{{- $fluxSettings := merge (get .Values $pkg).flux .Values.flux -}}
-{{- if (get .Values $pkg).enabled }}
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+{{- $fluxSettingsRapidfort := mergeOverwrite .Values.flux .Values.rapidfort.flux -}}
+{{- if .Values.rapidfort.enabled }}
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: {{ $pkg }}
+  name: rapidfort
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ $pkg }}
+    app.kubernetes.io/name: rapidfort
     {{- include "commonLabels" . | nindent 4}}
+  annotations:
+    checksum/bigbang-values: {{ include (print $.Template.BasePath "/rapidfort/values.yaml") . | sha256sum }}
 spec:
-  {{- if or (.Values.istio.enabled) (.Values.gatekeeper.enabled) (.Values.clusterAuditor.enabled) }}
+  {{- if or .Values.gatekeeper.enabled .Values.istio.enabled .Values.kyvernoPolicies.enabled .Values.monitoring.enabled }}
   dependsOn:
-    {{- if .Values.istio.enabled }}
-    - name: istio
-      namespace: {{ .Release.Namespace }}
-    {{- end }}
     {{- if .Values.gatekeeper.enabled }}
     - name: gatekeeper
       namespace: {{ .Release.Namespace }}
     {{- end }}
-    {{- if .Values.clusterAuditor.enabled }}
-    - name: cluster-auditor
+    {{- if .Values.istio.enabled }}
+    - name: istio
+      namespace: {{ .Release.Namespace }}
+    {{- end }}
+    {{- if .Values.kyvernoPolicies.enabled }}
+    - name: kyverno-policies
+      namespace: {{ .Release.Namespace }}
+    {{- end }}
+    {{- if .Values.monitoring.enabled }}
+    - name: monitoring
       namespace: {{ .Release.Namespace }}
     {{- end }}
   {{- end }}
-  targetNamespace: {{ $pkg }}
+
+  targetNamespace: rapidfort
   chart:
     spec:
-      chart: {{ (get .Values $pkg).git.path }}
-      interval: 5m
+      {{- if eq .Values.rapidfort.sourceType "git" }}
+      chart: {{ .Values.rapidfort.git.path }}
       sourceRef:
         kind: GitRepository
-        name: {{ $pkg }}
+        name: rapidfort
         namespace: {{ .Release.Namespace }}
+      {{- else }}
+      chart: {{ .Values.rapidfort.helmRepo.chartName }}
+      version: {{ .Values.rapidfort.helmRepo.tag }}
+      sourceRef:
+        kind: HelmRepository
+        name: {{ .Values.rapidfort.helmRepo.repoName }}
+        namespace: {{ .Release.Namespace }}
+      {{- end }}
+      interval: 5m
 
-  {{- toYaml $fluxSettings | nindent 2 }}
+  {{- toYaml $fluxSettingsRapidfort | nindent 2 }}
 
-  {{- if (get .Values $pkg).postRenderers }}
+  {{- if .Values.rapidfort.postRenderers }}
   postRenderers:
-  {{ toYaml (get .Values $pkg).postRenderers | nindent 4 }}
+  {{ toYaml .Values.rapidfort.postRenderers | nindent 4 }}
   {{- end }}
   valuesFrom:
-    - name: {{ .Release.Name }}-{{ $pkg }}-values
+    - name: {{ .Release.Name }}-rapidfort-values
       kind: Secret
       valuesKey: "common"
-    - name: {{ .Release.Name }}-{{ $pkg }}-values
+    - name: {{ .Release.Name }}-rapidfort-values
       kind: Secret
       valuesKey: "defaults"
-    - name: {{ .Release.Name }}-{{ $pkg }}-values
+    - name: {{ .Release.Name }}-rapidfort-values
       kind: Secret
       valuesKey: "overlays"
 {{- end }}

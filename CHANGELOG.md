@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.0-bb.1]
+- RapidFort Release 1.1.41-1 with Rapidfort helm chart version 1.2.1 along with updated values and istio config.
+
 ## [1.2.0-bb.0]
 - RapidFort Release 1.1.41 with Rapidfort helm chart version 1.2.0
 

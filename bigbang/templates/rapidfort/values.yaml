@@ -1,4 +1,8 @@
 {{- $pkg := "rapidfort" }}
+{{- if .Values.rapidfort.enabled }}
+{{- include "values-secret" (dict "root" $ "package" .Values.rapidfort "name" "rapidfort" "defaults" (include "bigbang.defaults.rapidfort" .)) }}
+{{- end }}
+
 {{- define "bigbang.defaults.rapidfort" -}}
 # hostname is deprecated and replaced with domain. But if hostname exists then use it.
 domain: {{ default .Values.domain .Values.hostname }}
@@ -22,34 +26,18 @@ networkPolicies:
     {{- toYaml (dig "values" "gateways" $gateway "selector" $default .Values.istio) | nindent 4 }}
   controlPlaneCidr: {{ .Values.networkPolicies.controlPlaneCidr }}
 
-secret:
+global:
+  hostname: {{printf "%s.%s" "rapidfort" .Values.domain }}
 {{- with .Values.rapidfort.objectStorage }}
-{{- if and .aws_access_key_id .aws_secret_access_key .s3_bucket }}
-  aws_access_key_id: {{ .aws_access_key_id }}
-  aws_secret_access_key: {{ .aws_secret_access_key }}
-  aws_default_region: {{ .aws_default_region }}
-  s3_bucket: {{ .s3_bucket }}
-  rf_app_admin: {{ .rf_app_admin }}
-  rf_app_admin_password: {{ .rf_app_admin_password }}
-  storage_type: {{ .storage_type }}  
+  admin: {{ .rf_app_admin }}
+  passwd: {{ .rf_app_admin_password }}
+  cloud: {{ default "eks" .cloud }}
+  imagePullSecrets: {{ default "private-registry" .imagePullSecret }}
+  aws:
+    region: {{ default "" .aws_default_region }}
+    s3_bucket: {{ default "" .s3_bucket }}
+    aws_access_key_id: {{ default "" .aws_access_key_id }}
+    aws_secret_access_key: {{ default "" .aws_secret_access_key }}
+    aws_role_arn: {{ default "" .aws_role_arn }}
 {{- end }}
-{{- end }}
-
-  rf_app_host: {{printf "%s.%s" "rapidfort" .Values.domain }}
-
-# {{ if eq .Values.domain "bigbang.dev" }}
-# # runner:
-# #   secret:
-# #     name: rf-runner-secret
-# {{ end }}
-
-keycloak:
-  initContainers:
-    init_mysql:
-      enabled: {{ not .Values.istio.enabled }}
-{{- end }}
-
-{{- /* Create secret */ -}}
-{{- if (get .Values $pkg).enabled }}
-{{- include "values-secret" (dict "root" $ "package" (get .Values $pkg) "name" $pkg "defaults" (include (printf "bigbang.defaults.%s" $pkg) .)) }}
-{{- end }}
+{{- end -}}

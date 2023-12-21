@@ -38,10 +38,10 @@ aggregator:
   ephemeralVolumeClaimTemplates:
   - name: aggregator-data
     accessMode: "ReadWriteOnce"
-    size: 512Gi
+    size: 256Gi
   - name: aggregator-data-local-bucket
     accessMode: "ReadWriteOnce"
-    size: 512Gi
+    size: 256Gi
   volumes: []
   volumeMounts:
     - name: aggregator-data
@@ -187,7 +187,7 @@ filesredis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
-    size: "512Gi"
+    size: "256Gi"
   volumeMounts:
   - name: redis-data
     mountPath: /bitnami/redis/data
@@ -231,7 +231,7 @@ fileupload:
   ephemeralVolumeClaimTemplates:
   - name: fileupload-data
     accessMode: "ReadWriteOnce"
-    size: 512Gi
+    size: 256Gi
   volumes: []
   volumeMounts:
       - name: fileupload-data
@@ -353,7 +353,7 @@ isomaster:
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
-    size: 512Gi
+    size: 256Gi
   volumes: []
   volumeMounts:
     - name: imgs-work-dir
@@ -433,12 +433,12 @@ keycloak:
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers:
-  - name: wait-mysql
-    image: registry1.dso.mil/ironbank/opensource/mysql/mysql8:8.0.31
-    command: ["/bin/sh", "-c"]
-    args:
-    - until mysql --host=mysql --user=root --password=RF-123579 --execute="SELECT 1;"; do echo $(date +"%Y-%m-%d %T,%3N") waiting for mysql; sleep .3; done;
+  initContainers: []
+  # - name: wait-mysql
+  #   image: registry1.dso.mil/ironbank/opensource/mysql/mysql8:8.0.31
+  #   command: ["/bin/sh", "-c"]
+  #   args:
+  #   - until mysql --host=mysql --user=root --password=RF-123579 --execute="SELECT 1;"; do echo $(date +"%Y-%m-%d %T,%3N") waiting for mysql; sleep .3; done;
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -541,7 +541,7 @@ mysql:
   volumeClaimTemplates:
   - name: "mysql-data"
     accessMode: "ReadWriteOnce"
-    size: "512Gi"
+    size: "256Gi"
   initContainers:
   - name: disk-init
     image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
@@ -632,7 +632,7 @@ rfscan:
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
-    size: 512Gi
+    size: 256Gi
   volumes: []
   volumeMounts:
     - name: imgs-work-dir
@@ -834,10 +834,10 @@ runner:
   ephemeralVolumeClaimTemplates:
   - name: var-lib-containers
     accessMode: "ReadWriteOnce"
-    size: 512Gi
+    size: 256Gi
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
-    size: 512Gi
+    size: 256Gi
   volumes: []
   volumeMounts:
     - name: imgs-work-dir
