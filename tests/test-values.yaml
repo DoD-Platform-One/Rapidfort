@@ -45,6 +45,7 @@ backend:
     #   memory: "512Mi"
 
 filesredis:
+  resources: {}
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
@@ -76,6 +77,7 @@ mysql:
     size: "10Gi"
 
 redis:
+  resources: {}
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
@@ -92,6 +94,9 @@ rfscan:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
     size: 10Gi
+
+vulnsdb:
+  resources: {}
 
 runner:
   ephemeralVolumeClaimTemplates:
