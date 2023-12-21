@@ -83,7 +83,7 @@ kyvernoPolicies:
         parameters:
           # -- List of allowed paths for hostPath volumes to mount as read/write
           allow:
-            - /tmp
+            - /tmp            
       require-non-root-user:
         enabled: true
         validationFailureAction: audit
