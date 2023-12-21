@@ -1,13 +1,12 @@
-{{- $pkg := "rapidfort" }}
-{{- if (get .Values $pkg).enabled }}
+{{- if .Values.rapidfort.enabled }}
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ $pkg }}
+  name: rapidfort
   labels:
     {{- if .Values.istio.enabled }}
     istio-injection: "enabled"
     {{- end }}
-    app.kubernetes.io/name: {{ $pkg }}
+    app.kubernetes.io/name: rapidfort
     {{- include "commonLabels" . | nindent 4}}
 {{- end }}
