@@ -56,7 +56,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "rapidfort-platform.serviceAccountName" -}}
-{{- default "default" .Values.serviceAccount.name }}
+{{- default .Values.serviceAccount.name "rapidfort" }}
 {{- end }}
 
 {{- define "prefix.isIPAddress" -}}
