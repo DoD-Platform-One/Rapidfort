@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.0-bb.4]
+- Change the Service account name.
+
 ## [1.2.0-bb.3]
 - Change the Default AWS Values.
 
