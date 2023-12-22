@@ -1,6 +1,6 @@
 # rapidfort
 
-![Version: 1.2.0-bb.2](https://img.shields.io/badge/Version-1.2.0--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.41](https://img.shields.io/badge/AppVersion-1.1.41-informational?style=flat-square)
+![Version: 1.2.0-bb.3](https://img.shields.io/badge/Version-1.2.0--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.41](https://img.shields.io/badge/AppVersion-1.1.41-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -41,8 +41,8 @@ helm install rapidfort chart/
 | global.ingress.className | string | `"nginx"` |  |
 | global.ingress.annotations | object | `{}` |  |
 | global.ingress.tls | list | `[]` |  |
-| global.aws.aws_access_key_id | string | `"AKI***"` |  |
-| global.aws.aws_secret_access_key | string | `"Fh***"` |  |
+| global.aws.aws_access_key_id | string | `""` |  |
+| global.aws.aws_secret_access_key | string | `""` |  |
 | global.aws.region | string | `"us-east-1"` |  |
 | global.aws.storage | string | `"rapidfort-standalone"` |  |
 | serviceAccount.create | bool | `true` |  |
@@ -472,8 +472,8 @@ helm install rapidfort chart/
 | redis.ingress | object | `{}` |  |
 | redis.resources.limits.cpu | string | `"2"` |  |
 | redis.resources.limits.memory | string | `"6144Mi"` |  |
-| redis.resources.requests.cpu | string | `"2048m"` |  |
-| redis.resources.requests.memory | string | `"1"` |  |
+| redis.resources.requests.cpu | string | `"1"` |  |
+| redis.resources.requests.memory | string | `"2048Mi"` |  |
 | redis.envVars.ALLOW_EMPTY_PASSWORD | string | `"yes"` |  |
 | redis.envVars.REDIS_AOF_ENABLED | string | `"no"` |  |
 | redis.envVarsSecret | object | `{}` |  |
