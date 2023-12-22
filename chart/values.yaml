@@ -18,8 +18,8 @@ global:
     tls: []
       # secretName: rapidfort-tls-cert
   aws: 
-    aws_access_key_id: AKI***
-    aws_secret_access_key: Fh***
+    aws_access_key_id: "" 
+    aws_secret_access_key: ""
     region: us-east-1
     storage: rapidfort-standalone
 
