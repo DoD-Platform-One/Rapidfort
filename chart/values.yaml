@@ -377,10 +377,10 @@ isomaster:
       - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://vulnsdb/vulns-db/api/v1/status  -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for vulnsdb; sleep .3; done;
   serviceAccount: {}
   podSecurityContext: {}
-  containerSecurityContext:
-    privileged: true
-    capabilities:
-      add: ["SYS_ADMIN"]
+  containerSecurityContext: {}
+    # privileged: true
+    # capabilities:
+    #   add: ["SYS_ADMIN"]
   service:
     type: ClusterIP
     port: 80
@@ -863,8 +863,8 @@ runner:
       args:
       - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://iso-master -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for iso-master; sleep .3; done;
   podSecurityContext: {}
-  containerSecurityContext:
-    privileged: true
+  containerSecurityContext: {}
+    # privileged: true
   service:
     type: ClusterIP
     port: 80
