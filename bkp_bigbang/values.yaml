@@ -1,0 +1,249 @@
+rapidfort:
+  enabled: true 
+  sourceType: git
+  git:
+    repo: https://repo1.dso.mil/platform-one/big-bang/apps/third-party/rapidfort
+    branch: main
+    path: chart
+  helmRepo:
+    repoName: "registry1"
+    chartName: "rapidfort"
+    tag: "1.2.0-bb.6"
+
+  flux: {}
+
+  ingress:
+    gateway: ""
+  
+  objectStorage:
+
+    # -- Access key for connecting to object storage endpoint.
+    aws_access_key_id: "AKI***"
+
+    # -- Secret key for connecting to object storage endpoint.
+    aws_secret_access_key: "Fh***"
+
+    # -- Region that bucket is in
+    aws_default_region: "us-east-1"
+
+    # -- Bucket name to use for RapidFort
+    s3_bucket: "rapidfort-bucket"
+    
+    rf_app_admin: "test@rapidfort.com"
+    
+    rf_app_admin_password: "test123"
+    
+    # optional. default set to private-registry
+    imagePullSecret: ""
+    
+    # role arn for connecting to object storage endpoint.
+    aws_role_arn: ""
+
+# Big Bang 
+domain: bigbang.dev
+      
+networkPolicies:
+  enabled: true
+
+istioOperator:
+  enabled: true
+
+istio:
+  enabled: true
+
+neuvector:
+  enabled: false
+
+kyvernoPolicies:
+  enabled: false
+  values:
+    policies:
+      restrict-image-registries:
+        enabled: true
+        validationFailureAction: Audit
+        parameters:
+          # -- List of allowed registries that images may use
+          allow:
+          - registry1.dso.mil
+          - public.ecr.aws/rapidfort
+          - 274057717848.dkr.ecr.us-east-1.amazonaws.com
+      # disallow-privileged-containers:
+      #   parameters:
+      #     excludeContainers:
+      #       - isomaster*
+      #       - runner*
+      # restrict-host-path-mount-pv:
+      #   enabled: true
+      #   validationFailureAction: audit
+      #   parameters:
+      #     # -- List of allowed paths for hostPath volumes to mount
+      #     allow:
+      #       - /tmp
+      # restrict-host-path-mount:
+      #   enabled: true
+      #   validationFailureAction: audit
+      #   parameters:
+      #     # -- List of allowed paths for hostPath volumes to mount
+      #     allow:
+      #       - /tmp
+      # restrict-host-path-write:
+      #   enabled: true
+      #   validationFailureAction: audit
+      #   parameters:
+      #     # -- List of allowed paths for hostPath volumes to mount as read/write
+      #     allow:
+      #       - /tmp
+      require-non-root-user:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          excludeContainers:
+            - isomaster*
+            - runner*
+            - vulnsdb*
+      # restrict-capabilities:
+      #   enabled: true
+      #   validationFailureAction: audit
+      #   parameters:
+      #     excludeContainers:
+      #       - isomaster*
+      require-non-root-group:
+        enabled: true
+        validationFailureAction: audit
+        parameters:
+          excludeContainers:
+            - mysql*
+            - redis*
+            - filesredis*
+            - lockredis*
+            - keycloak*
+            - runner*
+            - isomaster*
+            - vulnsdb*
+
+gatekeeper:
+  enabled: false  
+  values:
+    controllerManager:
+      resources:
+        limits:
+          cpu: 400m
+          memory: 2048Mi
+        requests:
+          cpu: 175m
+          memory: 512Mi
+    violations:
+      allowedDockerRegistries:
+        parameters:
+          repos:
+            - registry1.dso.mil
+            - public.ecr.aws/rapidfort
+            - 274057717848.dkr.ecr.us-east-1.amazonaws.com
+      allowedHostFilesystem:
+        parameters:
+          allowedHostPaths:
+            - pathPrefix: /var/lib/kubelet/pods
+            - pathPrefix: /var/run/docker.sock
+              readOnly: false
+            - pathPrefix: /tmp
+              readOnly: false
+          excludedResources:
+            - velero/*
+            # - rapidfort/*
+      volumeTypes:
+        parameters:
+          excludedResources:
+            - velero/*
+            - 'rapidfort/aggregator-.*'
+            - 'rapidfort/backend-.*'
+            - 'rapidfort/fileupload-.*'
+            - 'rapidfort/isomaster-.*'
+            - 'rapidfort/rfscan-.*'
+            - 'rapidfort/runner-.*'
+            - 'rapidfort/runnerbeat-.*'            
+      restrictedTaint:
+        parameters:
+          excludedResources:
+            - monitoring/monitoring-monitoring-prometheus-node-exporter-.*
+            - twistlock/twistlock-defender-ds-.*
+            - logging/logging-fluent-bit-.*
+      noHostNamespace:
+        parameters:
+          excludedResources:
+      hostNetworking:
+        parameters:
+          excludedResources:
+      # noPrivilegedContainers:
+      #   parameters:
+      #     excludedResources:
+      #       - rapidfort/*
+      #       - 'rapidfort/isomaster'
+      #       - 'rapidfort/runner'
+
+# Toggle for Bigbang Core packages set true to install
+jaeger:
+  enabled: false
+
+kiali:
+  enabled: false
+
+clusterAuditor:
+  enabled: false
+
+tempo:
+  enabled: false
+
+promtail:
+  enabled: false
+
+loki:
+  enabled: false
+
+eckOperator:
+  enabled: false
+
+elasticsearchKibana:
+  enabled: false
+
+fluentbit:
+  enabled: false
+
+monitoring:
+  enabled: false
+
+grafana:
+  enabled: false
+
+twistlock:
+  enabled: false
+
+
+addons:
+  argocd:
+    enabled: false
+  authservice:
+    enabled: false
+  gitlab:
+    enabled: false
+  gitlabRunner:
+    enabled: false
+  anchore:
+    enabled: false
+  sonarqube:
+    enabled: false
+  minioOperator:
+    enabled: false
+  minio:
+    enabled: false
+  mattermostoperator:
+    enabled: false
+  mattermost:
+    enabled: false
+  nexus:
+    enabled: false
+  velero:
+    enabled: false
+  keycloak:
+    enabled: false
+  vault:
+    enabled: false

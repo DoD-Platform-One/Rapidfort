@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.0-bb.6]
+- Update Container security policy.
+
 ## [1.2.0-bb.5]
 - Change the Service account name.
 
