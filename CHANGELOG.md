@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.1-bb.0]
+- RapidFort Release 1.1.43-1
+
 ## [1.2.0-bb.6]
 - Update Container security policy.
 
