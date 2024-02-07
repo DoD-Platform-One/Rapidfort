@@ -50,7 +50,7 @@ aggregator:
       mountPath: /opt/rapidfort/local-bucket
   initContainers:
   - name: disk-init
-    image: quay.io/rapidfort/init:1.0
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
     command: ["chown", "-R", "1000", "/mnt/raid/aggregator"]
     volumeMounts:
       - name: aggregator-data
