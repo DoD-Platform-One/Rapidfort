@@ -67,10 +67,10 @@ aggregator:
     command: ["/bin/sh", "-c"]
     args:
     - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
-  podSecurityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
-    fsGroup: 1000
+  # podSecurityContext:
+  #   runAsUser: 1000
+  #   runAsGroup: 1000
+  #   fsGroup: 1000
   containerSecurityContext: {}
   service: {}
   ingress: {}
