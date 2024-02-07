@@ -237,7 +237,7 @@ filesredis:
 fileupload:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/fileupload:dod1
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/fileupload:dod10
   ports:
     - name: http
       containerPort: 8080
@@ -846,7 +846,7 @@ rfpubsub:
 runner:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:dod1
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:dod10
   ports:
     - name: http
       containerPort: 8080
@@ -984,7 +984,7 @@ rfvdb:
 vulnsdb:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db:dod1
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db:dod10
   ports:
     - name: http
       containerPort: 8080
