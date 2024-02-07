@@ -1012,7 +1012,7 @@ vulnsdb:
       cpu: "1"
       memory: "512Mi"
   envVars:
-    RFVDB_HOST: vulndb-beta.rapidfort.com
+    RFVDB_HOST: vulndb.rapidfort.com
     RF_DEBUG: no
     REDIS_AOF_ENABLED: no
   envVarsSecret: {}
