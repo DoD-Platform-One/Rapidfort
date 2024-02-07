@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.1-bb.1]
+- Update volume ownership and container security policy for aggregator service
+
 ## [1.2.1-bb.0]
 - RapidFort Release 1.1.43-1
 
