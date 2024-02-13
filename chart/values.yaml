@@ -311,7 +311,7 @@ fileupload:
 frontrow:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.42-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.42-rfhardened
   ports:
     - name: http
       containerPort: 8080
