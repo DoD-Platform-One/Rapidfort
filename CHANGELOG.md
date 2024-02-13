@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.1-bb.4]
+- Update with release images.
+
 ## [1.2.1-bb.3]
 - Update Docker Image for File Upload, Runner and Vulns DB for fips fix
 
