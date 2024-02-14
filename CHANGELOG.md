@@ -2,6 +2,21 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.1-bb.4]
+- Update with release images.
+
+## [1.2.1-bb.3]
+- Update Docker Image for File Upload, Runner and Vulns DB for fips fix
+
+## [1.2.1-bb.2]
+- Update Docker Image for Init Container
+
+## [1.2.1-bb.1]
+- Update volume ownership and container security policy for aggregator service
+
+## [1.2.1-bb.0]
+- RapidFort Release 1.1.43-1
+
 ## [1.2.0-bb.6]
 - Update Container security policy.
 
