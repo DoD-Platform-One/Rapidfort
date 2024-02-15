@@ -2,9 +2,9 @@
 # init user data
 #
 global:
-  admin: "rf@rapidfort.com"
-  passwd: "Fiery.123!"
-  hostname: "test.rapidfort.com"
+  admin: "admin@example.com" # this should be replaced with actual email address
+  passwd: "P@ssw0rd!" # this should be replaced with actual password
+  hostname: "test.example.com" # this should hostname where rapidfort is deployed and availabe to conenct via https
   cloud: "eks"
   type: ""
   communityservice:
@@ -21,7 +21,7 @@ global:
     aws_access_key_id: "" 
     aws_secret_access_key: ""
     region: us-east-1
-    storage: rapidfort-standalone
+    storage: rapidfort-bucket
 
 #Rapidfort Service Account
 serviceAccount:
@@ -311,7 +311,7 @@ fileupload:
 frontrow:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.42-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.43-1-rfhardened
   ports:
     - name: http
       containerPort: 8080

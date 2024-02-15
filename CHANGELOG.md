@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.1-bb.5]
+- update place holder to be appropriate with comments
+- update frontrow image tag.
+
 ## [1.2.1-bb.4]
 - Update with release images.
 
