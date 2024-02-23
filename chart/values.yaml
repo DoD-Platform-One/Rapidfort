@@ -27,6 +27,8 @@ global:
 serviceAccount:
   create: true
 
+init:
+  image: quay.io/rapidfort/init:1.0
 #
 # aggregator
 #
