@@ -48,10 +48,6 @@ aggregator:
       mountPath: /mnt/raid/aggregator
     - name: aggregator-data-local-bucket
       mountPath: /opt/rapidfort/local-bucket
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
   podSecurityContext:
   #   runAsUser: 1000
   #   runAsGroup: 1000
