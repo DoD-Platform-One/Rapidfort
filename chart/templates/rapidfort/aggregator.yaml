@@ -13,7 +13,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: aggregator
-
   template:
     metadata:
       labels:
@@ -35,18 +34,25 @@ spec:
           {{ include "rapidfort-platform.singleEphemeralVolumeClaim" . | nindent 8 }}
       {{- end }}
       {{- end }}
-      {{- if .Values.aggregator.initContainers }}
       initContainers:
-        {{- toYaml (index .Values.aggregator.initContainers ) | nindent 8 }}
-      {{- end }}
-      {{- if .Values.serviceAccount.create }}
-      serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
-      serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
-      {{- end }}           
+      - name: wait-files-redis
+        image: {{ .Values.init.image }}
+        command: ["/bin/sh", "-c"]
+        args:
+        - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
+      - name: wait-lock-redis
+        image: {{ .Values.init.image }}
+        command: ["/bin/sh", "-c"]
+        args:
+        - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.global.imagePullSecrets }}
       {{- end }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
+      serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}      
       containers:
         - name: aggregator
           {{- if .Values.aggregator.containerSecurityContext }}

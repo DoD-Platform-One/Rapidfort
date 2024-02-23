@@ -35,9 +35,7 @@ Common labels
 */}}
 {{- define "rapidfort-platform.labels" -}}
 helm.sh/chart: {{ include "rapidfort-platform.chart" . }}
-{{/*
 {{ include "rapidfort-platform.selectorLabels" . }}
-*/}}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -56,7 +54,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "rapidfort-platform.serviceAccountName" -}}
-{{- default "rapidfort" .Values.serviceAccount.name }}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "rapidfort-platform.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
 {{- end }}
 
 {{- define "prefix.isIPAddress" -}}

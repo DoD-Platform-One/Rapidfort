@@ -7,7 +7,7 @@ kind: Deployment
 metadata:
   name: runnerbeat
   labels:
-    app.kubernetes.io/name: runnerbeat    
+    app.kubernetes.io/name: runnerbeat
 spec:
   replicas: 1
   selector:
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: runnerbeat        
+        app.kubernetes.io/name: runnerbeat
     spec:
       {{- if .Values.runner.podSecurityContext }}
       securityContext:
@@ -42,6 +42,10 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.global.imagePullSecrets }}
       {{- end }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
+      serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}      
       containers:
         - name: runner
           {{- if .Values.runner.containerSecurityContext }}

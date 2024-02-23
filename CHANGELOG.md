@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.2-bb.0]
+- Update Rapidfort Helm chart for init containers
+- update Rapidfort image(s) for new release.
+
 ## [1.2.1-bb.5]
 - update place holder to be appropriate with comments
 - update frontrow image tag.

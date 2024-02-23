@@ -14,6 +14,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: files-redis
+  serviceName: files-redis
   {{- if .Values.filesredis.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range .Values.filesredis.volumeClaimTemplates -}}
@@ -25,6 +26,7 @@ spec:
       labels:
         app.kubernetes.io/name: files-redis
     spec:
+
       {{- if .Values.filesredis.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.filesredis.podSecurityContext | nindent 8 }}
@@ -33,14 +35,17 @@ spec:
       volumes:
         {{- tpl (toYaml (index .Values.filesredis.volumes )) . | nindent 8 }}
       {{- end }}
-      {{- if .Values.filesredis.initContainers }}
       initContainers:
-        {{- toYaml (index .Values.filesredis.initContainers ) | nindent 8 }}
-      {{- end }}
+      - name: disk-init
+        image: {{ .Values.init.image }}
+        command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
+        volumeMounts:
+          - name: redis-data
+            mountPath: /opt/rapidfort/local-bucket/data/files-redis
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.global.imagePullSecrets }}
-      {{- end }}      
+      {{- end }}
       containers:
         - name: files-redis
           {{- if .Values.filesredis.containerSecurityContext }}
