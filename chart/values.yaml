@@ -9,7 +9,7 @@ global:
   type: ""
   communityservice:
     enabled: false
-  imagePullSecrets: "private-registry"
+  imagePullSecrets: "rf-az-registry"
   ingress:
     enabled: false
     className: "nginx"
