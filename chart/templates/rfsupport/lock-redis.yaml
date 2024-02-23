@@ -13,8 +13,7 @@ spec:
   replicas: {{ .Values.lockredis.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: lock-redis
-  serviceName: lock-redis      
+      app.kubernetes.io/name: lock-redis    
   {{- if .Values.lockredis.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range .Values.lockredis.volumeClaimTemplates -}}

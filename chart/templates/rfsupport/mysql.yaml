@@ -14,7 +14,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: mysql
-  serviceName: mysql      
   {{- if .Values.mysql.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range .Values.mysql.volumeClaimTemplates -}}

@@ -9,7 +9,6 @@ metadata:
   labels:
     app.kubernetes.io/name: files-redis
 spec:
-  serviceName: files-redis
   replicas: {{ .Values.filesredis.replicaCount }}
   selector:
     matchLabels:

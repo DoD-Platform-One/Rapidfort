@@ -13,8 +13,7 @@ spec:
   replicas: {{ .Values.redis.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: redis
-  serviceName: redis      
+      app.kubernetes.io/name: redis   
   {{- if .Values.redis.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range .Values.redis.volumeClaimTemplates -}}
