@@ -35,11 +35,7 @@ spec:
       {{- range .Values.isomaster.ephemeralVolumeClaimTemplates -}}
           {{ include "rapidfort-platform.singleEphemeralVolumeClaim" . | nindent 8 }}
       {{- end }}
-      {{- end }}      
-      {{- end }}      
-      {{- if .Values.isomaster.initContainers }}
       {{- end }}
-      {{- if .Values.isomaster.initContainers }}
       initContainers:
       - name: wait-backend
         image: {{ .Values.init.image }}
@@ -63,8 +59,7 @@ spec:
       {{- end }}      
       containers:
         - name: isomaster
-          securityContext: 
-            {{- toYaml .Values.isomaster.containerSecurityContext | nindent 12 }}
+          securityContext: {{- toYaml .Values.isomaster.containerSecurityContext | nindent 12 }}
           image: {{ .Values.isomaster.image }}
           imagePullPolicy: IfNotPresent
           {{- if .Values.isomaster.volumeMounts }}
