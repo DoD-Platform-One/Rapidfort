@@ -28,7 +28,7 @@ spec:
       {{- end }}
       initContainers:
       - name: wait-redis
-        image: {{ .Values.init.image }}
+        image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
         command: ["/bin/sh", "-c"]
         args:
         - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;

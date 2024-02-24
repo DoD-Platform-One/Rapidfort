@@ -36,7 +36,7 @@ spec:
       {{- end }}
       initContainers:
       - name: wait-keycloak
-        image: {{ .Values.init.image }}
+        image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
         command: ["/bin/sh", "-c"]
         args:
         - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://keycloak -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for keycloak; sleep .3; done;

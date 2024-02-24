@@ -36,7 +36,7 @@ spec:
       {{- end }}
       initContainers:
       - name: disk-init
-        image: {{ .Values.init.image }}
+        image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
         command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
         volumeMounts:
           - name: redis-data

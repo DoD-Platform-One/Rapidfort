@@ -28,7 +28,7 @@ serviceAccount:
   create: true
 
 init:
-  image: quay.io/rapidfort/init:1.0
+  image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
 #
 # aggregator
 #
@@ -135,6 +135,7 @@ backend:
       memory: "512Mi"
   envVars:
     AUTH_SERVER_ROOT_URL: http://keycloak
+    LC_ALL: en_US.UTF-8
     QUAY_ENABLED_RF_APP_HOST: "preprod.azure.rapidfort.io us01.rapidfort.com" # this enables rf deployment with rf_app_host in list to create robot account on quay
   envVarsSecret:
     - RF_APP_HOST

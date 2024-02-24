@@ -28,12 +28,12 @@ spec:
       {{- end }}
       initContainers:
       - name: wait-files-redis
-        image: {{ .Values.init.image }}
+        image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
         command: ["/bin/sh", "-c"]
         args:
         - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
       - name: wait-lock-redis
-        image: {{ .Values.init.image }}
+        image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
         command: ["/bin/sh", "-c"]
         args:
         - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
