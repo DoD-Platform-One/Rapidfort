@@ -63,7 +63,8 @@ spec:
       {{- end }}      
       containers:
         - name: isomaster
-          securityContext: {{- toYaml .Values.isomaster.containerSecurityContext | nindent 12 }}
+          securityContext: 
+            {{- toYaml .Values.isomaster.containerSecurityContext | nindent 12 }}
           image: {{ .Values.isomaster.image }}
           imagePullPolicy: IfNotPresent
           {{- if .Values.isomaster.volumeMounts }}

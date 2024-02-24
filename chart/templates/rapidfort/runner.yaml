@@ -55,7 +55,8 @@ spec:
       containers:
         - name: runner
           {{- if .Values.runner.containerSecurityContext }}
-          securityContext: {{- toYaml .Values.runner.containerSecurityContext | nindent 12 }}
+          securityContext: 
+            {{- toYaml .Values.runner.containerSecurityContext | nindent 12 }}
           {{- end }}
           image: {{ .Values.runner.image }}
           imagePullPolicy: IfNotPresent
