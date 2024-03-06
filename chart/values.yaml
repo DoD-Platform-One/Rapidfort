@@ -27,6 +27,10 @@ global:
 serviceAccount:
   create: true
 
+storageClass:
+  create: true
+  name: ""
+
 #
 # aggregator
 #
@@ -48,25 +52,7 @@ aggregator:
       mountPath: /mnt/raid/aggregator
     - name: aggregator-data-local-bucket
       mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "-R", "1000", "/mnt/raid/aggregator"]
-    volumeMounts:
-      - name: aggregator-data
-        mountPath: /mnt/raid/aggregator
-      - name: aggregator-data-local-bucket
-        mountPath: /opt/rapidfort/local-bucket
-  - name: wait-files-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
-  - name: wait-lock-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
+  initContainers: []
   # podSecurityContext:
   #   runAsUser: 1000
   #   runAsGroup: 1000
@@ -118,12 +104,7 @@ backend:
   volumeMounts:
     - name: backend-data
       mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-    - name: wait-keycloak
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://keycloak -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for keycloak; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -198,13 +179,7 @@ filesredis:
   volumeMounts:
   - name: redis-data
     mountPath: /bitnami/redis/data
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
-    volumeMounts:
-      - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/files-redis
+initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -249,13 +224,7 @@ fileupload:
   volumeMounts:
       - name: fileupload-data
         mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "65534", "/opt/rapidfort/local-bucket"]
-    volumeMounts:
-      - name: fileupload-data
-        mountPath: /opt/rapidfort/local-bucket
+initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -371,17 +340,7 @@ isomaster:
   volumeMounts:
     - name: imgs-work-dir
       mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-    - name: wait-backend
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
-    - name: wait-vulnsdb
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://vulnsdb/vulns-db/api/v1/status  -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for vulnsdb; sleep .3; done;
+  initContainers: []
   serviceAccount: {}
   podSecurityContext: {}
   containerSecurityContext: {}
@@ -505,13 +464,7 @@ lockredis:
   volumeMounts:
   - name: redis-data
     mountPath: /bitnami/redis/data
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/lock-redis"]
-    volumeMounts:
-      - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/lock-redis
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -555,13 +508,7 @@ mysql:
   - name: "mysql-data"
     accessMode: "ReadWriteOnce"
     size: "256Gi"
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
-    volumeMounts:
-      - name: mysql-data
-        mountPath: /opt/rapidfort/local-bucket/data/mysql
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   ingress: {}
@@ -598,13 +545,7 @@ redis:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
     size: "128Gi"
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/redis"]
-    volumeMounts:
-      - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/redis
+  initContainers: []
   # - name: init-vulnsdb
   #   image: registry1.dso.mil/ironbank/rapidfort/init:1.1.11 #TODO: update iamge.
   #   command: ["/bin/sh", "-c", "unxz /dump.rdb.xz && cp /dump.rdb /opt/rapidfort/local-bucket/data/redis && chown 1001 /opt/rapidfort/local-bucket/data/redis/dump.rdb"]
@@ -656,17 +597,7 @@ rfscan:
   volumeMounts:
     - name: imgs-work-dir
       mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-    - name: wait-backend
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
-    - name: wait-vulnsdb
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://vulnsdb/vulns-db/api/v1/status -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for vulnsdb; sleep .3; done;
+  initContainers: []
   serviceAccount: {}
   podSecurityContext: {}
   containerSecurityContext: {}
@@ -728,17 +659,7 @@ rfapi:
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers:
-  - name: wait-files-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
-  - name: wait-lock-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -793,17 +714,7 @@ rfpubsub:
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers:
-  - name: wait-files-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
-  - name: wait-lock-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -863,12 +774,7 @@ runner:
       mountPath: /opt/rapidfort/local-bucket
     - name: var-lib-containers
       mountPath: /var/lib/containers
-  initContainers:
-    - name: wait-iso-master
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://iso-master -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for iso-master; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
     # privileged: true
@@ -930,12 +836,7 @@ rfvdb:
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers:
-  - name: wait-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -990,12 +891,7 @@ vulnsdb:
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers:
-  - name: wait-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -1044,10 +940,10 @@ istio:
     # PERMISSIVE = Allow both plain text and mutual TLS traffic
     # PERMISSIVE is required for any action which redeploys pods because STRICT interferes with initContainers
     # Can be changed to STRICT after all initContainers have finished but will interfere with upgrades/pod deployments that have initContainers
-    mode: PERMISSIVE
+    mode: STRICT
   rapidfort:
     enabled: false
-    allowed_rf_host: "frontrow.rapidfort.com"
+    allowed_rf_host: "us01.rapidfort.com"
     gateways:
     - istio-system/public
     hosts:

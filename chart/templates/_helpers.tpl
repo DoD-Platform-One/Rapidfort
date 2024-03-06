@@ -90,7 +90,11 @@ Create the volume claim template
   spec:
     accessModes:
     - {{ .accessMode }}
+    {{- if not(.Values.storageClass.create) }}
+    storageClassName: {{ .Values.storageClass.name }}
+    {{- else }}
     storageClassName: "rf-storage-rw"
+    {{- end }}
     resources:
       requests:
         storage: {{ .size }}
@@ -109,7 +113,11 @@ Create the ephemeral volume claims
       spec:
           accessModes:
           - {{ .accessMode }}
+          {{- if not(.Values.storageClass.create) }}
+          storageClassName: {{ .Values.storageClass.name }}
+          {{- else }}
           storageClassName: "rf-storage-rw"
+          {{- end }}
           resources:
             requests:
               storage: {{ .size }}
