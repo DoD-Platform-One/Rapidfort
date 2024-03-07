@@ -29,7 +29,7 @@ serviceAccount:
 
 storageClass:
   create: true
-  name: ""
+  name: "rf-storage-rw"
 
 #
 # aggregator
@@ -42,6 +42,7 @@ aggregator:
   ephemeralVolumeClaimTemplates:
   - name: aggregator-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   - name: aggregator-data-local-bucket
     accessMode: "ReadWriteOnce"
@@ -179,7 +180,7 @@ filesredis:
   volumeMounts:
   - name: redis-data
     mountPath: /bitnami/redis/data
-initContainers: []
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -224,7 +225,7 @@ fileupload:
   volumeMounts:
       - name: fileupload-data
         mountPath: /opt/rapidfort/local-bucket
-initContainers: []
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
