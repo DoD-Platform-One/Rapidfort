@@ -46,6 +46,7 @@ aggregator:
     size: 256Gi
   - name: aggregator-data-local-bucket
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
@@ -100,6 +101,7 @@ backend:
   ephemeralVolumeClaimTemplates:
   - name: backend-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 128Gi
   volumes: []
   volumeMounts:
@@ -176,6 +178,7 @@ filesredis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "256Gi"
   volumeMounts:
   - name: redis-data
@@ -220,6 +223,7 @@ fileupload:
   ephemeralVolumeClaimTemplates:
   - name: fileupload-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
@@ -336,6 +340,7 @@ isomaster:
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
@@ -461,6 +466,7 @@ lockredis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "64Gi"
   volumeMounts:
   - name: redis-data
@@ -508,6 +514,7 @@ mysql:
   volumeClaimTemplates:
   - name: "mysql-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "256Gi"
   initContainers: []
   podSecurityContext: {}
@@ -545,6 +552,7 @@ redis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "128Gi"
   initContainers: []
   # - name: init-vulnsdb
@@ -593,6 +601,7 @@ rfscan:
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
@@ -765,9 +774,11 @@ runner:
   ephemeralVolumeClaimTemplates:
   - name: var-lib-containers
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
