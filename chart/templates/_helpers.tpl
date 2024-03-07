@@ -90,7 +90,6 @@ Create the volume claim template
   spec:
     accessModes:
     - {{ .accessMode }}
-    storageClassName: "rf-storage-rw"
     resources:
       requests:
         storage: {{ .size }}
@@ -109,7 +108,6 @@ Create the ephemeral volume claims
       spec:
           accessModes:
           - {{ .accessMode }}
-          storageClassName: "rf-storage-rw"
           resources:
             requests:
               storage: {{ .size }}
