@@ -81,6 +81,13 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{- define "rapidfort-platform.storageclass" -}}
+{{- if .Values.storageClass.create }}
+{{- print "rf-storage-rw" }}
+{{- else }}
+{{- print .Values.storageClass.name }}
+{{- end }}
+
 {{/*
 Create the volume claim template
 */}}
@@ -90,11 +97,7 @@ Create the volume claim template
   spec:
     accessModes:
     - {{ .accessMode }}
-    {{- if not(.Values.storageClass.create) }}
-    storageClassName: {{ .Values.storageClass.name }}
-    {{- else }}
-    storageClassName: "rf-storage-rw"
-    {{- end }}
+    storageClassName: {{ include "rapidfort-platform.storageclass" . }}
     resources:
       requests:
         storage: {{ .size }}
@@ -113,11 +116,7 @@ Create the ephemeral volume claims
       spec:
           accessModes:
           - {{ .accessMode }}
-          {{- if not(.Values.storageClass.create) }}
-          storageClassName: {{ .Values.storageClass.name }}
-          {{- else }}
-          storageClassName: "rf-storage-rw"
-          {{- end }}
+          storageClassName: {{ include "rapidfort-platform.storageclass" . }}
           resources:
             requests:
               storage: {{ .size }}

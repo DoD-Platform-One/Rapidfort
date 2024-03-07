@@ -934,7 +934,7 @@ vulnsdb:
 # -- Big Bang Values
 domain: bigbang.dev
 istio:
-  enabled: false
+  enabled: true
   mtls:
     # -- STRICT = Allow only mutual TLS traffic,
     # PERMISSIVE = Allow both plain text and mutual TLS traffic
@@ -942,7 +942,7 @@ istio:
     # Can be changed to STRICT after all initContainers have finished but will interfere with upgrades/pod deployments that have initContainers
     mode: STRICT
   rapidfort:
-    enabled: false
+    enabled: true
     allowed_rf_host: "us01.rapidfort.com"
     gateways:
     - istio-system/public
@@ -950,9 +950,9 @@ istio:
     - rapidfort.{{ .Values.domain }}
 
 networkPolicies:
-  enabled: false
+  enabled: true
   ingressLabels:
-    app: istio-ingressgateway
+    app: public-ingressgateway
     istio: ingressgateway
   # -- IP range of api.rapidfort.com
   rapidfortApiIpRange: ""
