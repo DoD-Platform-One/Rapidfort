@@ -16,9 +16,11 @@ aggregator:
   ephemeralVolumeClaimTemplates:
   - name: aggregator-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
   - name: aggregator-data-local-bucket
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
   initContainers:
   - name: disk-init
@@ -55,6 +57,7 @@ backend:
   ephemeralVolumeClaimTemplates:
   - name: backend-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
   initContainers:
     - name: wait-keycloak
@@ -74,6 +77,7 @@ filesredis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "10Gi"
 
 fileupload:
@@ -81,6 +85,7 @@ fileupload:
   ephemeralVolumeClaimTemplates:
   - name: fileupload-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
 
 isomaster:
@@ -98,12 +103,14 @@ isomaster:
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
 
 mysql:
   volumeClaimTemplates:
   - name: "mysql-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "10Gi"
 
 redis:
@@ -136,6 +143,7 @@ redis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "10Gi"
 
 rfscan:
@@ -153,6 +161,7 @@ rfscan:
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
 
 rfapi:
@@ -200,9 +209,11 @@ runner:
   ephemeralVolumeClaimTemplates:
   - name: var-lib-containers
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
 # runner:
 #   secret:
