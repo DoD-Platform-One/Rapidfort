@@ -54,7 +54,15 @@ aggregator:
       mountPath: /mnt/raid/aggregator
     - name: aggregator-data-local-bucket
       mountPath: /opt/rapidfort/local-bucket
-  initContainers: []
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "-R", "1000", "/mnt/raid/aggregator"]
+    volumeMounts:
+      - name: aggregator-data
+        mountPath: /mnt/raid/aggregator
+      - name: aggregator-data-local-bucket
+        mountPath: /opt/rapidfort/local-bucket
   # podSecurityContext:
   #   runAsUser: 1000
   #   runAsGroup: 1000
@@ -183,7 +191,10 @@ filesredis:
   volumeMounts:
   - name: redis-data
     mountPath: /bitnami/redis/data
-  initContainers: []
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -229,7 +240,13 @@ fileupload:
   volumeMounts:
       - name: fileupload-data
         mountPath: /opt/rapidfort/local-bucket
-  initContainers: []
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "65534", "/opt/rapidfort/local-bucket"]
+    volumeMounts:
+      - name: fileupload-data
+        mountPath: /opt/rapidfort/local-bucket
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -471,7 +488,10 @@ lockredis:
   volumeMounts:
   - name: redis-data
     mountPath: /bitnami/redis/data
-  initContainers: []
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/lock-redis"]
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -516,7 +536,13 @@ mysql:
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: "256Gi"
-  initContainers: []
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
+    volumeMounts:
+      - name: mysql-data
+        mountPath: /opt/rapidfort/local-bucket/data/mysql
   podSecurityContext: {}
   containerSecurityContext: {}
   ingress: {}
@@ -554,7 +580,13 @@ redis:
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: "128Gi"
-  initContainers: []
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/redis"]
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/redis
   # - name: init-vulnsdb
   #   image: registry1.dso.mil/ironbank/rapidfort/init:1.1.11 #TODO: update iamge.
   #   command: ["/bin/sh", "-c", "unxz /dump.rdb.xz && cp /dump.rdb /opt/rapidfort/local-bucket/data/redis && chown 1001 /opt/rapidfort/local-bucket/data/redis/dump.rdb"]
