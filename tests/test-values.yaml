@@ -107,6 +107,31 @@ mysql:
     size: "10Gi"
 
 redis:
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/redis"]
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/redis
+  - name: init-vulnsdb
+    image: quay.io/rapidfort/init:1.0
+    command:
+    - /bin/sh
+    - -c
+    - |
+        if [ -f /opt/rapidfort/local-bucket/data/redis/dump.rdb ]; then
+            echo "Vulns-DB init not required"
+        else
+            echo "Vulns-DB initialization..."
+            unxz /dump.rdb.xz
+            cp /dump.rdb /opt/rapidfort/local-bucket/data/redis
+            chown 1001 /opt/rapidfort/local-bucket/data/redis/dump.rdb
+            echo "Vulns-DB initialization done"
+        fi
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/redis
   resources: {}
   volumeClaimTemplates:
   - name: "redis-data"
