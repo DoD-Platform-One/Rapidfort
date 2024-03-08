@@ -197,7 +197,7 @@ filesredis:
     command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
     volumeMounts:
       - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/files-redis    
+        mountPath: /opt/rapidfort/local-bucket/data/files-redis
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
