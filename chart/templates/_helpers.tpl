@@ -90,6 +90,7 @@ Create the volume claim template
   spec:
     accessModes:
     - {{ .accessMode }}
+    storageClassName: {{ .storageClassName}}
     resources:
       requests:
         storage: {{ .size }}
@@ -108,6 +109,7 @@ Create the ephemeral volume claims
       spec:
           accessModes:
           - {{ .accessMode }}
+          storageClassName: {{ .storageClassName}}
           resources:
             requests:
               storage: {{ .size }}
