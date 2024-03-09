@@ -17,7 +17,7 @@ spec:
   {{- if .Values.redis.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range .Values.redis.volumeClaimTemplates -}}
-      {{ include "rapidfort-platform.singleVolumeClaim" . | nindent 2 }}
+      {{ (tpl ( include "rapidfort-platform.singleVolumeClaim" .) $) | nindent 2 }}
   {{- end }}
   {{- end }}
   template:

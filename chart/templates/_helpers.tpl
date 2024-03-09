@@ -90,7 +90,7 @@ Create the volume claim template
   spec:
     accessModes:
     - {{ .accessMode }}
-    storageClassName: {{ .storageClassName}}
+    storageClassName: {{ .storageClassName }}
     resources:
       requests:
         storage: {{ .size }}
