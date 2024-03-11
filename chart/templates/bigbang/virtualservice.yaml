@@ -6,7 +6,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include (printf "rapidfort-platform.labels") . | nindent 4 }}
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
 spec:
   gateways:
   {{- range .Values.istio.rapidfort.gateways }}
