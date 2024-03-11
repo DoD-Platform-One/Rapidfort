@@ -40,7 +40,7 @@ aggregator:
     image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
     command: ["/bin/sh", "-c"]
     args:
-    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;    
+    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;  
   resources: {}
     # limits:
     #   cpu: "2000m"
@@ -105,6 +105,13 @@ isomaster:
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
+
+keycloak:
+  - name: wait-mysql
+    image: registry1.dso.mil/ironbank/opensource/mysql/mysql8:8.0.31
+    command: ["/bin/sh", "-c"]
+    args:
+    - until mysql --host=mysql --user=root --password=RF-123579 --execute="SELECT 1;"; do echo $(date +"%Y-%m-%d %T,%3N") waiting for mysql; sleep .3; done;    
 
 mysql:
   volumeClaimTemplates:
