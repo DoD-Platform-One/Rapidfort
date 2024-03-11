@@ -26,20 +26,9 @@ spec:
       volumes:
         {{- tpl (toYaml (index .Values.rfapi.volumes )) . | nindent 8 }}
       {{- end }}
+      {{- if .Values.rfapi.initContainers }}
       initContainers:
-      - name: wait-files-redis
-        image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-        command: ["/bin/sh", "-c"]
-        args:
-        - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
-      - name: wait-lock-redis
-        image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-        command: ["/bin/sh", "-c"]
-        args:
-        - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
-      {{- if .Values.global.imagePullSecrets }}
-      imagePullSecrets:
-        - name: {{ .Values.global.imagePullSecrets }}
+        {{- toYaml (index .Values.rfapi.initContainers ) | nindent 8 }}
       {{- end }}
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}

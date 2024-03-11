@@ -34,12 +34,10 @@ spec:
           {{ (tpl (include "rapidfort-platform.singleEphemeralVolumeClaim" .) $) | nindent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.backend.initContainers }}
       initContainers:
-      - name: wait-keycloak
-        image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-        command: ["/bin/sh", "-c"]
-        args:
-        - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://keycloak -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for keycloak; sleep .3; done;
+        {{- toYaml (index .Values.backend.initContainers ) | nindent 8 }}
+      {{- end }}
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}

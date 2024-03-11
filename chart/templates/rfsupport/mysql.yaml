@@ -33,13 +33,10 @@ spec:
       volumes:
         {{- tpl (toYaml (index .Values.mysql.volumes )) . | nindent 8 }}
       {{- end }}
+      {{- if .Values.mysql.initContainers }}
       initContainers:
-      - name: disk-init
-        image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-        command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
-        volumeMounts:
-          - name: mysql-data
-            mountPath: /opt/rapidfort/local-bucket/data/mysql
+        {{- toYaml (index .Values.mysql.initContainers ) | nindent 8 }}
+      {{- end }}
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.global.imagePullSecrets }}
