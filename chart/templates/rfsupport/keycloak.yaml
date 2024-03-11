@@ -26,12 +26,6 @@ spec:
       volumes:
         {{- tpl (toYaml (index .Values.keycloak.volumes )) . | nindent 8 }}
       {{- end }}
-      # initContainers:
-      # - name: wait-mysql
-      #   image: {{ .Values.init.image }}
-      #   command: ["/bin/sh", "-c"]
-      #   args:
-      #   - until mysql --host=mysql --user=root --password=RF-123579 --execute="SELECT 1;"; do echo $(date +"%Y-%m-%d %T,%3N") waiting for mysql; sleep .3; done;
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.global.imagePullSecrets }}
