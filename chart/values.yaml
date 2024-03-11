@@ -783,6 +783,10 @@ runner:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
+  - name: rf-cli-cache
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 1Gi
   - name: rf-projects-cache
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
@@ -803,13 +807,17 @@ runner:
       mountPath: /var/lib/containers
     - name: rf-projects-cache
       mountPath: /opt/rapidfort/runner/app/auth
+    - name: rf-cli-cache
+      mountPath: /opt/rapidfort/runner/app/.rapidfort
   initContainers:
   - name: disk-init
     image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/runner/app/auth"]
+    command: ["chown", "1001", "/opt/rapidfort/runner/app/auth", "/opt/rapidfort/runner/app/.rapidfort"]
     volumeMounts:
       - name: rf-projects-cache
         mountPath: /opt/rapidfort/runner/app/auth
+      - name: rf-cli-cache
+        mountPath: /opt/rapidfort/runner/app/.rapidfort
   podSecurityContext: {}
   containerSecurityContext: {}
     # privileged: true
