@@ -107,6 +107,7 @@ isomaster:
     size: 10Gi
 
 keycloak:
+  initContainers:
   - name: wait-mysql
     image: registry1.dso.mil/ironbank/opensource/mysql/mysql8:8.0.31
     command: ["/bin/sh", "-c"]
