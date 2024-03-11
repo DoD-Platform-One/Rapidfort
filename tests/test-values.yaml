@@ -209,11 +209,19 @@ vulnsdb:
 
 runner:
   initContainers:
-    - name: wait-iso-master
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://iso-master -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for iso-master; sleep .3; done;
+  - name: wait-iso-master
+    image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+    command: ["/bin/sh", "-c"]
+    args:
+    - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://iso-master -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for iso-master; sleep .3; done;
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/runner/app/auth", "/opt/rapidfort/runner/app/.rapidfort"]
+    volumeMounts:
+      - name: rf-projects-cache
+        mountPath: /opt/rapidfort/runner/app/auth
+      - name: rf-cli-cache
+        mountPath: /opt/rapidfort/runner/app/.rapidfort      
   ephemeralVolumeClaimTemplates:
   - name: var-lib-containers
     accessMode: "ReadWriteOnce"
@@ -223,6 +231,14 @@ runner:
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
+  - name: rf-cli-cache
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 1Gi
+  - name: rf-projects-cache
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 10Gi      
 # runner:
 #   secret:
 #     name: rf-runner-secret
