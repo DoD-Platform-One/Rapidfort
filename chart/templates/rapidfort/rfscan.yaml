@@ -31,7 +31,7 @@ spec:
       volumes:
       {{- end }}
       {{- range .Values.rfscan.ephemeralVolumeClaimTemplates -}}
-          {{ include "rapidfort-platform.singleEphemeralVolumeClaim" . | nindent 8 }}
+          {{ (tpl (include "rapidfort-platform.singleEphemeralVolumeClaim" .) $) | nindent 8 }}
       {{- end }}
       {{- end }}
       initContainers:

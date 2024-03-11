@@ -17,7 +17,7 @@ spec:
   {{- if .Values.mysql.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range .Values.mysql.volumeClaimTemplates -}}
-      {{ include "rapidfort-platform.singleVolumeClaim" . | nindent 2 }}
+      {{ (tpl ( include "rapidfort-platform.singleVolumeClaim" .) $) | nindent 2 }}
   {{- end }}
   {{- end }}
   template:
