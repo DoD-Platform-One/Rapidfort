@@ -783,6 +783,10 @@ runner:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
+  - name: rf-projects-cache
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 10Gi  
   - name: var-lib-containers
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
@@ -797,6 +801,8 @@ runner:
       mountPath: /opt/rapidfort/local-bucket
     - name: var-lib-containers
       mountPath: /var/lib/containers
+    - name: rf-projects-cache
+      mountPath: /opt/rapidfort/runner/app/auth
   initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
