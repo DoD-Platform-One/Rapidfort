@@ -803,7 +803,13 @@ runner:
       mountPath: /var/lib/containers
     - name: rf-projects-cache
       mountPath: /opt/rapidfort/runner/app/auth
-  initContainers: []
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/runner/app/auth"]
+    volumeMounts:
+      - name: rf-projects-cache
+        mountPath: /opt/rapidfort/runner/app/auth
   podSecurityContext: {}
   containerSecurityContext: {}
     # privileged: true
