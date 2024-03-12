@@ -778,7 +778,7 @@ rfpubsub:
 runner:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/runner:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/runner:1.1.44-2-rfhardened
   ports:
     - name: http
       containerPort: 8080
