@@ -783,6 +783,10 @@ runner:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
+  - name: rf-celery-cache
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 1Gi
   - name: rf-cli-cache
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
@@ -809,15 +813,19 @@ runner:
       mountPath: /opt/rapidfort/runner/app/auth
     - name: rf-cli-cache
       mountPath: /opt/rapidfort/runner/app/.rapidfort
+    - name: rf-celery-cache
+      mountPath: /opt/rapidfort/runner/celery_rf
   initContainers:
   - name: disk-init
     image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/runner/app/auth", "/opt/rapidfort/runner/app/.rapidfort"]
+    command: ["chown", "1001", "/opt/rapidfort/runner/app/auth", "/opt/rapidfort/runner/app/.rapidfort", "/opt/rapidfort/runner/celery_rf"]
     volumeMounts:
       - name: rf-projects-cache
         mountPath: /opt/rapidfort/runner/app/auth
       - name: rf-cli-cache
         mountPath: /opt/rapidfort/runner/app/.rapidfort
+      - name: rf-celery-cache
+        mountPath: /opt/rapidfort/runner/celery_rf        
   podSecurityContext: {}
   containerSecurityContext: {}
     # privileged: true
