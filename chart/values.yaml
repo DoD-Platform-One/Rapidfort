@@ -818,7 +818,11 @@ runner:
   initContainers:
   - name: disk-init
     image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/runner/app/auth", "/opt/rapidfort/runner/app/.rapidfort", "/opt/rapidfort/runner/celery_rf"]
+    command:
+    - |
+      chown 1001 -R /opt/rapidfort/runner/app/auth
+      chown 1001 -R /opt/rapidfort/runner/app/.rapidfort
+      chown 1001 -R /opt/rapidfort/runner/celery_rf"]
     volumeMounts:
       - name: rf-projects-cache
         mountPath: /opt/rapidfort/runner/app/auth
