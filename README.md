@@ -1,3 +1,134 @@
+# bigbang-rapidfort
+
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
+
+BigBang compatible Helm chart for RapidFort
+
+## Learn More
+* [Application Overview](docs/overview.md)
+* [Other Documentation](docs/)
+
+## Pre-Requisites
+
+* Kubernetes Cluster deployed
+* Kubernetes config installed in `~/.kube/config`
+* Helm installed
+
+Install Helm
+
+https://helm.sh/docs/intro/install/
+
+## Deployment
+
+* Clone down the repository
+* cd into directory
+```bash
+helm install bigbang-rapidfort chart/
+```
+
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| rapidfort.enabled | bool | `true` |  |
+| rapidfort.sourceType | string | `"git"` |  |
+| rapidfort.git.repo | string | `"https://repo1.dso.mil/platform-one/big-bang/apps/third-party/rapidfort"` |  |
+| rapidfort.git.branch | string | `"main"` |  |
+| rapidfort.git.path | string | `"chart"` |  |
+| rapidfort.helmRepo.repoName | string | `"registry1"` |  |
+| rapidfort.helmRepo.chartName | string | `"rapidfort"` |  |
+| rapidfort.helmRepo.tag | string | `"1.2.0-bb.6"` |  |
+| rapidfort.flux | object | `{}` |  |
+| rapidfort.ingress.gateway | string | `""` |  |
+| rapidfort.objectStorage.aws_access_key_id | string | `"AKI***"` | Access key for connecting to object storage endpoint. |
+| rapidfort.objectStorage.aws_secret_access_key | string | `"Fh***"` | Secret key for connecting to object storage endpoint. |
+| rapidfort.objectStorage.aws_default_region | string | `"us-east-1"` | Region that bucket is in |
+| rapidfort.objectStorage.s3_bucket | string | `"rapidfort-bucket"` | Bucket name to use for RapidFort |
+| rapidfort.objectStorage.rf_app_admin | string | `"test@rapidfort.com"` |  |
+| rapidfort.objectStorage.rf_app_admin_password | string | `"test123"` |  |
+| rapidfort.objectStorage.imagePullSecret | string | `""` |  |
+| rapidfort.objectStorage.aws_role_arn | string | `""` |  |
+| domain | string | `"bigbang.dev"` |  |
+| networkPolicies.enabled | bool | `true` |  |
+| istioOperator.enabled | bool | `true` |  |
+| istio.enabled | bool | `true` |  |
+| neuvector.enabled | bool | `false` |  |
+| kyvernoPolicies.enabled | bool | `false` |  |
+| kyvernoPolicies.values.policies.restrict-image-registries.enabled | bool | `true` |  |
+| kyvernoPolicies.values.policies.restrict-image-registries.validationFailureAction | string | `"Audit"` |  |
+| kyvernoPolicies.values.policies.restrict-image-registries.parameters.allow | list | `["registry1.dso.mil","public.ecr.aws/rapidfort","274057717848.dkr.ecr.us-east-1.amazonaws.com"]` | List of allowed registries that images may use |
+| kyvernoPolicies.values.policies.require-non-root-user.enabled | bool | `true` |  |
+| kyvernoPolicies.values.policies.require-non-root-user.validationFailureAction | string | `"audit"` |  |
+| kyvernoPolicies.values.policies.require-non-root-user.parameters.excludeContainers[0] | string | `"isomaster*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-user.parameters.excludeContainers[1] | string | `"runner*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-user.parameters.excludeContainers[2] | string | `"vulnsdb*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.enabled | bool | `true` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.validationFailureAction | string | `"audit"` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[0] | string | `"mysql*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[1] | string | `"redis*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[2] | string | `"filesredis*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[3] | string | `"lockredis*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[4] | string | `"keycloak*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[5] | string | `"runner*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[6] | string | `"isomaster*"` |  |
+| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[7] | string | `"vulnsdb*"` |  |
+| gatekeeper.enabled | bool | `false` |  |
+| gatekeeper.values.controllerManager.resources.limits.cpu | string | `"400m"` |  |
+| gatekeeper.values.controllerManager.resources.limits.memory | string | `"2048Mi"` |  |
+| gatekeeper.values.controllerManager.resources.requests.cpu | string | `"175m"` |  |
+| gatekeeper.values.controllerManager.resources.requests.memory | string | `"512Mi"` |  |
+| gatekeeper.values.violations.allowedDockerRegistries.parameters.repos[0] | string | `"registry1.dso.mil"` |  |
+| gatekeeper.values.violations.allowedDockerRegistries.parameters.repos[1] | string | `"public.ecr.aws/rapidfort"` |  |
+| gatekeeper.values.violations.allowedDockerRegistries.parameters.repos[2] | string | `"274057717848.dkr.ecr.us-east-1.amazonaws.com"` |  |
+| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[0].pathPrefix | string | `"/var/lib/kubelet/pods"` |  |
+| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[1].pathPrefix | string | `"/var/run/docker.sock"` |  |
+| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[1].readOnly | bool | `false` |  |
+| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[2].pathPrefix | string | `"/tmp"` |  |
+| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[2].readOnly | bool | `false` |  |
+| gatekeeper.values.violations.allowedHostFilesystem.parameters.excludedResources[0] | string | `"velero/*"` |  |
+| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[0] | string | `"velero/*"` |  |
+| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[1] | string | `"rapidfort/aggregator-.*"` |  |
+| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[2] | string | `"rapidfort/backend-.*"` |  |
+| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[3] | string | `"rapidfort/fileupload-.*"` |  |
+| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[4] | string | `"rapidfort/isomaster-.*"` |  |
+| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[5] | string | `"rapidfort/rfscan-.*"` |  |
+| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[6] | string | `"rapidfort/runner-.*"` |  |
+| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[7] | string | `"rapidfort/runnerbeat-.*"` |  |
+| gatekeeper.values.violations.restrictedTaint.parameters.excludedResources[0] | string | `"monitoring/monitoring-monitoring-prometheus-node-exporter-.*"` |  |
+| gatekeeper.values.violations.restrictedTaint.parameters.excludedResources[1] | string | `"twistlock/twistlock-defender-ds-.*"` |  |
+| gatekeeper.values.violations.restrictedTaint.parameters.excludedResources[2] | string | `"logging/logging-fluent-bit-.*"` |  |
+| gatekeeper.values.violations.noHostNamespace.parameters.excludedResources | string | `nil` |  |
+| gatekeeper.values.violations.hostNetworking.parameters.excludedResources | string | `nil` |  |
+| jaeger.enabled | bool | `false` |  |
+| kiali.enabled | bool | `false` |  |
+| clusterAuditor.enabled | bool | `false` |  |
+| tempo.enabled | bool | `false` |  |
+| promtail.enabled | bool | `false` |  |
+| loki.enabled | bool | `false` |  |
+| eckOperator.enabled | bool | `false` |  |
+| elasticsearchKibana.enabled | bool | `false` |  |
+| fluentbit.enabled | bool | `false` |  |
+| monitoring.enabled | bool | `false` |  |
+| grafana.enabled | bool | `false` |  |
+| twistlock.enabled | bool | `false` |  |
+| addons.argocd.enabled | bool | `false` |  |
+| addons.authservice.enabled | bool | `false` |  |
+| addons.gitlab.enabled | bool | `false` |  |
+| addons.gitlabRunner.enabled | bool | `false` |  |
+| addons.anchore.enabled | bool | `false` |  |
+| addons.sonarqube.enabled | bool | `false` |  |
+| addons.minioOperator.enabled | bool | `false` |  |
+| addons.minio.enabled | bool | `false` |  |
+| addons.mattermostoperator.enabled | bool | `false` |  |
+| addons.mattermost.enabled | bool | `false` |  |
+| addons.nexus.enabled | bool | `false` |  |
+| addons.velero.enabled | bool | `false` |  |
+| addons.keycloak.enabled | bool | `false` |  |
+| addons.vault.enabled | bool | `false` |  |
+
+## Contributing
+
+Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
 # rapidfort
 
 ![Version: 1.2.3-bb.1](https://img.shields.io/badge/Version-1.2.3--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.44](https://img.shields.io/badge/AppVersion-1.1.44-informational?style=flat-square)
@@ -50,7 +181,7 @@ helm install rapidfort chart/
 | storageClass.name | string | `"rf-storage-rw"` |  |
 | aggregator.enabled | bool | `true` |  |
 | aggregator.replicaCount | int | `1` |  |
-| aggregator.image | string | `"registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.44-rfhardened"` |  |
+| aggregator.image | string | `"registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.44-1-rfhardened"` |  |
 | aggregator.ports | object | `{}` |  |
 | aggregator.ephemeralVolumeClaimTemplates[0].name | string | `"aggregator-data"` |  |
 | aggregator.ephemeralVolumeClaimTemplates[0].accessMode | string | `"ReadWriteOnce"` |  |
@@ -75,7 +206,9 @@ helm install rapidfort chart/
 | aggregator.initContainers[0].volumeMounts[0].mountPath | string | `"/mnt/raid/aggregator"` |  |
 | aggregator.initContainers[0].volumeMounts[1].name | string | `"aggregator-data-local-bucket"` |  |
 | aggregator.initContainers[0].volumeMounts[1].mountPath | string | `"/opt/rapidfort/local-bucket"` |  |
-| aggregator.initContainers[0].fsGroup | int | `1000` |  |
+| aggregator.podSecurityContext.runAsUser | int | `1000` |  |
+| aggregator.podSecurityContext.runAsGroup | int | `1000` |  |
+| aggregator.podSecurityContext.fsGroup | int | `1000` |  |
 | aggregator.containerSecurityContext | object | `{}` |  |
 | aggregator.service | object | `{}` |  |
 | aggregator.ingress | object | `{}` |  |
@@ -101,7 +234,7 @@ helm install rapidfort chart/
 | aggregator.readinessProbe | object | `{}` |  |
 | backend.enabled | bool | `true` |  |
 | backend.replicaCount | int | `1` |  |
-| backend.image | string | `"registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.44-rfhardened"` |  |
+| backend.image | string | `"registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.44-1-rfhardened"` |  |
 | backend.ports[0].name | string | `"http"` |  |
 | backend.ports[0].containerPort | int | `8080` |  |
 | backend.ephemeralVolumeClaimTemplates[0].name | string | `"backend-data"` |  |
@@ -189,7 +322,7 @@ helm install rapidfort chart/
 | filesredis.readinessProbe.failureThreshold | int | `10` |  |
 | fileupload.enabled | bool | `true` |  |
 | fileupload.replicaCount | int | `1` |  |
-| fileupload.image | string | `"registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.44-rfhardened"` |  |
+| fileupload.image | string | `"registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.44-1-rfhardened"` |  |
 | fileupload.ports[0].name | string | `"http"` |  |
 | fileupload.ports[0].containerPort | int | `8080` |  |
 | fileupload.ephemeralVolumeClaimTemplates[0].name | string | `"fileupload-data"` |  |
@@ -240,7 +373,7 @@ helm install rapidfort chart/
 | fileupload.readinessProbe.failureThreshold | int | `99` |  |
 | frontrow.enabled | bool | `true` |  |
 | frontrow.replicaCount | int | `1` |  |
-| frontrow.image | string | `"registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.44-rfhardened"` |  |
+| frontrow.image | string | `"registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.44-1-rfhardened"` |  |
 | frontrow.ports[0].name | string | `"http"` |  |
 | frontrow.ports[0].containerPort | int | `8080` |  |
 | frontrow.volumes | object | `{}` |  |
@@ -272,7 +405,7 @@ helm install rapidfort chart/
 | frontrow.readinessProbe.failureThreshold | int | `10` |  |
 | isomaster.enabled | bool | `true` |  |
 | isomaster.replicaCount | int | `1` |  |
-| isomaster.image | string | `"registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.44-rfhardened"` |  |
+| isomaster.image | string | `"registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.44-1-rfhardened"` |  |
 | isomaster.ports[0].name | string | `"http"` |  |
 | isomaster.ports[0].containerPort | int | `8080` |  |
 | isomaster.ephemeralVolumeClaimTemplates[0].name | string | `"imgs-work-dir"` |  |
@@ -441,6 +574,13 @@ helm install rapidfort chart/
 | redis.volumeClaimTemplates[0].accessMode | string | `"ReadWriteOnce"` |  |
 | redis.volumeClaimTemplates[0].storageClassName | string | `"{{ .Values.storageClass.name }}"` |  |
 | redis.volumeClaimTemplates[0].size | string | `"128Gi"` |  |
+| redis.initContainers[0].name | string | `"disk-init"` |  |
+| redis.initContainers[0].image | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9"` |  |
+| redis.initContainers[0].command[0] | string | `"chown"` |  |
+| redis.initContainers[0].command[1] | string | `"1001"` |  |
+| redis.initContainers[0].command[2] | string | `"/opt/rapidfort/local-bucket/data/redis"` |  |
+| redis.initContainers[0].volumeMounts[0].name | string | `"redis-data"` |  |
+| redis.initContainers[0].volumeMounts[0].mountPath | string | `"/opt/rapidfort/local-bucket/data/redis"` |  |
 | redis.podSecurityContext | object | `{}` |  |
 | redis.containerSecurityContext | object | `{}` |  |
 | redis.service.type | string | `"ClusterIP"` |  |
@@ -462,7 +602,7 @@ helm install rapidfort chart/
 | redis.readinessProbe.failureThreshold | int | `10` |  |
 | rfscan.enabled | bool | `true` |  |
 | rfscan.replicaCount | int | `1` |  |
-| rfscan.image | string | `"registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.44-rfhardened"` |  |
+| rfscan.image | string | `"registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.44-1-rfhardened"` |  |
 | rfscan.ports[0].name | string | `"http"` |  |
 | rfscan.ports[0].containerPort | int | `8080` |  |
 | rfscan.ephemeralVolumeClaimTemplates[0].name | string | `"imgs-work-dir"` |  |
@@ -512,7 +652,7 @@ helm install rapidfort chart/
 | rfscan.readinessProbe.failureThreshold | int | `10` |  |
 | rfapi.enabled | bool | `true` |  |
 | rfapi.replicaCount | int | `1` |  |
-| rfapi.image | string | `"registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.44-rfhardened"` |  |
+| rfapi.image | string | `"registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.44-1-rfhardened"` |  |
 | rfapi.ports[0].name | string | `"http"` |  |
 | rfapi.ports[0].containerPort | int | `8080` |  |
 | rfapi.volumes | object | `{}` |  |
@@ -540,7 +680,7 @@ helm install rapidfort chart/
 | rfapi.readinessProbe | object | `{}` |  |
 | rfpubsub.enabled | bool | `true` |  |
 | rfpubsub.replicaCount | int | `1` |  |
-| rfpubsub.image | string | `"registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.44-rfhardened"` |  |
+| rfpubsub.image | string | `"registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.44-1-rfhardened"` |  |
 | rfpubsub.ports[0].name | string | `"http"` |  |
 | rfpubsub.ports[0].containerPort | int | `8080` |  |
 | rfpubsub.volumes | object | `{}` |  |
@@ -569,21 +709,29 @@ helm install rapidfort chart/
 | rfpubsub.readinessProbe | object | `{}` |  |
 | runner.enabled | bool | `true` |  |
 | runner.replicaCount | int | `1` |  |
-| runner.image | string | `"registry1.dso.mil/ironbank/rapidfort/runner:1.1.44-rfhardened"` |  |
+| runner.image | string | `"registry1.dso.mil/ironbank/rapidfort/runner:1.1.44-2-rfhardened"` |  |
 | runner.ports[0].name | string | `"http"` |  |
 | runner.ports[0].containerPort | int | `8080` |  |
-| runner.ephemeralVolumeClaimTemplates[0].name | string | `"rf-projects-cache"` |  |
+| runner.ephemeralVolumeClaimTemplates[0].name | string | `"rf-celery-cache"` |  |
 | runner.ephemeralVolumeClaimTemplates[0].accessMode | string | `"ReadWriteOnce"` |  |
 | runner.ephemeralVolumeClaimTemplates[0].storageClassName | string | `"{{ .Values.storageClass.name }}"` |  |
-| runner.ephemeralVolumeClaimTemplates[0].size | string | `"10Gi"` |  |
-| runner.ephemeralVolumeClaimTemplates[1].name | string | `"var-lib-containers"` |  |
+| runner.ephemeralVolumeClaimTemplates[0].size | string | `"1Gi"` |  |
+| runner.ephemeralVolumeClaimTemplates[1].name | string | `"rf-cli-cache"` |  |
 | runner.ephemeralVolumeClaimTemplates[1].accessMode | string | `"ReadWriteOnce"` |  |
 | runner.ephemeralVolumeClaimTemplates[1].storageClassName | string | `"{{ .Values.storageClass.name }}"` |  |
-| runner.ephemeralVolumeClaimTemplates[1].size | string | `"256Gi"` |  |
-| runner.ephemeralVolumeClaimTemplates[2].name | string | `"imgs-work-dir"` |  |
+| runner.ephemeralVolumeClaimTemplates[1].size | string | `"1Gi"` |  |
+| runner.ephemeralVolumeClaimTemplates[2].name | string | `"rf-projects-cache"` |  |
 | runner.ephemeralVolumeClaimTemplates[2].accessMode | string | `"ReadWriteOnce"` |  |
 | runner.ephemeralVolumeClaimTemplates[2].storageClassName | string | `"{{ .Values.storageClass.name }}"` |  |
-| runner.ephemeralVolumeClaimTemplates[2].size | string | `"256Gi"` |  |
+| runner.ephemeralVolumeClaimTemplates[2].size | string | `"10Gi"` |  |
+| runner.ephemeralVolumeClaimTemplates[3].name | string | `"var-lib-containers"` |  |
+| runner.ephemeralVolumeClaimTemplates[3].accessMode | string | `"ReadWriteOnce"` |  |
+| runner.ephemeralVolumeClaimTemplates[3].storageClassName | string | `"{{ .Values.storageClass.name }}"` |  |
+| runner.ephemeralVolumeClaimTemplates[3].size | string | `"256Gi"` |  |
+| runner.ephemeralVolumeClaimTemplates[4].name | string | `"imgs-work-dir"` |  |
+| runner.ephemeralVolumeClaimTemplates[4].accessMode | string | `"ReadWriteOnce"` |  |
+| runner.ephemeralVolumeClaimTemplates[4].storageClassName | string | `"{{ .Values.storageClass.name }}"` |  |
+| runner.ephemeralVolumeClaimTemplates[4].size | string | `"256Gi"` |  |
 | runner.volumes | list | `[]` |  |
 | runner.volumeMounts[0].name | string | `"imgs-work-dir"` |  |
 | runner.volumeMounts[0].mountPath | string | `"/opt/rapidfort/local-bucket"` |  |
@@ -591,13 +739,21 @@ helm install rapidfort chart/
 | runner.volumeMounts[1].mountPath | string | `"/var/lib/containers"` |  |
 | runner.volumeMounts[2].name | string | `"rf-projects-cache"` |  |
 | runner.volumeMounts[2].mountPath | string | `"/opt/rapidfort/runner/app/auth"` |  |
+| runner.volumeMounts[3].name | string | `"rf-cli-cache"` |  |
+| runner.volumeMounts[3].mountPath | string | `"/opt/rapidfort/runner/app/.rapidfort"` |  |
+| runner.volumeMounts[4].name | string | `"rf-celery-cache"` |  |
+| runner.volumeMounts[4].mountPath | string | `"/opt/rapidfort/runner/celery_rf"` |  |
 | runner.initContainers[0].name | string | `"disk-init"` |  |
 | runner.initContainers[0].image | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9"` |  |
-| runner.initContainers[0].command[0] | string | `"chown"` |  |
-| runner.initContainers[0].command[1] | string | `"1001"` |  |
-| runner.initContainers[0].command[2] | string | `"/opt/rapidfort/runner/app/auth"` |  |
+| runner.initContainers[0].command[0] | string | `"/bin/bash"` |  |
+| runner.initContainers[0].command[1] | string | `"-c"` |  |
+| runner.initContainers[0].command[2] | string | `"chown 1000 -R /opt/rapidfort/runner/app/auth\nchown 1000 -R /opt/rapidfort/runner/app/.rapidfort\nchown 1000 -R /opt/rapidfort/runner/celery_rf\n"` |  |
 | runner.initContainers[0].volumeMounts[0].name | string | `"rf-projects-cache"` |  |
 | runner.initContainers[0].volumeMounts[0].mountPath | string | `"/opt/rapidfort/runner/app/auth"` |  |
+| runner.initContainers[0].volumeMounts[1].name | string | `"rf-cli-cache"` |  |
+| runner.initContainers[0].volumeMounts[1].mountPath | string | `"/opt/rapidfort/runner/app/.rapidfort"` |  |
+| runner.initContainers[0].volumeMounts[2].name | string | `"rf-celery-cache"` |  |
+| runner.initContainers[0].volumeMounts[2].mountPath | string | `"/opt/rapidfort/runner/celery_rf"` |  |
 | runner.podSecurityContext | object | `{}` |  |
 | runner.containerSecurityContext | object | `{}` |  |
 | runner.service.type | string | `"ClusterIP"` |  |
@@ -637,7 +793,7 @@ helm install rapidfort chart/
 | runner.readinessProbe.failureThreshold | int | `10` |  |
 | rfvdb.enabled | bool | `false` |  |
 | rfvdb.replicaCount | int | `1` |  |
-| rfvdb.image | string | `"registry1.dso.mil/ironbank/rapidfort/rfvdb:1.1.44-rfhardened"` |  |
+| rfvdb.image | string | `"registry1.dso.mil/ironbank/rapidfort/rfvdb:1.1.44-1-rfhardened"` |  |
 | rfvdb.ports[0].name | string | `"http"` |  |
 | rfvdb.ports[0].containerPort | int | `8080` |  |
 | rfvdb.volumes | object | `{}` |  |
@@ -675,7 +831,7 @@ helm install rapidfort chart/
 | rfvdb.readinessProbe.failureThreshold | int | `10` |  |
 | vulnsdb.enabled | bool | `true` |  |
 | vulnsdb.replicaCount | int | `1` |  |
-| vulnsdb.image | string | `"registry1.dso.mil/ironbank/rapidfort/vulns-db:1.1.44-rfhardened"` |  |
+| vulnsdb.image | string | `"registry1.dso.mil/ironbank/rapidfort/vulns-db:1.1.44-1-rfhardened"` |  |
 | vulnsdb.ports[0].name | string | `"http"` |  |
 | vulnsdb.ports[0].containerPort | int | `8080` |  |
 | vulnsdb.volumes | object | `{}` |  |
@@ -719,137 +875,6 @@ helm install rapidfort chart/
 | networkPolicies.rapidfortApiIpRange | string | `""` | IP range of api.rapidfort.com |
 | networkPolicies.controlPlaneCidr | string | `""` | test |
 | bbtests | object | `{"addons":{"minio":{"enabled":false}},"cypress":{"artifacts":true,"envs":{"cypress_url":"http://test.test"}},"enabled":false,"scripts":{"envs":{"URL":"http://test.test"}}}` | Bigbang helm test values - default disabled |
-
-## Contributing
-
-Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
-# bigbang-rapidfort
-
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
-
-BigBang compatible Helm chart for RapidFort
-
-## Learn More
-* [Application Overview](docs/overview.md)
-* [Other Documentation](docs/)
-
-## Pre-Requisites
-
-* Kubernetes Cluster deployed
-* Kubernetes config installed in `~/.kube/config`
-* Helm installed
-
-Install Helm
-
-https://helm.sh/docs/intro/install/
-
-## Deployment
-
-* Clone down the repository
-* cd into directory
-```bash
-helm install bigbang-rapidfort chart/
-```
-
-## Values
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| rapidfort.enabled | bool | `true` |  |
-| rapidfort.sourceType | string | `"git"` |  |
-| rapidfort.git.repo | string | `"https://repo1.dso.mil/platform-one/big-bang/apps/third-party/rapidfort"` |  |
-| rapidfort.git.branch | string | `"main"` |  |
-| rapidfort.git.path | string | `"chart"` |  |
-| rapidfort.helmRepo.repoName | string | `"registry1"` |  |
-| rapidfort.helmRepo.chartName | string | `"rapidfort"` |  |
-| rapidfort.helmRepo.tag | string | `"1.2.0-bb.6"` |  |
-| rapidfort.flux | object | `{}` |  |
-| rapidfort.ingress.gateway | string | `""` |  |
-| rapidfort.objectStorage.aws_access_key_id | string | `"AKI***"` | Access key for connecting to object storage endpoint. |
-| rapidfort.objectStorage.aws_secret_access_key | string | `"Fh***"` | Secret key for connecting to object storage endpoint. |
-| rapidfort.objectStorage.aws_default_region | string | `"us-east-1"` | Region that bucket is in |
-| rapidfort.objectStorage.s3_bucket | string | `"rapidfort-bucket"` | Bucket name to use for RapidFort |
-| rapidfort.objectStorage.rf_app_admin | string | `"test@rapidfort.com"` |  |
-| rapidfort.objectStorage.rf_app_admin_password | string | `"test123"` |  |
-| rapidfort.objectStorage.imagePullSecret | string | `""` |  |
-| rapidfort.objectStorage.aws_role_arn | string | `""` |  |
-| domain | string | `"bigbang.dev"` |  |
-| networkPolicies.enabled | bool | `true` |  |
-| istioOperator.enabled | bool | `true` |  |
-| istio.enabled | bool | `true` |  |
-| neuvector.enabled | bool | `false` |  |
-| kyvernoPolicies.enabled | bool | `false` |  |
-| kyvernoPolicies.values.policies.restrict-image-registries.enabled | bool | `true` |  |
-| kyvernoPolicies.values.policies.restrict-image-registries.validationFailureAction | string | `"Audit"` |  |
-| kyvernoPolicies.values.policies.restrict-image-registries.parameters.allow | list | `["registry1.dso.mil","public.ecr.aws/rapidfort","274057717848.dkr.ecr.us-east-1.amazonaws.com"]` | List of allowed registries that images may use |
-| kyvernoPolicies.values.policies.require-non-root-user.enabled | bool | `true` |  |
-| kyvernoPolicies.values.policies.require-non-root-user.validationFailureAction | string | `"audit"` |  |
-| kyvernoPolicies.values.policies.require-non-root-user.parameters.excludeContainers[0] | string | `"isomaster*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-user.parameters.excludeContainers[1] | string | `"runner*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-user.parameters.excludeContainers[2] | string | `"vulnsdb*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.enabled | bool | `true` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.validationFailureAction | string | `"audit"` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[0] | string | `"mysql*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[1] | string | `"redis*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[2] | string | `"filesredis*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[3] | string | `"lockredis*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[4] | string | `"keycloak*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[5] | string | `"runner*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[6] | string | `"isomaster*"` |  |
-| kyvernoPolicies.values.policies.require-non-root-group.parameters.excludeContainers[7] | string | `"vulnsdb*"` |  |
-| gatekeeper.enabled | bool | `false` |  |
-| gatekeeper.values.controllerManager.resources.limits.cpu | string | `"400m"` |  |
-| gatekeeper.values.controllerManager.resources.limits.memory | string | `"2048Mi"` |  |
-| gatekeeper.values.controllerManager.resources.requests.cpu | string | `"175m"` |  |
-| gatekeeper.values.controllerManager.resources.requests.memory | string | `"512Mi"` |  |
-| gatekeeper.values.violations.allowedDockerRegistries.parameters.repos[0] | string | `"registry1.dso.mil"` |  |
-| gatekeeper.values.violations.allowedDockerRegistries.parameters.repos[1] | string | `"public.ecr.aws/rapidfort"` |  |
-| gatekeeper.values.violations.allowedDockerRegistries.parameters.repos[2] | string | `"274057717848.dkr.ecr.us-east-1.amazonaws.com"` |  |
-| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[0].pathPrefix | string | `"/var/lib/kubelet/pods"` |  |
-| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[1].pathPrefix | string | `"/var/run/docker.sock"` |  |
-| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[1].readOnly | bool | `false` |  |
-| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[2].pathPrefix | string | `"/tmp"` |  |
-| gatekeeper.values.violations.allowedHostFilesystem.parameters.allowedHostPaths[2].readOnly | bool | `false` |  |
-| gatekeeper.values.violations.allowedHostFilesystem.parameters.excludedResources[0] | string | `"velero/*"` |  |
-| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[0] | string | `"velero/*"` |  |
-| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[1] | string | `"rapidfort/aggregator-.*"` |  |
-| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[2] | string | `"rapidfort/backend-.*"` |  |
-| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[3] | string | `"rapidfort/fileupload-.*"` |  |
-| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[4] | string | `"rapidfort/isomaster-.*"` |  |
-| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[5] | string | `"rapidfort/rfscan-.*"` |  |
-| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[6] | string | `"rapidfort/runner-.*"` |  |
-| gatekeeper.values.violations.volumeTypes.parameters.excludedResources[7] | string | `"rapidfort/runnerbeat-.*"` |  |
-| gatekeeper.values.violations.restrictedTaint.parameters.excludedResources[0] | string | `"monitoring/monitoring-monitoring-prometheus-node-exporter-.*"` |  |
-| gatekeeper.values.violations.restrictedTaint.parameters.excludedResources[1] | string | `"twistlock/twistlock-defender-ds-.*"` |  |
-| gatekeeper.values.violations.restrictedTaint.parameters.excludedResources[2] | string | `"logging/logging-fluent-bit-.*"` |  |
-| gatekeeper.values.violations.noHostNamespace.parameters.excludedResources | string | `nil` |  |
-| gatekeeper.values.violations.hostNetworking.parameters.excludedResources | string | `nil` |  |
-| jaeger.enabled | bool | `false` |  |
-| kiali.enabled | bool | `false` |  |
-| clusterAuditor.enabled | bool | `false` |  |
-| tempo.enabled | bool | `false` |  |
-| promtail.enabled | bool | `false` |  |
-| loki.enabled | bool | `false` |  |
-| eckOperator.enabled | bool | `false` |  |
-| elasticsearchKibana.enabled | bool | `false` |  |
-| fluentbit.enabled | bool | `false` |  |
-| monitoring.enabled | bool | `false` |  |
-| grafana.enabled | bool | `false` |  |
-| twistlock.enabled | bool | `false` |  |
-| addons.argocd.enabled | bool | `false` |  |
-| addons.authservice.enabled | bool | `false` |  |
-| addons.gitlab.enabled | bool | `false` |  |
-| addons.gitlabRunner.enabled | bool | `false` |  |
-| addons.anchore.enabled | bool | `false` |  |
-| addons.sonarqube.enabled | bool | `false` |  |
-| addons.minioOperator.enabled | bool | `false` |  |
-| addons.minio.enabled | bool | `false` |  |
-| addons.mattermostoperator.enabled | bool | `false` |  |
-| addons.mattermost.enabled | bool | `false` |  |
-| addons.nexus.enabled | bool | `false` |  |
-| addons.velero.enabled | bool | `false` |  |
-| addons.keycloak.enabled | bool | `false` |  |
-| addons.vault.enabled | bool | `false` |  |
 
 ## Contributing
 
