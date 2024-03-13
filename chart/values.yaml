@@ -63,9 +63,9 @@ aggregator:
         mountPath: /mnt/raid/aggregator
       - name: aggregator-data-local-bucket
         mountPath: /opt/rapidfort/local-bucket
-  # podSecurityContext:
-  #   runAsUser: 1000
-  #   runAsGroup: 1000
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
     fsGroup: 1000
   containerSecurityContext: {}
   service: {}
