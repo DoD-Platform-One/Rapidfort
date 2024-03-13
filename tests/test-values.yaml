@@ -216,21 +216,25 @@ runner:
     - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://iso-master -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for iso-master; sleep .3; done;
   - name: disk-init
     image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/runner/app/auth", "/opt/rapidfort/runner/app/.rapidfort"]
+    command:
+    - /bin/bash
+    - -c
+    - |
+      chown 1000 -R /opt/rapidfort/runner/app/auth
+      chown 1000 -R /opt/rapidfort/runner/app/.rapidfort
+      chown 1000 -R /opt/rapidfort/runner/celery_rf
     volumeMounts:
       - name: rf-projects-cache
         mountPath: /opt/rapidfort/runner/app/auth
       - name: rf-cli-cache
-        mountPath: /opt/rapidfort/runner/app/.rapidfort      
+        mountPath: /opt/rapidfort/runner/app/.rapidfort
+      - name: rf-celery-cache
+        mountPath: /opt/rapidfort/runner/celery_rf      
   ephemeralVolumeClaimTemplates:
-  - name: var-lib-containers
+  - name: rf-celery-cache
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
-    size: 10Gi
-  - name: imgs-work-dir
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 10Gi
+    size: 1Gi
   - name: rf-cli-cache
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
@@ -238,7 +242,15 @@ runner:
   - name: rf-projects-cache
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
-    size: 10Gi      
+    size: 10Gi  
+  - name: var-lib-containers
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 256Gi
+  - name: imgs-work-dir
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 256Gi    
 # runner:
 #   secret:
 #     name: rf-runner-secret
