@@ -7,7 +7,7 @@ kind: Deployment
 metadata:
   name: rfscan
   labels:
-    app.kubernetes.io/name: rfscan    
+    app.kubernetes.io/name: rfscan
 spec:
   replicas: {{ .Values.rfscan.replicaCount }}
   selector:
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: rfscan        
+        app.kubernetes.io/name: rfscan
     spec:
       {{- if .Values.rfscan.podSecurityContext }}
       securityContext:
@@ -31,21 +31,21 @@ spec:
       volumes:
       {{- end }}
       {{- range .Values.rfscan.ephemeralVolumeClaimTemplates -}}
-          {{ include "rapidfort-platform.singleEphemeralVolumeClaim" . | nindent 8 }}
+          {{ (tpl (include "rapidfort-platform.singleEphemeralVolumeClaim" .) $) | nindent 8 }}
       {{- end }}
       {{- end }}
       {{- if .Values.rfscan.initContainers }}
       initContainers:
         {{- toYaml (index .Values.rfscan.initContainers ) | nindent 8 }}
       {{- end }}
-      {{- if .Values.serviceAccount.create }}
-      serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
-      serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
-      {{- end }}      
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.global.imagePullSecrets }}
       {{- end }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
+      serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}      
       containers:
         - name: rfscan
           {{- if .Values.rfscan.containerSecurityContext }}
@@ -108,7 +108,7 @@ kind: Service
 metadata:
   name: rf-scan
   labels:
-    app.kubernetes.io/name: rfscan    
+    app.kubernetes.io/name: rfscan
 spec:
   type: {{ .Values.rfscan.service.type }}
   ports:
@@ -125,7 +125,7 @@ kind: Ingress
 metadata:
   name: rfscan
   labels:
-    app.kubernetes.io/name: rfscan    
+    app.kubernetes.io/name: rfscan
   annotations:
   {{- with .Values.rfscan.ingress.annotations }}  
     {{- toYaml . | nindent 4 }}  

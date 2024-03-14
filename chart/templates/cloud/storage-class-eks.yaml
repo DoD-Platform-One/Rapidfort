@@ -1,8 +1,9 @@
+{{- if .Values.storageClass.create }}
 {{- if and .Values.global.cloud (eq .Values.global.cloud "eks") }}
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: rf-storage-rw
+  name: {{ .Values.storageClass.name }}
 parameters:
   encrypted: "true"
   fsType: ext4
@@ -10,4 +11,5 @@ parameters:
 provisioner: kubernetes.io/aws-ebs
 reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
+{{- end }}
 {{- end }}

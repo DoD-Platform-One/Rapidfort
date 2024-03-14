@@ -13,11 +13,11 @@ spec:
   replicas: {{ .Values.redis.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: redis
+      app.kubernetes.io/name: redis   
   {{- if .Values.redis.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range .Values.redis.volumeClaimTemplates -}}
-      {{ include "rapidfort-platform.singleVolumeClaim" . | nindent 2 }}
+      {{ (tpl ( include "rapidfort-platform.singleVolumeClaim" .) $) | nindent 2 }}
   {{- end }}
   {{- end }}
   template:
@@ -40,7 +40,7 @@ spec:
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.global.imagePullSecrets }}
-      {{- end }}      
+      {{- end }}
       containers:
         - name: redis
           {{- if .Values.redis.containerSecurityContext }}

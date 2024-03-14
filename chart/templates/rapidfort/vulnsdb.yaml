@@ -7,7 +7,7 @@ kind: Deployment
 metadata:
   name: vulnsdb
   labels:
-    app.kubernetes.io/name: vulnsdb    
+    app.kubernetes.io/name: vulnsdb
 spec:
   replicas: {{ .Values.vulnsdb.replicaCount }}
   selector:
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: vulnsdb        
+        app.kubernetes.io/name: vulnsdb
     spec:
       {{- if .Values.vulnsdb.podSecurityContext }}
       securityContext:
@@ -37,7 +37,7 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
-      {{- end }}           
+      {{- end }}      
       containers:
         - name: vulnsdb
           {{- if .Values.vulnsdb.containerSecurityContext }}
@@ -100,7 +100,7 @@ kind: Service
 metadata:
   name: vulnsdb
   labels:
-    app.kubernetes.io/name: vulnsdb    
+    app.kubernetes.io/name: vulnsdb
 spec:
   type: {{ .Values.vulnsdb.service.type }}
   ports:
@@ -117,7 +117,7 @@ kind: Ingress
 metadata:
   name: vulnsdb
   labels:
-    app.kubernetes.io/name: vulnsdb    
+    app.kubernetes.io/name: vulnsdb
   annotations:
   {{- with .Values.vulnsdb.ingress.annotations }}  
     {{- toYaml . | nindent 4 }}  

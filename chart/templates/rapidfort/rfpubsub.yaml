@@ -7,7 +7,7 @@ kind: Deployment
 metadata:
   name: rfpubsub
   labels:
-    app.kubernetes.io/name: rfpubsub    
+    app.kubernetes.io/name: rfpubsub
 spec:
   replicas: {{ .Values.rfpubsub.replicaCount }}
   selector:
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: rfpubsub        
+        app.kubernetes.io/name: rfpubsub
     spec:
       {{- if .Values.rfpubsub.podSecurityContext }}
       securityContext:
@@ -37,7 +37,7 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
-      {{- end }}           
+      {{- end }}      
       containers:
         - name: rfpubsub
           {{- if .Values.rfpubsub.containerSecurityContext }}
@@ -100,7 +100,7 @@ kind: Service
 metadata:
   name: rfpubsub
   labels:
-    app.kubernetes.io/name: rfpubsub    
+    app.kubernetes.io/name: rfpubsub
 spec:
   type: {{ .Values.rfpubsub.service.type }}
   ports:
@@ -117,7 +117,7 @@ kind: Ingress
 metadata:
   name: rfpubsub
   labels:
-    app.kubernetes.io/name: rfpubsub    
+    app.kubernetes.io/name: rfpubsub
   annotations:
   {{- with .Values.rfpubsub.ingress.annotations }}  
     {{- toYaml . | nindent 4 }}  

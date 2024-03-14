@@ -29,11 +29,11 @@ spec:
       {{- if .Values.keycloak.initContainers }}
       initContainers:
         {{- toYaml (index .Values.keycloak.initContainers ) | nindent 8 }}
-      {{- end }}
+      {{- end }}      
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.global.imagePullSecrets }}
-      {{- end }}      
+      {{- end }}
       containers:
         - name: keycloak
           {{- if .Values.keycloak.containerSecurityContext }}
@@ -106,7 +106,8 @@ spec:
       targetPort: {{ .Values.keycloak.service.targetPort }}
   selector:
     app.kubernetes.io/name: keycloak
-{{- if .Values.global.ingress.enabled }}
+# Option to enable ingress when there is something to debug with KeyCloak service.    
+{{- if .Values.keycloak.ingress.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

@@ -16,10 +16,13 @@ aggregator:
   ephemeralVolumeClaimTemplates:
   - name: aggregator-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
   - name: aggregator-data-local-bucket
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
+  initContainers: []
   resources: {}
     # limits:
     #   cpu: "2000m"
@@ -36,7 +39,9 @@ backend:
   ephemeralVolumeClaimTemplates:
   - name: backend-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
+  initContainers: []
     # limits:
     #   cpu: "2000m"
     #   memory: "4096Mi"
@@ -49,6 +54,7 @@ filesredis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "10Gi"
 
 fileupload:
@@ -56,56 +62,81 @@ fileupload:
   ephemeralVolumeClaimTemplates:
   - name: fileupload-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
 
 isomaster:
-  initContainers:
-    - name: wait-backend
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
+  initContainers: []
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
+
+keycloak:
+  initContainers: []
 
 mysql:
   volumeClaimTemplates:
   - name: "mysql-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "10Gi"
 
 redis:
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/redis"]
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/redis
+  - name: init-vulnsdb
+    image: quay.io/rapidfort/init:1.0
+    command:
+    - /bin/sh
+    - -c
+    - |
+        if [ -f /opt/rapidfort/local-bucket/data/redis/dump.rdb ]; then
+            echo "Vulns-DB init not required"
+        else
+            echo "Vulns-DB initialization..."
+            unxz /dump.rdb.xz
+            cp /dump.rdb /opt/rapidfort/local-bucket/data/redis
+            chown 1001 /opt/rapidfort/local-bucket/data/redis/dump.rdb
+            echo "Vulns-DB initialization done"
+        fi
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/redis
   resources: {}
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "10Gi"
 
 rfscan:
-  initContainers:
-    - name: wait-backend
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
+  initContainers: []
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
 
+rfapi:
+  initContainers: []
+
+rfpubsub:
+  initContainers: []
+
 vulnsdb:
+  initContainers: []
   resources: {}
 
 runner:
-  ephemeralVolumeClaimTemplates:
-  - name: var-lib-containers
-    accessMode: "ReadWriteOnce"
-    size: 10Gi
-  - name: imgs-work-dir
-    accessMode: "ReadWriteOnce"
-    size: 10Gi
+  initContainers: []
+  
 # runner:
 #   secret:
 #     name: rf-runner-secret

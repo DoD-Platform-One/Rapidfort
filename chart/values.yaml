@@ -27,20 +27,26 @@ global:
 serviceAccount:
   create: true
 
+storageClass:
+  create: true
+  name: "rf-storage-rw"
+
 #
 # aggregator
 #
 aggregator:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.44-1-rfhardened
   ports: {}
   ephemeralVolumeClaimTemplates:
   - name: aggregator-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   - name: aggregator-data-local-bucket
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
@@ -48,29 +54,9 @@ aggregator:
       mountPath: /mnt/raid/aggregator
     - name: aggregator-data-local-bucket
       mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "-R", "1000", "/mnt/raid/aggregator"]
-    volumeMounts:
-      - name: aggregator-data
-        mountPath: /mnt/raid/aggregator
-      - name: aggregator-data-local-bucket
-        mountPath: /opt/rapidfort/local-bucket
-  - name: wait-files-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
-  - name: wait-lock-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
-  # podSecurityContext:
-  #   runAsUser: 1000
-  #   runAsGroup: 1000
-  #   fsGroup: 1000
+  initContainers: []
+  podSecurityContext:
+    fsGroup: 1000
   containerSecurityContext: {}
   service: {}
   ingress: {}
@@ -106,24 +92,20 @@ aggregator:
 backend:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.44-1-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
   - name: backend-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 128Gi
   volumes: []
   volumeMounts:
     - name: backend-data
       mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-    - name: wait-keycloak
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://keycloak -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for keycloak; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -134,6 +116,16 @@ backend:
     className: ""
     annotations:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/server-snippet: |
+        gzip on;
+        gzip_disable "MSIE [1-6]\.(?!.*SV1)"
+        gzip_vary on;
+        gzip_proxied any;
+        gzip_comp_level 5;
+        gzip_min_length 512;
+        gzip_buffers 16 128k;
+        gzip_http_version 1.0;
+        gzip_types application/json;
     hosts:
       - host:
         paths:
@@ -149,6 +141,7 @@ backend:
   envVars:
     AUTH_SERVER_ROOT_URL: http://keycloak
     LC_ALL: en_US.UTF-8
+    QUAY_ENABLED_RF_APP_HOST: "preprod.azure.rapidfort.io us01.rapidfort.com" # this enables rf deployment with rf_app_host in list to create robot account on quay
   envVarsSecret:
     - RF_APP_HOST
     - DB_URL
@@ -169,6 +162,7 @@ backend:
     - KEYCLOAK_REALM
     - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID
     - KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET
+    - QUAY_TOKEN
   startupProbe: {}
   livenessProbe:
     httpGet:
@@ -194,17 +188,11 @@ filesredis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "256Gi"
   volumeMounts:
   - name: redis-data
     mountPath: /bitnami/redis/data
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
-    volumeMounts:
-      - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/files-redis
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -220,6 +208,7 @@ filesredis:
       memory: "2048Mi"
   envVars:
     ALLOW_EMPTY_PASSWORD: "yes"
+    REDIS_AOF_ENABLED: "no"
   envVarsSecret: {}
   startupProbe: {}
   livenessProbe:
@@ -237,23 +226,17 @@ filesredis:
 fileupload:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.44-1-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
   - name: fileupload-data
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
-      - name: fileupload-data
-        mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "65534", "/opt/rapidfort/local-bucket"]
-    volumeMounts:
       - name: fileupload-data
         mountPath: /opt/rapidfort/local-bucket
   podSecurityContext: {}
@@ -265,6 +248,7 @@ fileupload:
   ingress:
     className: ""
     annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
       nginx.ingress.kubernetes.io/proxy-buffering: "off"
       nginx.ingress.kubernetes.io/proxy-body-size: 10240m
       nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
@@ -311,7 +295,7 @@ fileupload:
 frontrow:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.44-1-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -359,29 +343,20 @@ frontrow:
 isomaster:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.44-1-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
     - name: imgs-work-dir
       mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-    - name: wait-backend
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
-    - name: wait-vulnsdb
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://vulnsdb/vulns-db/api/v1/status  -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for vulnsdb; sleep .3; done;
+  initContainers: []
   serviceAccount: {}
   podSecurityContext: {}
   containerSecurityContext: {}
@@ -446,12 +421,6 @@ keycloak:
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers: []
-  # - name: wait-mysql
-  #   image: registry1.dso.mil/ironbank/opensource/mysql/mysql8:8.0.31
-  #   command: ["/bin/sh", "-c"]
-  #   args:
-  #   - until mysql --host=mysql --user=root --password=RF-123579 --execute="SELECT 1;"; do echo $(date +"%Y-%m-%d %T,%3N") waiting for mysql; sleep .3; done;
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -459,6 +428,7 @@ keycloak:
     port: 80
     targetPort: 8080
   ingress:
+    enabled: false
     className: ""
     annotations:
     hosts:
@@ -501,6 +471,7 @@ lockredis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "64Gi"
   volumeMounts:
   - name: redis-data
@@ -511,7 +482,7 @@ lockredis:
     command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/lock-redis"]
     volumeMounts:
       - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/lock-redis
+        mountPath: /opt/rapidfort/local-bucket/data/lock-redis    
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -521,6 +492,7 @@ lockredis:
   resources: {}
   envVars:
     ALLOW_EMPTY_PASSWORD: "yes"
+    REDIS_AOF_ENABLED: "no"
   envVarsSecret: {}
   startupProbe: {}
   livenessProbe:
@@ -554,14 +526,8 @@ mysql:
   volumeClaimTemplates:
   - name: "mysql-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "256Gi"
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
-    volumeMounts:
-      - name: mysql-data
-        mountPath: /opt/rapidfort/local-bucket/data/mysql
   podSecurityContext: {}
   containerSecurityContext: {}
   ingress: {}
@@ -597,6 +563,7 @@ redis:
   volumeClaimTemplates:
   - name: "redis-data"
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: "128Gi"
   initContainers:
   - name: disk-init
@@ -605,12 +572,6 @@ redis:
     volumeMounts:
       - name: redis-data
         mountPath: /opt/rapidfort/local-bucket/data/redis
-  # - name: init-vulnsdb
-  #   image: registry1.dso.mil/ironbank/rapidfort/init:1.1.11 #TODO: update iamge.
-  #   command: ["/bin/sh", "-c", "unxz /dump.rdb.xz && cp /dump.rdb /opt/rapidfort/local-bucket/data/redis && chown 1001 /opt/rapidfort/local-bucket/data/redis/dump.rdb"]
-  #   volumeMounts:
-  #     - name: redis-data
-  #       mountPath: /opt/rapidfort/local-bucket/data/redis
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -644,29 +605,20 @@ redis:
 rfscan:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.44-1-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
     - name: imgs-work-dir
       mountPath: /opt/rapidfort/local-bucket
-  initContainers:
-    - name: wait-backend
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://backend -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for backend; sleep .3; done;
-    - name: wait-vulnsdb
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://vulnsdb/vulns-db/api/v1/status -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for vulnsdb; sleep .3; done;
+  initContainers: []
   serviceAccount: {}
   podSecurityContext: {}
   containerSecurityContext: {}
@@ -722,27 +674,14 @@ rfscan:
 rfapi:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.44-1-rfhardened
   ports:
     - name: http
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers:
-  - name: wait-files-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
-  - name: wait-lock-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
-  podSecurityContext: {}
-  containerSecurityContext: {}
+  initContainers: []
   service:
-    type: ClusterIP
     port: 80
     targetPort: 8080
   ingress:
@@ -787,23 +726,13 @@ rfapi:
 rfpubsub:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.44-1-rfhardened
   ports:
     - name: http
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers:
-  - name: wait-files-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h files-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for files-redis; sleep .3; done;
-  - name: wait-lock-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h lock-redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for lock-redis; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -846,16 +775,30 @@ rfpubsub:
 runner:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/runner:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/runner:1.1.44-4-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
+  - name: rf-celery-cache
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 1Gi
+  - name: rf-cli-cache
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 1Gi
+  - name: rf-projects-cache
+    accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
+    size: 10Gi  
   - name: var-lib-containers
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
+    storageClassName: "{{ .Values.storageClass.name }}"
     size: 256Gi
   volumes: []
   volumeMounts:
@@ -863,12 +806,29 @@ runner:
       mountPath: /opt/rapidfort/local-bucket
     - name: var-lib-containers
       mountPath: /var/lib/containers
+    - name: rf-projects-cache
+      mountPath: /opt/rapidfort/runner/app/auth
+    - name: rf-cli-cache
+      mountPath: /opt/rapidfort/runner/app/.rapidfort
+    - name: rf-celery-cache
+      mountPath: /opt/rapidfort/runner/celery_rf
   initContainers:
-    - name: wait-iso-master
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
-      command: ["/bin/sh", "-c"]
-      args:
-      - until [ $(curl --connect-timeout 1 -sw '%{http_code}' http://iso-master -o /dev/null) -eq 200 ]; do echo $(date +"%Y-%m-%d %T,%3N") waiting for iso-master; sleep .3; done;
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command:
+    - /bin/bash
+    - -c
+    - |
+      chown 1000 -R /opt/rapidfort/runner/app/auth
+      chown 1000 -R /opt/rapidfort/runner/app/.rapidfort
+      chown 1000 -R /opt/rapidfort/runner/celery_rf
+    volumeMounts:
+      - name: rf-projects-cache
+        mountPath: /opt/rapidfort/runner/app/auth
+      - name: rf-cli-cache
+        mountPath: /opt/rapidfort/runner/app/.rapidfort
+      - name: rf-celery-cache
+        mountPath: /opt/rapidfort/runner/celery_rf        
   podSecurityContext: {}
   containerSecurityContext: {}
     # privileged: true
@@ -924,18 +884,13 @@ runner:
 rfvdb:
   enabled: false
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rfvdb:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rfvdb:1.1.44-1-rfhardened
   ports:
     - name: http
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers:
-  - name: wait-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -984,18 +939,13 @@ rfvdb:
 vulnsdb:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/vulns-db:1.1.43-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/vulns-db:1.1.44-1-rfhardened
   ports:
     - name: http
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
-  initContainers:
-  - name: wait-redis
-    image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
-    command: ["/bin/sh", "-c"]
-    args:
-    - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;
+  initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -1038,25 +988,25 @@ vulnsdb:
 # -- Big Bang Values
 domain: bigbang.dev
 istio:
-  enabled: false
+  enabled: true
   mtls:
     # -- STRICT = Allow only mutual TLS traffic,
     # PERMISSIVE = Allow both plain text and mutual TLS traffic
     # PERMISSIVE is required for any action which redeploys pods because STRICT interferes with initContainers
     # Can be changed to STRICT after all initContainers have finished but will interfere with upgrades/pod deployments that have initContainers
-    mode: PERMISSIVE
+    mode: STRICT
   rapidfort:
-    enabled: false
-    allowed_rf_host: "frontrow.rapidfort.com"
+    enabled: true
+    allowed_rf_host: "us01.rapidfort.com"
     gateways:
     - istio-system/public
     hosts:
     - rapidfort.{{ .Values.domain }}
 
 networkPolicies:
-  enabled: false
+  enabled: true
   ingressLabels:
-    app: istio-ingressgateway
+    app: public-ingressgateway
     istio: ingressgateway
   # -- IP range of api.rapidfort.com
   rapidfortApiIpRange: ""

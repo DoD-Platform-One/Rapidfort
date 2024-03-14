@@ -13,11 +13,10 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: backend
-
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: backend     
+        app.kubernetes.io/name: backend
     spec:
       {{- if .Values.backend.podSecurityContext }}
       securityContext:
@@ -32,7 +31,7 @@ spec:
       volumes:
       {{- end }}
       {{- range .Values.backend.ephemeralVolumeClaimTemplates -}}
-          {{ include "rapidfort-platform.singleEphemeralVolumeClaim" . | nindent 8 }}
+          {{ (tpl (include "rapidfort-platform.singleEphemeralVolumeClaim" .) $) | nindent 8 }}
       {{- end }}
       {{- end }}
       {{- if .Values.backend.initContainers }}
@@ -42,7 +41,7 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
-      {{- end }}      
+      {{- end }}
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.global.imagePullSecrets }}
@@ -109,7 +108,7 @@ kind: Service
 metadata:
   name: backend
   labels:
-    app.kubernetes.io/name: backend 
+    app.kubernetes.io/name: backend
 spec:
   type: {{ .Values.backend.service.type }}
   ports:
@@ -126,7 +125,7 @@ kind: Ingress
 metadata:
   name: backend
   labels:
-    app.kubernetes.io/name: backend 
+    app.kubernetes.io/name: backend
   annotations:
   {{- with .Values.backend.ingress.annotations }}  
     {{- toYaml . | nindent 4 }}  
@@ -164,7 +163,7 @@ metadata:
   namespace: default
 spec:
   type: ExternalName
-  externalName: api.rapidfort.com
+  externalName: us01.rapidfort.com
   ports:
   - port: 443
 ---
@@ -175,7 +174,7 @@ metadata:
   namespace: default
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/upstream-vhost: api.rapidfort.com
+    nginx.ingress.kubernetes.io/upstream-vhost: us01.rapidfort.com
   {{- with .Values.global.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}        

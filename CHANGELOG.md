@@ -2,6 +2,21 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.3-bb.2]
+- update runner service for critical hot fix
+
+## [1.2.3-bb.1]
+- update runner service for hot fix
+
+## [1.2.3-bb.0]
+- update storage class creation and provide existing storage class
+- convert istio permissive to strict
+- remove init containers
+
+## [1.2.2-bb.0]
+- Update Rapidfort Helm chart for init containers
+- update Rapidfort image(s) for new release.
+
 ## [1.2.1-bb.5]
 - update place holder to be appropriate with comments
 - update frontrow image tag.
