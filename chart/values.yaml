@@ -528,6 +528,13 @@ mysql:
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: "256Gi"
+  initContainers:
+  - name: disk-init
+    image: {{ .Values.init.image }}
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
+    volumeMounts:
+      - name: mysql-data
+        mountPath: /opt/rapidfort/local-bucket/data/mysql      
   podSecurityContext: {}
   containerSecurityContext: {}
   ingress: {}
