@@ -530,7 +530,7 @@ mysql:
     size: "256Gi"
   initContainers:
   - name: disk-init
-    image: {{ .Values.init.image }}
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
     command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
     volumeMounts:
       - name: mysql-data
