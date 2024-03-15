@@ -438,25 +438,29 @@ keycloak:
             pathType: Prefix
   resources: {}
   envVars:
-    DB_VENDOR: MYSQL
-    DB_ADDR: mysql
-    DB_USER: keycloak
-    DB_PASSWORD: RF-123579
-    JDBC_PARAMS: "useSSL=false"
-    PROXY_ADDRESS_FORWARDING: true
-    JAVA_OPTS_APPEND: "-Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled"
+    KC_DB: mysql
+    #KC_HOSTNAME: keycloak
+    KC_DB_USERNAME: keycloak
+    KC_DB_PASSWORD: RF-123579
+    KC_DB_URL_HOST: mysql
+    KC_PROXY: edge
+    KC_HTTP_RELATIVE_PATH: /auth
+    KC_HEALTH_ENABLED: true
+    KC_HOSTNAME_STRICT_BACKCHANNEL: true
+    KC_LOG_LEVEL: info 
+    KC_HOSTNAME_STRICT: false
   envVarsSecret: {}
   startupProbe: {}
   livenessProbe:
     httpGet:
-      path: /
+      path: /auth/health
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     httpGet:
-      path: /
+      path: /auth/health/live
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
 
 #
 # lock-redis
