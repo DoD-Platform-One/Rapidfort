@@ -438,27 +438,19 @@ keycloak:
             pathType: Prefix
   resources: {}
   envVars:
-    KC_DB: mysql
-    #KC_HOSTNAME: keycloak
     KC_DB_USERNAME: keycloak
     KC_DB_PASSWORD: RF-123579
     KC_DB_URL_HOST: mysql
-    KC_PROXY: edge
-    KC_HTTP_RELATIVE_PATH: /auth
-    KC_HEALTH_ENABLED: true
-    KC_HOSTNAME_STRICT_BACKCHANNEL: true
-    KC_LOG_LEVEL: info 
-    KC_HOSTNAME_STRICT: false
   envVarsSecret: {}
   startupProbe: {}
   livenessProbe:
     httpGet:
-      path: /auth/health
+      path: /auth/health/live
       port: 8080
     failureThreshold: 99
   readinessProbe:
     httpGet:
-      path: /auth/health/live
+      path: /auth/health/ready
       port: 8080
     failureThreshold: 99
 
