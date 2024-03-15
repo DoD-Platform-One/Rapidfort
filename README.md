@@ -131,7 +131,7 @@ helm install bigbang-rapidfort chart/
 Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
 # rapidfort
 
-![Version: 1.2.3-bb.1](https://img.shields.io/badge/Version-1.2.3--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.44](https://img.shields.io/badge/AppVersion-1.1.44-informational?style=flat-square)
+![Version: 1.2.3-bb.2](https://img.shields.io/badge/Version-1.2.3--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.44](https://img.shields.io/badge/AppVersion-1.1.44-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -196,18 +196,7 @@ helm install rapidfort chart/
 | aggregator.volumeMounts[0].mountPath | string | `"/mnt/raid/aggregator"` |  |
 | aggregator.volumeMounts[1].name | string | `"aggregator-data-local-bucket"` |  |
 | aggregator.volumeMounts[1].mountPath | string | `"/opt/rapidfort/local-bucket"` |  |
-| aggregator.initContainers[0].name | string | `"disk-init"` |  |
-| aggregator.initContainers[0].image | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9"` |  |
-| aggregator.initContainers[0].command[0] | string | `"chown"` |  |
-| aggregator.initContainers[0].command[1] | string | `"-R"` |  |
-| aggregator.initContainers[0].command[2] | string | `"1000"` |  |
-| aggregator.initContainers[0].command[3] | string | `"/mnt/raid/aggregator"` |  |
-| aggregator.initContainers[0].volumeMounts[0].name | string | `"aggregator-data"` |  |
-| aggregator.initContainers[0].volumeMounts[0].mountPath | string | `"/mnt/raid/aggregator"` |  |
-| aggregator.initContainers[0].volumeMounts[1].name | string | `"aggregator-data-local-bucket"` |  |
-| aggregator.initContainers[0].volumeMounts[1].mountPath | string | `"/opt/rapidfort/local-bucket"` |  |
-| aggregator.podSecurityContext.runAsUser | int | `1000` |  |
-| aggregator.podSecurityContext.runAsGroup | int | `1000` |  |
+| aggregator.initContainers | list | `[]` |  |
 | aggregator.podSecurityContext.fsGroup | int | `1000` |  |
 | aggregator.containerSecurityContext | object | `{}` |  |
 | aggregator.service | object | `{}` |  |
@@ -709,7 +698,7 @@ helm install rapidfort chart/
 | rfpubsub.readinessProbe | object | `{}` |  |
 | runner.enabled | bool | `true` |  |
 | runner.replicaCount | int | `1` |  |
-| runner.image | string | `"registry1.dso.mil/ironbank/rapidfort/runner:1.1.44-2-rfhardened"` |  |
+| runner.image | string | `"registry1.dso.mil/ironbank/rapidfort/runner:1.1.44-4-rfhardened"` |  |
 | runner.ports[0].name | string | `"http"` |  |
 | runner.ports[0].containerPort | int | `8080` |  |
 | runner.ephemeralVolumeClaimTemplates[0].name | string | `"rf-celery-cache"` |  |
