@@ -37,7 +37,7 @@ storageClass:
 aggregator:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.45-rfhardened
   ports: {}
   ephemeralVolumeClaimTemplates:
   - name: aggregator-data
@@ -92,7 +92,7 @@ aggregator:
 backend:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.45-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -226,7 +226,7 @@ filesredis:
 fileupload:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.45-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -295,7 +295,7 @@ fileupload:
 frontrow:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.45-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -343,7 +343,7 @@ frontrow:
 isomaster:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.45-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -415,7 +415,7 @@ isomaster:
 keycloak:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/keycloak:18.0.0-legacy
+  image: registry1.dso.mil/ironbank/rapidfort/keycloak:24.0.1
   ports:
     - name: http
       containerPort: 8080
@@ -438,25 +438,21 @@ keycloak:
             pathType: Prefix
   resources: {}
   envVars:
-    DB_VENDOR: MYSQL
-    DB_ADDR: mysql
-    DB_USER: keycloak
-    DB_PASSWORD: RF-123579
-    JDBC_PARAMS: "useSSL=false"
-    PROXY_ADDRESS_FORWARDING: true
-    JAVA_OPTS_APPEND: "-Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled"
+    KC_DB_USERNAME: keycloak
+    KC_DB_PASSWORD: RF-123579
+    KC_DB_URL_HOST: mysql
   envVarsSecret: {}
   startupProbe: {}
   livenessProbe:
     httpGet:
-      path: /
+      path: /auth/health/live
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     httpGet:
-      path: /
+      path: /auth/health/ready
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
 
 #
 # lock-redis
@@ -528,6 +524,13 @@ mysql:
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: "256Gi"
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
+    volumeMounts:
+      - name: mysql-data
+        mountPath: /opt/rapidfort/local-bucket/data/mysql      
   podSecurityContext: {}
   containerSecurityContext: {}
   ingress: {}
@@ -605,7 +608,7 @@ redis:
 rfscan:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.45-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -674,7 +677,7 @@ rfscan:
 rfapi:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.45-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -726,7 +729,7 @@ rfapi:
 rfpubsub:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.45-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -775,7 +778,7 @@ rfpubsub:
 runner:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/runner:1.1.44-4-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/runner:1.1.45-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -884,7 +887,7 @@ runner:
 rfvdb:
   enabled: false
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rfvdb:1.1.44-1-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rfvdb:1.1.45-rfhardened
   ports:
     - name: http
       containerPort: 8080
