@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.4-bb.0]
+- RapidFort Release 1.1.45 for Keycloak Update and removal of Init Containers
+
 ## [1.2.3-bb.2]
 - update runner service for critical hot fix
 
