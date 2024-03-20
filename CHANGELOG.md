@@ -2,6 +2,12 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.4-bb.2]
+- Update init container for permission set for lock-redis
+
+## [1.2.4-bb.1]
+- Update mtls for mysql and redis
+
 ## [1.2.4-bb.0]
 - RapidFort Release 1.1.45 for Keycloak Update and removal of Init Containers
 
