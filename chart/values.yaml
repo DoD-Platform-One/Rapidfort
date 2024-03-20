@@ -193,6 +193,13 @@ filesredis:
   volumeMounts:
   - name: redis-data
     mountPath: /bitnami/redis/data
+  initContainers:
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/files-redis
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
