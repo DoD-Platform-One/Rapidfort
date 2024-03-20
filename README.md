@@ -131,7 +131,7 @@ helm install bigbang-rapidfort chart/
 Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
 # rapidfort
 
-![Version: 1.2.4-bb.0](https://img.shields.io/badge/Version-1.2.4--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
+![Version: 1.2.4-bb.2](https://img.shields.io/badge/Version-1.2.4--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -290,6 +290,13 @@ helm install rapidfort chart/
 | filesredis.volumeClaimTemplates[0].size | string | `"256Gi"` |  |
 | filesredis.volumeMounts[0].name | string | `"redis-data"` |  |
 | filesredis.volumeMounts[0].mountPath | string | `"/bitnami/redis/data"` |  |
+| filesredis.initContainers[0].name | string | `"disk-init"` |  |
+| filesredis.initContainers[0].image | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9"` |  |
+| filesredis.initContainers[0].command[0] | string | `"chown"` |  |
+| filesredis.initContainers[0].command[1] | string | `"1001"` |  |
+| filesredis.initContainers[0].command[2] | string | `"/opt/rapidfort/local-bucket/data/files-redis"` |  |
+| filesredis.initContainers[0].volumeMounts[0].name | string | `"redis-data"` |  |
+| filesredis.initContainers[0].volumeMounts[0].mountPath | string | `"/opt/rapidfort/local-bucket/data/files-redis"` |  |
 | filesredis.podSecurityContext | object | `{}` |  |
 | filesredis.containerSecurityContext | object | `{}` |  |
 | filesredis.service.type | string | `"ClusterIP"` |  |
