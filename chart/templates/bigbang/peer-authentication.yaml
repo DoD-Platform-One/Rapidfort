@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   mtls:
-    mode: {{ .Values.istio.mtls.mode | default "PERMISSIVE" }}
+    mode: STRICT
 ---
 {{- if .Values.mysql.enabled }}
 apiVersion: security.istio.io/v1beta1
@@ -32,5 +32,5 @@ spec:
     matchLabels:
       app.kubernetes.io/name: redis
   mtls:
-    mode: {{ .Values.istio.mtls.mode | default "PERMISSIVE" }} 
+    mode: STRICT 
 {{ end }}
