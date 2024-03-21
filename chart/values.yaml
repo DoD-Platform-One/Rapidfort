@@ -14,40 +14,37 @@ global:
     enabled: false
     className: "nginx"
     annotations: {}
-      # cert-manager.io/cluster-issuer: letsencrypt
+    # cert-manager.io/cluster-issuer: letsencrypt
     tls: []
-      # secretName: rapidfort-tls-cert
-  aws: 
-    aws_access_key_id: "" 
+    # secretName: rapidfort-tls-cert
+  aws:
+    aws_access_key_id: ""
     aws_secret_access_key: ""
     region: us-east-1
     storage: rapidfort-bucket
-
 #Rapidfort Service Account
 serviceAccount:
   create: true
-
 storageClass:
   create: true
   name: "rf-storage-rw"
-
 #
 # aggregator
 #
 aggregator:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.45-rfhardened
+  image: rfinternal.azurecr.io/aggregator-exe:1.1.0-2a88517-332-rfhardened
   ports: {}
   ephemeralVolumeClaimTemplates:
-  - name: aggregator-data
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 256Gi
-  - name: aggregator-data-local-bucket
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 256Gi
+    - name: aggregator-data
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 256Gi
+    - name: aggregator-data-local-bucket
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 256Gi
   volumes: []
   volumeMounts:
     - name: aggregator-data
@@ -85,22 +82,21 @@ aggregator:
   startupProbe: {}
   livenessProbe: {}
   readinessProbe: {}
-
 #
 # backend
 #
 backend:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.45-rfhardened
+  image: rfinternal.azurecr.io/backend-exe:1.1.0-2a34fcf3-332-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
-  - name: backend-data
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 128Gi
+    - name: backend-data
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 128Gi
   volumes: []
   volumeMounts:
     - name: backend-data
@@ -174,7 +170,6 @@ backend:
       path: /
       port: 8080
     failureThreshold: 10
-
 #
 # files-redis
 #
@@ -183,23 +178,23 @@ filesredis:
   replicaCount: 1
   image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
   ports:
-  - containerPort: 6379
-    name: redis
+    - containerPort: 6379
+      name: redis
   volumeClaimTemplates:
-  - name: "redis-data"
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: "256Gi"
+    - name: "redis-data"
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: "256Gi"
   volumeMounts:
-  - name: redis-data
-    mountPath: /bitnami/redis/data
+    - name: redis-data
+      mountPath: /bitnami/redis/data
   initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
-    volumeMounts:
-      - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/files-redis
+    - name: disk-init
+      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
+      volumeMounts:
+        - name: redis-data
+          mountPath: /opt/rapidfort/local-bucket/data/files-redis
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -226,26 +221,25 @@ filesredis:
     exec:
       command: ["redis-cli", "ping"]
     failureThreshold: 10
-
 #
 # fileupload
 #
 fileupload:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.45-rfhardened
+  image: rfinternal.azurecr.io/fileupload:1.1.0-d960c2b-332-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
-  - name: fileupload-data
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 256Gi
+    - name: fileupload-data
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 256Gi
   volumes: []
   volumeMounts:
-      - name: fileupload-data
-        mountPath: /opt/rapidfort/local-bucket
+    - name: fileupload-data
+      mountPath: /opt/rapidfort/local-bucket
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -295,14 +289,13 @@ fileupload:
       path: /
       port: 8080
     failureThreshold: 99
-
 #
 # frontrow
 #
 frontrow:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.45-rfhardened
+  image: rfinternal.azurecr.io/frontrow:1.1.0-320ed3ee-332-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -343,22 +336,21 @@ frontrow:
       path: /
       port: 8080
     failureThreshold: 10
-
 #
 # iso-master
 #
 isomaster:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.45-rfhardened
+  image: rfinternal.azurecr.io/iso-master-exe:1.1.0-33759b8-332-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
-  - name: imgs-work-dir
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 256Gi
+    - name: imgs-work-dir
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 256Gi
   volumes: []
   volumeMounts:
     - name: imgs-work-dir
@@ -367,9 +359,9 @@ isomaster:
   serviceAccount: {}
   podSecurityContext: {}
   containerSecurityContext: {}
-    # privileged: true
-    # capabilities:
-    #   add: ["SYS_ADMIN"]
+  # privileged: true
+  # capabilities:
+  #   add: ["SYS_ADMIN"]
   service:
     type: ClusterIP
     port: 80
@@ -415,7 +407,6 @@ isomaster:
       path: /
       port: 8080
     failureThreshold: 10
-
 #
 # keycloak
 #
@@ -460,7 +451,6 @@ keycloak:
       path: /auth/health/ready
       port: 8080
     failureThreshold: 99
-
 #
 # lock-redis
 #
@@ -469,23 +459,23 @@ lockredis:
   replicaCount: 1
   image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
   ports:
-  - containerPort: 6379
-    name: redis
+    - containerPort: 6379
+      name: redis
   volumeClaimTemplates:
-  - name: "redis-data"
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: "64Gi"
+    - name: "redis-data"
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: "64Gi"
   volumeMounts:
-  - name: redis-data
-    mountPath: /bitnami/redis/data
+    - name: redis-data
+      mountPath: /bitnami/redis/data
   initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/lock-redis"]
-    volumeMounts:
-      - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/lock-redis    
+    - name: disk-init
+      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/lock-redis"]
+      volumeMounts:
+        - name: redis-data
+          mountPath: /opt/rapidfort/local-bucket/data/lock-redis
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -506,7 +496,6 @@ lockredis:
     exec:
       command: ["redis-cli", "ping"]
     failureThreshold: 10
-
 #
 # mysql
 #
@@ -527,17 +516,17 @@ mysql:
     - name: mysql-initdb
       mountPath: /docker-entrypoint-initdb.d
   volumeClaimTemplates:
-  - name: "mysql-data"
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: "256Gi"
+    - name: "mysql-data"
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: "256Gi"
   initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
-    volumeMounts:
-      - name: mysql-data
-        mountPath: /opt/rapidfort/local-bucket/data/mysql      
+    - name: disk-init
+      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
+      volumeMounts:
+        - name: mysql-data
+          mountPath: /opt/rapidfort/local-bucket/data/mysql
   podSecurityContext: {}
   containerSecurityContext: {}
   ingress: {}
@@ -556,7 +545,6 @@ mysql:
     exec:
       command: ["mysql", "-h", "localhost", "-u", "root", "-pRF-123579", "-e", "SHOW DATABASES;"]
     failureThreshold: 10
-
 #
 # redis
 #
@@ -565,23 +553,23 @@ redis:
   replicaCount: 1
   image: registry1.dso.mil/ironbank/bitnami/redis:7.2.3
   ports:
-  - containerPort: 6379
-    name: redis
+    - containerPort: 6379
+      name: redis
   volumeMounts:
-  - name: redis-data
-    mountPath: /bitnami/redis/data
+    - name: redis-data
+      mountPath: /bitnami/redis/data
   volumeClaimTemplates:
-  - name: "redis-data"
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: "128Gi"
+    - name: "redis-data"
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: "128Gi"
   initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/redis"]
-    volumeMounts:
-      - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/redis
+    - name: disk-init
+      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/redis"]
+      volumeMounts:
+        - name: redis-data
+          mountPath: /opt/rapidfort/local-bucket/data/redis
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -608,22 +596,21 @@ redis:
     exec:
       command: ["redis-cli", "ping"]
     failureThreshold: 10
-
 #
 # rf-scan
 #
 rfscan:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.45-rfhardened
+  image: rfinternal.azurecr.io/rf-scan-exe:1.1.0-33759b8-332-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
-  - name: imgs-work-dir
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 256Gi
+    - name: imgs-work-dir
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 256Gi
   volumes: []
   volumeMounts:
     - name: imgs-work-dir
@@ -677,14 +664,13 @@ rfscan:
       path: /
       port: 8080
     failureThreshold: 10
-
 #
 # rfapi
 #
 rfapi:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.45-rfhardened
+  image: rfinternal.azurecr.io/rfapi-exe:1.1.0-6ed7411-332-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -722,21 +708,20 @@ rfapi:
         - host:
           paths:
             - path: /rfapi/events
-              pathType: Prefix 
+              pathType: Prefix
   resources: {}
   envVars: {}
   envVarsSecret: {}
   startupProbe: {}
   livenessProbe: {}
   readinessProbe: {}
-
 #
 # rfpubsub
 #
 rfpubsub:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.45-rfhardened
+  image: rfinternal.azurecr.io/rfpubsub-exe:1.1.0-2467ae6-332-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -778,38 +763,37 @@ rfpubsub:
   startupProbe: {}
   livenessProbe: {}
   readinessProbe: {}
-
 #
 # runner
 #
 runner:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/runner:1.1.45-rfhardened
+  image: rfinternal.azurecr.io/runner:1.1.0-b922388-332-rfhardened
   ports:
     - name: http
       containerPort: 8080
   ephemeralVolumeClaimTemplates:
-  - name: rf-celery-cache
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 1Gi
-  - name: rf-cli-cache
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 1Gi
-  - name: rf-projects-cache
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 10Gi  
-  - name: var-lib-containers
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 256Gi
-  - name: imgs-work-dir
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 256Gi
+    - name: rf-celery-cache
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 1Gi
+    - name: rf-cli-cache
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 1Gi
+    - name: rf-projects-cache
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 10Gi
+    - name: var-lib-containers
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 256Gi
+    - name: imgs-work-dir
+      accessMode: "ReadWriteOnce"
+      storageClassName: "{{ .Values.storageClass.name }}"
+      size: 256Gi
   volumes: []
   volumeMounts:
     - name: imgs-work-dir
@@ -823,25 +807,25 @@ runner:
     - name: rf-celery-cache
       mountPath: /opt/rapidfort/runner/celery_rf
   initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command:
-    - /bin/bash
-    - -c
-    - |
-      chown 1000 -R /opt/rapidfort/runner/app/auth
-      chown 1000 -R /opt/rapidfort/runner/app/.rapidfort
-      chown 1000 -R /opt/rapidfort/runner/celery_rf
-    volumeMounts:
-      - name: rf-projects-cache
-        mountPath: /opt/rapidfort/runner/app/auth
-      - name: rf-cli-cache
-        mountPath: /opt/rapidfort/runner/app/.rapidfort
-      - name: rf-celery-cache
-        mountPath: /opt/rapidfort/runner/celery_rf        
+    - name: disk-init
+      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+      command:
+        - /bin/bash
+        - -c
+        - |
+          chown 1000 -R /opt/rapidfort/runner/app/auth
+          chown 1000 -R /opt/rapidfort/runner/app/.rapidfort
+          chown 1000 -R /opt/rapidfort/runner/celery_rf
+      volumeMounts:
+        - name: rf-projects-cache
+          mountPath: /opt/rapidfort/runner/app/auth
+        - name: rf-cli-cache
+          mountPath: /opt/rapidfort/runner/app/.rapidfort
+        - name: rf-celery-cache
+          mountPath: /opt/rapidfort/runner/celery_rf
   podSecurityContext: {}
   containerSecurityContext: {}
-    # privileged: true
+  # privileged: true
   service:
     type: ClusterIP
     port: 80
@@ -887,7 +871,6 @@ runner:
       path: /
       port: 8080
     failureThreshold: 10
-
 #
 # rfvdb
 #
@@ -942,14 +925,13 @@ rfvdb:
       path: /
       port: 8080
     failureThreshold: 10
-
 #
 # vulns-db
 #
 vulnsdb:
   enabled: true
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/rapidfort/vulns-db:1.1.44-1-rfhardened
+  image: rfinternal.azurecr.io/vulns-db:1.1.0-0792e52-332-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -994,7 +976,6 @@ vulnsdb:
       path: /
       port: 8080
     failureThreshold: 10
-
 # -- Big Bang Values
 domain: bigbang.dev
 istio:
@@ -1009,10 +990,9 @@ istio:
     enabled: true
     allowed_rf_host: "us01.rapidfort.com"
     gateways:
-    - istio-system/public
+      - istio-system/public
     hosts:
-    - rapidfort.{{ .Values.domain }}
-
+      - rapidfort.{{ .Values.domain }}
 networkPolicies:
   enabled: true
   ingressLabels:
@@ -1022,7 +1002,6 @@ networkPolicies:
   rapidfortApiIpRange: ""
   # -- test
   controlPlaneCidr: ""
-
 # -- Bigbang helm test values - default disabled
 bbtests:
   enabled: false
