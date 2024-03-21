@@ -32,7 +32,7 @@ spec:
       {{- end }}
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.global.imagePullSecrets }}
+        {{- toYaml (index .Values.global.imagePullSecrets ) | nindent 8 }}      
       {{- end }}
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
