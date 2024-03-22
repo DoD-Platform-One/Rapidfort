@@ -11,7 +11,7 @@ global:
     enabled: false
   imagePullSecrets:
     - name: "private-registry"
-    - name: "rf-az-registry"
+    - name: "rf-aws-registry"
   ingress:
     enabled: false
     className: "nginx"
