@@ -34,7 +34,7 @@ spec:
         - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml (index .Values.global.imagePullSecrets ) | nindent 8 }}      
+        {{- toYaml .Values.global.imagePullSecrets | nindent 8 }}      
       {{- end }}
       containers:
         - name: rfvdb
