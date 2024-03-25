@@ -38,9 +38,9 @@ spec:
       initContainers:
         {{- toYaml (index .Values.filesredis.initContainers ) | nindent 8 }}
       {{- end }}
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+      {{- with .Values.global.imagePullSecrets }}
+        imagePullSecrets:
+          {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: files-redis
