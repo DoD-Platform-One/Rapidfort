@@ -34,9 +34,9 @@ spec:
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
       {{- end }}
-      {{- if .Values.global.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml .Values.global.imagePullSecrets | nindent 8 }}      
+        {{- toYaml . | nindent 8 }}
       {{- end }}      
       containers:
         - name: rfapi
