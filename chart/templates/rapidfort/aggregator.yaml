@@ -36,7 +36,7 @@ spec:
       {{- end }}
       {{- if .Values.aggregator.initContainers }}
       initContainers:
-        {{- toYaml (index .Values.aggregator.initContainers ) | nindent 8 }}
+        {{- toYaml .Values.global.imagePullSecrets | nindent 8 }}      
       {{- end }}
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
