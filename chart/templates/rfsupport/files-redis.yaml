@@ -25,7 +25,6 @@ spec:
       labels:
         app.kubernetes.io/name: files-redis
     spec:
-
       {{- if .Values.filesredis.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.filesredis.podSecurityContext | nindent 8 }}
@@ -40,7 +39,7 @@ spec:
       {{- end }}
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 10 }}
       {{- end }}
       containers:
         - name: files-redis
