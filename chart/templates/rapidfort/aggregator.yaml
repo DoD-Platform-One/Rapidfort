@@ -39,8 +39,8 @@ spec:
         {{- toYaml (index .Values.aggregator.initContainers ) | nindent 8 }}
       {{- end }}
       {{- with .Values.global.imagePullSecrets }}
-        imagePullSecrets:
-          {{- toYaml . | nindent 8 }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}

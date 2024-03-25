@@ -43,8 +43,8 @@ spec:
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
       {{- end }}
       {{- with .Values.global.imagePullSecrets }}
-        imagePullSecrets:
-          {{- toYaml . | nindent 8 }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: backend

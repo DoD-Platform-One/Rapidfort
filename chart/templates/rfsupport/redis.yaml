@@ -38,8 +38,8 @@ spec:
         {{- toYaml (index .Values.redis.initContainers ) | nindent 8 }}
       {{- end }}
       {{- with .Values.global.imagePullSecrets }}
-        imagePullSecrets:
-          {{- toYaml . | nindent 8 }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: redis
