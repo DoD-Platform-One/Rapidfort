@@ -10,8 +10,7 @@ global:
   communityservice:
     enabled: false
   imagePullSecrets:
-    - name: private-registry
-    - name: rf-aws-registry
+  - name: private-registry
   ingress:
     enabled: false
     className: "nginx"
