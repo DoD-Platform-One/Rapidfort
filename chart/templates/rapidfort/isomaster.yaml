@@ -19,7 +19,6 @@ spec:
         app.kubernetes.io/name: isomaster
     spec:
       {{- with .Values.global.imagePullSecrets }}
-      imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
@@ -41,7 +40,6 @@ spec:
         {{- toYaml (index .Values.isomaster.initContainers ) | nindent 8 }}
       {{- end }}
       {{- with .Values.global.imagePullSecrets }}
-      imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if .Values.serviceAccount.create }}

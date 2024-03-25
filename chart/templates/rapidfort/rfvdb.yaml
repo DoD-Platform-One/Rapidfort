@@ -33,7 +33,6 @@ spec:
         args:
         - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;
       {{- with .Values.global.imagePullSecrets }}
-      imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
