@@ -114,6 +114,8 @@ spec:
   selector:
     app.kubernetes.io/name: mysql
 ---
+{{- end }}
+{{- if or .Values.mysql.enabled .Values.mysql.seedDatabase }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
