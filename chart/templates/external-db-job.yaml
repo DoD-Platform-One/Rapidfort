@@ -3,10 +3,10 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: external-db-seed
-  annotations:
-    "helm.sh/hook-weight": "-4"
-    "helm.sh/hook": pre-install
-    "helm.sh/hook-delete-policy": before-hook-creation
+  # annotations:
+  #   # "helm.sh/hook-weight": "-4"
+  #   # "helm.sh/hook": pre-install
+  #   # "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   template:
     spec:
@@ -16,7 +16,7 @@ spec:
       {{- end }}
       containers:
       - name: external-mysql-seed
-        image: "{{ .Values.mysql.image.registry }}/{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
+        image: "{{ .Values.mysql.image }}"
         command:
           - "/bin/sh"
           - "-c"
