@@ -17,9 +17,16 @@ global:
     annotations: {}
     # cert-manager.io/cluster-issuer: letsencrypt
     tls: []
-    # secretName: rapidfort-tls-cert
-  aws:
-    aws_access_key_id: ""
+      # secretName: rapidfort-tls-cert
+  db: {}
+    # auth:
+    #   host: ""
+    #   username: ""
+    #   password: ""
+    #   port: "3306"
+    #   db_name: "standalone"
+  aws: 
+    aws_access_key_id: "" 
     aws_secret_access_key: ""
     region: us-east-1
     storage: rapidfort-bucket
@@ -187,15 +194,15 @@ filesredis:
       storageClassName: "{{ .Values.storageClass.name }}"
       size: "256Gi"
   volumeMounts:
-    - name: redis-data
-      mountPath: /bitnami/redis/data
+  - name: redis-data
+    mountPath: /bitnami/redis/data
   initContainers:
-    - name: disk-init
-      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
-      volumeMounts:
-        - name: redis-data
-          mountPath: /opt/rapidfort/local-bucket/data/files-redis
+  - name: disk-init
+    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
+    volumeMounts:
+      - name: redis-data
+        mountPath: /opt/rapidfort/local-bucket/data/files-redis
   podSecurityContext: {}
   containerSecurityContext: {}
   service:

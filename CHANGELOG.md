@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.4-bb.3]
+- Helm chart deployment support with External RDS.
+
 ## [1.2.4-bb.2]
 - Update init container for permission set for lock-redis
 
