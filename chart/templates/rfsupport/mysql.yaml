@@ -120,6 +120,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-initdb-config
+  annotations:
+    "helm.sh/hook-weight": "-4"
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation  
 data:
   init.sql: "-- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)\n--\n-- Host: localhost
     \   Database: standalone\n-- ------------------------------------------------------\n--
