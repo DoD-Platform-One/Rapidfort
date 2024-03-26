@@ -32,9 +32,9 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
         - until redis-cli -h redis ping; do echo $(date +"%Y-%m-%d %T,%3N") waiting for redis; sleep .3; done;
-      {{- if .Values.global.imagePullSecrets }}
+      {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.global.imagePullSecrets }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: rfvdb
