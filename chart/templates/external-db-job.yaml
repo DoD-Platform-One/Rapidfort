@@ -16,7 +16,7 @@ spec:
       {{- end }}
       containers:
       - name: external-mysql-seed
-        image: "{{ .Values.mysql.image.registry }}/{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
+        image: "{{ .Values.mysql.image }}"
         command:
           - "/bin/sh"
           - "-c"
