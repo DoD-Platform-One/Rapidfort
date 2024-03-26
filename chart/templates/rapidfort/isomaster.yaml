@@ -18,7 +18,7 @@ spec:
       labels:
         app.kubernetes.io/name: isomaster
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -39,10 +39,6 @@ spec:
       {{- if .Values.isomaster.initContainers }}
       initContainers:
         {{- toYaml (index .Values.isomaster.initContainers ) | nindent 8 }}
-      {{- end }}
-      {{- if .Values.global.imagePullSecrets }}
-      imagePullSecrets:
-        - name: {{ .Values.global.imagePullSecrets }}
       {{- end }}
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}

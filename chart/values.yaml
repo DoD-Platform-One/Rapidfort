@@ -9,7 +9,8 @@ global:
   type: ""
   communityservice:
     enabled: false
-  imagePullSecrets: "private-registry"
+  imagePullSecrets:
+  - name: private-registry
   ingress:
     enabled: false
     className: "nginx"
@@ -17,6 +18,13 @@ global:
       # cert-manager.io/cluster-issuer: letsencrypt
     tls: []
       # secretName: rapidfort-tls-cert
+  db: {}
+    # auth:
+    #   host: ""
+    #   username: ""
+    #   password: ""
+    #   port: "3306"
+    #   db_name: "standalone"
   aws: 
     aws_access_key_id: "" 
     aws_secret_access_key: ""
