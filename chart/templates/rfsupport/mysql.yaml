@@ -114,10 +114,12 @@ spec:
   selector:
     app.kubernetes.io/name: mysql
 ---
+{{- end }}
+{{- if or .Values.mysql.enabled .Values.mysql.seedDatabase }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: mysql-initdb-config
+  name: mysql-initdb-config  
 data:
   init.sql: "-- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)\n--\n-- Host: localhost
     \   Database: standalone\n-- ------------------------------------------------------\n--
