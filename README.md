@@ -131,7 +131,7 @@ helm install bigbang-rapidfort chart/
 Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
 # rapidfort
 
-![Version: 1.2.4-bb.4](https://img.shields.io/badge/Version-1.2.4--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
+![Version: 1.2.4-bb.5](https://img.shields.io/badge/Version-1.2.4--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
 
 Automated Container Hardening
 
