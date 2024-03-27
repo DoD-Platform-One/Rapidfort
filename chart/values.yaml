@@ -25,6 +25,7 @@ global:
     #   password: ""
     #   port: "3306"
     #   db_name: "standalone"
+    #   db_ssl: "false"
   aws: 
     aws_access_key_id: "" 
     aws_secret_access_key: ""
