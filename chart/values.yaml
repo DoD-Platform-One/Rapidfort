@@ -460,7 +460,7 @@ keycloak:
             pathType: Prefix
   resources: {}
   envVars:
-    KC_DB_URL: '{{ (include "rapidfort-platform.db_url" .) }}'
+    KC_DB_URL: '{{ (include "rapidfort-platform.jdbc_db_url" .) }}'
   envVarsSecret: {}
   startupProbe: {}
   livenessProbe:
