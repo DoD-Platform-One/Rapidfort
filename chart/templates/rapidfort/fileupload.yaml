@@ -22,18 +22,20 @@ spec:
       securityContext:
         {{- toYaml .Values.fileupload.podSecurityContext | nindent 8 }}
       {{- end }}
+      volumes:      
       {{- if .Values.fileupload.volumes }}
-      volumes:
         {{- tpl (toYaml (index .Values.fileupload.volumes )) . | nindent 8 }}
       {{- end }}
       {{- if .Values.fileupload.ephemeralVolumeClaimTemplates }}
-      {{- if not .Values.fileupload.volumes }}
-      volumes:
-      {{- end }}
       {{- range .Values.fileupload.ephemeralVolumeClaimTemplates -}}
           {{ (tpl (include "rapidfort-platform.singleEphemeralVolumeClaim" .) $) | nindent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.db.ssl }}
+        {{- if .Values.db.ssl.certFile }}
+          {{- (tpl (include "rapidfort-platform.db_ssl_cert_volume" .Values.db.ssl ) .)| nindent 8 }}
+        {{- end }}
+      {{- end }}      
       {{- if .Values.fileupload.initContainers }}
       initContainers:
         {{- toYaml (index .Values.fileupload.initContainers ) | nindent 8 }}
@@ -53,10 +55,15 @@ spec:
           {{- end }}
           image: {{ .Values.fileupload.image }}
           imagePullPolicy: IfNotPresent
+          volumeMounts:          
           {{- if .Values.fileupload.volumeMounts }}
-          volumeMounts:
             {{- toYaml (index .Values.fileupload.volumeMounts ) | nindent 12 }}
           {{- end }}
+          {{- if .Values.db.ssl }}
+            {{- if .Values.db.ssl.certFile }}
+              {{- tpl (include "rapidfort-platform.db_ssl_cert_volumeMount" .Values.db.ssl ) $ | nindent 12 }}
+            {{- end }}
+          {{- end }}          
           {{- if .Values.fileupload.ports }}
           ports: {{- toYaml .Values.fileupload.ports | nindent 12 }}
           {{- end }}

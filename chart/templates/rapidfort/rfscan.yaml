@@ -22,17 +22,19 @@ spec:
       securityContext:
         {{- toYaml .Values.rfscan.podSecurityContext | nindent 8 }}
       {{- end }}
+      volumes:      
       {{- if .Values.rfscan.volumes }}
-      volumes:
         {{- tpl (toYaml (index .Values.rfscan.volumes )) . | nindent 8 }}
       {{- end }}
       {{- if .Values.rfscan.ephemeralVolumeClaimTemplates }}
-      {{- if not .Values.rfscan.volumes }}
-      volumes:
-      {{- end }}
       {{- range .Values.rfscan.ephemeralVolumeClaimTemplates -}}
           {{ (tpl (include "rapidfort-platform.singleEphemeralVolumeClaim" .) $) | nindent 8 }}
       {{- end }}
+      {{- end }}
+      {{- if .Values.db.ssl }}
+        {{- if .Values.db.ssl.certFile }}
+          {{- (tpl (include "rapidfort-platform.db_ssl_cert_volume" .Values.db.ssl ) .)| nindent 8 }}
+        {{- end }}
       {{- end }}
       {{- if .Values.rfscan.initContainers }}
       initContainers:
@@ -53,10 +55,15 @@ spec:
           {{- end }}
           image: {{ .Values.rfscan.image }}
           imagePullPolicy: IfNotPresent
+          volumeMounts:          
           {{- if .Values.rfscan.volumeMounts }}
-          volumeMounts:
             {{- toYaml (index .Values.rfscan.volumeMounts ) | nindent 12 }}
           {{- end }}
+          {{- if .Values.db.ssl }}
+            {{- if .Values.db.ssl.certFile }}
+              {{- tpl (include "rapidfort-platform.db_ssl_cert_volumeMount" .Values.db.ssl ) $ | nindent 12 }}
+            {{- end }}
+          {{- end }}          
           {{- if .Values.rfscan.ports }}
           ports: {{- toYaml .Values.rfscan.ports | nindent 12 }}
           {{- end }}

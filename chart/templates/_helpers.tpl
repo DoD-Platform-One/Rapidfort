@@ -124,3 +124,54 @@ tls:
       - {{ include "prefix.isFQDN" $.Values.global.hostname | quote }}
     secretName: {{ .Values.global.ingress.tls.secretName }}
 {{- end -}}
+
+{{- define "rapidfort-platform.db_url" -}}
+  {{- if not .Values.mysql.enabled }}
+    {{- if .Values.db.auth }}
+      {{- if and .Values.db.ssl }}
+        {{- if .Values.db.ssl.certFile }}
+          {{- printf "mysql+mysqldb://%s:%s@%s:%s/%s?ssl=true&ssl_ca=/opt/rapidfort/tls/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name .Values.db.ssl.certFile }}
+        {{- else }}
+          {{- printf "mysql+mysqldb://%s:%s@%s:%s/%s?ssl=true" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
+        {{- end }}
+      {{- else }}
+        {{- printf "mysql+mysqldb://%s:%s@%s:%s/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
+      {{- end }}
+    {{- end }}
+  {{- else }}
+    {{- printf "mysql+mysqldb://root:RF-123579@mysql/standalone" }}
+  {{- end }}
+{{- end }}
+
+{{- define "rapidfort-platform.jdbc_db_url" -}}
+  {{- if not .Values.mysql.enabled }}
+    {{- if .Values.db.auth }}
+      {{- if and .Values.db.ssl }}
+        {{- if .Values.db.ssl.certFile }}
+          {{- printf "jdbc:mysql://%s:%s@%s:%s/%s?ssl=true&ssl_ca=/opt/rapidfort/tls/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name .Values.db.ssl.certFile }}
+        {{- else }}
+          {{- printf "jdbc:mysql://%s:%s@%s:%s/%s?ssl=true" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
+        {{- end }}
+      {{- else }}
+        {{- printf "jdbc:mysql://%s:%s@%s:%s/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
+      {{- end }}
+    {{- end }}
+  {{- else }}
+    {{- printf "jdbc:mysql://root:RF-123579@mysql/standalone" }}
+  {{- end }}
+{{- end }}
+
+{{/*
+Create Volume Mount for SSL Cert
+*/}}
+{{- define "rapidfort-platform.db_ssl_cert_volume" -}}
+- name: rapidfort-db-tls-cert
+  secret:
+    secretName: {{ .secretName }}
+{{- end -}}
+
+{{- define "rapidfort-platform.db_ssl_cert_volumeMount" -}}
+- name: rapidfort-db-tls-cert
+  mountPath: /opt/rapidfort/tls/{{ .certFile }}
+  subPath: {{ .certFile }}
+{{- end -}}
