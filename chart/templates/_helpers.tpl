@@ -144,20 +144,20 @@ tls:
 {{- end }}
 
 {{- define "rapidfort-platform.jdbc_db_url" -}}
-  {{- if and .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
+  {{- if and .Values.db.auth.host .Values.db.auth.port }}
     {{- if .Values.db.auth }}
       {{- if and .Values.db.ssl }}
         {{- if .Values.db.ssl.certFile }}
-          {{- printf "jdbc:mysql://%s:%s@%s:%s/%s?ssl=true&ssl_ca=/opt/rapidfort/tls/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name .Values.db.ssl.certFile }}
+          {{- printf "jdbc:mysql://keycloak:RF-123579@%s:%s/keycloak?ssl=true&ssl_ca=/opt/rapidfort/tls/%s" .Values.db.auth.host .Values.db.auth.port .Values.db.ssl.certFile }}
         {{- else }}
-          {{- printf "jdbc:mysql://%s:%s@%s:%s/%s?ssl=true" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
+          {{- printf "jdbc:mysql://keycloak:RF-123579@%s:%s/keycloak?ssl=true" .Values.db.auth.host .Values.db.auth.port }}
         {{- end }}
       {{- else }}
-        {{- printf "jdbc:mysql://%s:%s@%s:%s/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
+        {{- printf "jdbc:mysql://keycloak:RF-123579@%s:%s/keycloak" }}
       {{- end }}
     {{- end }}
   {{- else }}
-    {{- printf "jdbc:mysql://root:RF-123579@mysql/standalone" }}
+    {{- printf "jdbc:mysql://keycloak:RF-123579@%s:%s/keycloak" }}
   {{- end }}
 {{- end }}
 
