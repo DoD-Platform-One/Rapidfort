@@ -127,7 +127,7 @@ tls:
 
 {{- define "rapidfort-platform.db_url" -}}
   {{- if not .Values.mysql.enabled }}
-    {{- if .Values.db.auth }}
+    {{- if and .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
       {{- if and .Values.db.ssl }}
         {{- if .Values.db.ssl.certFile }}
           {{- printf "mysql+mysqldb://%s:%s@%s:%s/%s?ssl=true&ssl_ca=/opt/rapidfort/tls/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name .Values.db.ssl.certFile }}
@@ -144,7 +144,7 @@ tls:
 {{- end }}
 
 {{- define "rapidfort-platform.jdbc_db_url" -}}
-  {{- if not .Values.mysql.enabled }}
+  {{- if and .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
     {{- if .Values.db.auth }}
       {{- if and .Values.db.ssl }}
         {{- if .Values.db.ssl.certFile }}
