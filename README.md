@@ -1,6 +1,6 @@
 # bigbang-rapidfort
 
-![Version: 1.2.4-bb.0](https://img.shields.io/badge/Version-1.2.4--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
+![Version: 1.2.4-bb.6](https://img.shields.io/badge/Version-1.2.4--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
 
 BigBang compatible Helm chart for RapidFort
 
@@ -131,7 +131,7 @@ helm install bigbang-rapidfort chart/
 Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
 # rapidfort
 
-![Version: 1.2.4-bb.5](https://img.shields.io/badge/Version-1.2.4--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
+![Version: 1.2.4-bb.6](https://img.shields.io/badge/Version-1.2.4--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -172,7 +172,6 @@ helm install rapidfort chart/
 | global.ingress.className | string | `"nginx"` |  |
 | global.ingress.annotations | object | `{}` |  |
 | global.ingress.tls | list | `[]` |  |
-| global.db | object | `{}` |  |
 | global.aws.aws_access_key_id | string | `""` |  |
 | global.aws.aws_secret_access_key | string | `""` |  |
 | global.aws.region | string | `"us-east-1"` |  |
@@ -180,6 +179,14 @@ helm install rapidfort chart/
 | serviceAccount.create | bool | `true` |  |
 | storageClass.create | bool | `true` |  |
 | storageClass.name | string | `"rf-storage-rw"` |  |
+| db.auth.host | string | `""` |  |
+| db.auth.username | string | `""` |  |
+| db.auth.password | string | `""` |  |
+| db.auth.port | string | `""` |  |
+| db.auth.db_name | string | `"standalone"` |  |
+| db.ssl.enabled | bool | `true` |  |
+| db.ssl.secretName | string | `""` |  |
+| db.ssl.certFile | string | `"cert.pem"` |  |
 | aggregator.enabled | bool | `true` |  |
 | aggregator.replicaCount | int | `1` |  |
 | aggregator.image | string | `"registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.45-rfhardened"` |  |
@@ -282,7 +289,7 @@ helm install rapidfort chart/
 | backend.readinessProbe.failureThreshold | int | `10` |  |
 | filesredis.enabled | bool | `true` |  |
 | filesredis.replicaCount | int | `1` |  |
-| filesredis.image | string | `"registry1.dso.mil/ironbank/bitnami/redis:7.2.3"` |  |
+| filesredis.image | string | `"registry1.dso.mil/ironbank/bitnami/redis:7.2.4"` |  |
 | filesredis.ports[0].containerPort | int | `6379` |  |
 | filesredis.ports[0].name | string | `"redis"` |  |
 | filesredis.volumeClaimTemplates[0].name | string | `"redis-data"` |  |
@@ -469,9 +476,7 @@ helm install rapidfort chart/
 | keycloak.ingress.hosts[0].paths[0].path | string | `"/auth/"` |  |
 | keycloak.ingress.hosts[0].paths[0].pathType | string | `"Prefix"` |  |
 | keycloak.resources | object | `{}` |  |
-| keycloak.envVars.KC_DB_USERNAME | string | `"keycloak"` |  |
-| keycloak.envVars.KC_DB_PASSWORD | string | `"RF-123579"` |  |
-| keycloak.envVars.KC_DB_URL_HOST | string | `"mysql"` |  |
+| keycloak.envVars.KC_DB_URL | string | `"{{ (include \"rapidfort-platform.db_url\" .) }}"` |  |
 | keycloak.envVarsSecret | object | `{}` |  |
 | keycloak.startupProbe | object | `{}` |  |
 | keycloak.livenessProbe.httpGet.path | string | `"/auth/health/live"` |  |
@@ -482,7 +487,7 @@ helm install rapidfort chart/
 | keycloak.readinessProbe.failureThreshold | int | `99` |  |
 | lockredis.enabled | bool | `true` |  |
 | lockredis.replicaCount | int | `1` |  |
-| lockredis.image | string | `"registry1.dso.mil/ironbank/bitnami/redis:7.2.3"` |  |
+| lockredis.image | string | `"registry1.dso.mil/ironbank/bitnami/redis:7.2.4"` |  |
 | lockredis.ports[0].containerPort | int | `6379` |  |
 | lockredis.ports[0].name | string | `"redis"` |  |
 | lockredis.volumeClaimTemplates[0].name | string | `"redis-data"` |  |
@@ -514,7 +519,7 @@ helm install rapidfort chart/
 | lockredis.readinessProbe.exec.command[0] | string | `"redis-cli"` |  |
 | lockredis.readinessProbe.exec.command[1] | string | `"ping"` |  |
 | lockredis.readinessProbe.failureThreshold | int | `10` |  |
-| mysql.enabled | bool | `true` |  |
+| mysql.enabled | bool | `false` |  |
 | mysql.replicaCount | int | `1` |  |
 | mysql.image | string | `"registry1.dso.mil/ironbank/bitnami/mysql8:8.0.29-debian-10-r37"` |  |
 | mysql.ports[0].name | string | `"mysql"` |  |
@@ -565,7 +570,7 @@ helm install rapidfort chart/
 | mysql.readinessProbe.failureThreshold | int | `10` |  |
 | redis.enabled | bool | `true` |  |
 | redis.replicaCount | int | `1` |  |
-| redis.image | string | `"registry1.dso.mil/ironbank/bitnami/redis:7.2.3"` |  |
+| redis.image | string | `"registry1.dso.mil/ironbank/bitnami/redis:7.2.4"` |  |
 | redis.ports[0].containerPort | int | `6379` |  |
 | redis.ports[0].name | string | `"redis"` |  |
 | redis.volumeMounts[0].name | string | `"redis-data"` |  |
