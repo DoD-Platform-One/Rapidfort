@@ -10,41 +10,38 @@ global:
   communityservice:
     enabled: false
   imagePullSecrets:
-  - name: private-registry
+    - name: private-registry
   ingress:
     enabled: false
     className: "nginx"
     annotations: {}
     # cert-manager.io/cluster-issuer: letsencrypt
     tls: []
-      # secretName: rapidfort-tls-cert
-  aws: 
-    aws_access_key_id: "" 
+    # secretName: rapidfort-tls-cert
+  aws:
+    aws_access_key_id: ""
     aws_secret_access_key: ""
     region: us-east-1
     storage: rapidfort-bucket
-
 #Rapidfort Service Account
 serviceAccount:
   create: true
-
 storageClass:
   create: true
   name: "rf-storage-rw"
-
 db: {}
-  # # this is only used when connecting to external MySQL DB
-  # auth:
-  #   host: ""
-  #   username: ""
-  #   password: ""
-  #   port: ""
-  #   db_name: "standalone"
-  # # this is only used when connecting to external MySQL DB with SSL
-  # ssl:
-  #   enabled: true
-  #   secretName: ""
-  #   certFile: "cert.pem"
+# # this is only used when connecting to external MySQL DB
+# auth:
+#   host: ""
+#   username: ""
+#   password: ""
+#   port: ""
+#   db_name: "standalone"
+# # this is only used when connecting to external MySQL DB with SSL
+# ssl:
+#   enabled: true
+#   secretName: ""
+#   certFile: "cert.pem"
 
 #
 # aggregator
@@ -52,7 +49,7 @@ db: {}
 aggregator:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/aggregator-exe:1.1.0-2a88517-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/aggregator-exe:1.1.0-348714f-1233631513-rfhardened-DoD
   ports: {}
   ephemeralVolumeClaimTemplates:
     - name: aggregator-data
@@ -106,7 +103,7 @@ aggregator:
 backend:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend-exe:1.1.0-2a34fcf3-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend-exe:1.1.0-dd1ca461-1233631513-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -204,15 +201,15 @@ filesredis:
       storageClassName: "{{ .Values.storageClass.name }}"
       size: "256Gi"
   volumeMounts:
-  - name: redis-data
-    mountPath: /bitnami/redis/data
+    - name: redis-data
+      mountPath: /bitnami/redis/data
   initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
-    volumeMounts:
-      - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/files-redis
+    - name: disk-init
+      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
+      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
+      volumeMounts:
+        - name: redis-data
+          mountPath: /opt/rapidfort/local-bucket/data/files-redis
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -245,7 +242,7 @@ filesredis:
 fileupload:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/fileupload:1.1.0-d960c2b-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/fileupload:1.1.0-d960c2b-1233631513-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -313,7 +310,7 @@ fileupload:
 frontrow:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/frontrow:1.1.0-314b36d8-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/frontrow:1.1.0-aefd80c7-1233631513-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -360,7 +357,7 @@ frontrow:
 isomaster:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/iso-master-exe:1.1.0-33759b8-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/iso-master-exe:1.1.0-632bbb6-1233631513-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -618,7 +615,7 @@ redis:
 rfscan:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan-exe:1.1.0-33759b8-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan-exe:1.1.0-632bbb6-1233631513-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -686,7 +683,7 @@ rfscan:
 rfapi:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi-exe:1.1.0-6ed7411-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi-exe:1.1.0-6ed7411-1233631513-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -737,7 +734,7 @@ rfapi:
 rfpubsub:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub-exe:1.1.0-2467ae6-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub-exe:1.1.0-2467ae6-1233631513-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -785,7 +782,7 @@ rfpubsub:
 runner:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.0-b922388-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.0-b922388-1233631513-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -947,7 +944,7 @@ rfvdb:
 vulnsdb:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db:1.1.0-a80c67b-336-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db:1.1.0-a80c67b-1233631513-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
