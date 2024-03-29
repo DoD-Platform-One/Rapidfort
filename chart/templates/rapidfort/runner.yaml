@@ -22,17 +22,19 @@ spec:
       securityContext:
         {{- toYaml .Values.runner.podSecurityContext | nindent 8 }}
       {{- end }}
+      volumes:      
       {{- if .Values.runner.volumes }}
-      volumes:
         {{- tpl (toYaml (index .Values.runner.volumes )) . | nindent 8 }}
       {{- end }}
       {{- if .Values.runner.ephemeralVolumeClaimTemplates }}
-      {{- if not .Values.runner.volumes }}
-      volumes:
-      {{- end }}
       {{- range .Values.runner.ephemeralVolumeClaimTemplates -}}
           {{ (tpl (include "rapidfort-platform.singleEphemeralVolumeClaim" .) $) | nindent 8 }}
       {{- end }}
+      {{- end }}
+      {{- if .Values.db.ssl }}
+        {{- if .Values.db.ssl.certFile }}
+          {{- (tpl (include "rapidfort-platform.db_ssl_cert_volume" .Values.db.ssl ) .)| nindent 8 }}
+        {{- end }}
       {{- end }}
       {{- if .Values.runner.initContainers }}
       initContainers:
@@ -53,10 +55,15 @@ spec:
           {{- end }}
           image: {{ .Values.runner.image }}
           imagePullPolicy: IfNotPresent
+          volumeMounts:          
           {{- if .Values.runner.volumeMounts }}
-          volumeMounts:
             {{- toYaml (index .Values.runner.volumeMounts ) | nindent 12 }}
           {{- end }}
+          {{- if .Values.db.ssl }}
+            {{- if .Values.db.ssl.certFile }}
+              {{- tpl (include "rapidfort-platform.db_ssl_cert_volumeMount" .Values.db.ssl ) $ | nindent 12 }}
+            {{- end }}
+          {{- end }}          
           {{- if .Values.runner.ports }}
           ports: {{- toYaml .Values.runner.ports | nindent 12 }}
           {{- end }}

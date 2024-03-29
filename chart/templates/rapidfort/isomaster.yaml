@@ -24,18 +24,20 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.isomaster.podSecurityContext | nindent 8 }}
-      {{- if .Values.isomaster.volumes }}
       volumes:
+      {{- if .Values.isomaster.volumes }}
         {{- tpl (toYaml (index .Values.isomaster.volumes )) . | nindent 8 }}
       {{- end }}
       {{- if .Values.isomaster.ephemeralVolumeClaimTemplates }}
-      {{- if not .Values.isomaster.volumes }}
-      volumes:
-      {{- end }}
       {{- range .Values.isomaster.ephemeralVolumeClaimTemplates -}}
           {{ (tpl (include "rapidfort-platform.singleEphemeralVolumeClaim" .) $) | nindent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.db.ssl }}
+        {{- if .Values.db.ssl.certFile }}
+          {{- (tpl (include "rapidfort-platform.db_ssl_cert_volume" .Values.db.ssl ) .)| nindent 8 }}
+        {{- end }}
+      {{- end }}      
       {{- if .Values.isomaster.initContainers }}
       initContainers:
         {{- toYaml (index .Values.isomaster.initContainers ) | nindent 8 }}
@@ -52,6 +54,11 @@ spec:
           {{- if .Values.isomaster.volumeMounts }}
           volumeMounts:
             {{- toYaml (index .Values.isomaster.volumeMounts ) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.db.ssl }}
+            {{- if .Values.db.ssl.certFile }}
+              {{- tpl (include "rapidfort-platform.db_ssl_cert_volumeMount" .Values.db.ssl ) $ | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- if .Values.isomaster.ports }}
           ports: {{- toYaml .Values.isomaster.ports | nindent 12 }}
