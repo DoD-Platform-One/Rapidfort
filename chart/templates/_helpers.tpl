@@ -139,7 +139,7 @@ tls:
       {{- end }}
     {{- end }}
   {{- else }}
-    {{- printf "mysql+mysqldb://root:RF-123579@mysql/standalone" }}
+    {{- printf "mysql+mysqldb://%s:%s@%s:%s/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
   {{- end }}
 {{- end }}
 
@@ -148,16 +148,16 @@ tls:
     {{- if and .Values.db.auth.host .Values.db.auth.port }}
       {{- if and .Values.db.ssl }}
         {{- if .Values.db.ssl.certFile }}
-          {{- printf "jdbc:mysql://keycloak:RF-123579@%s:%s/keycloak?ssl=true&ssl_ca=/opt/rapidfort/tls/%s" .Values.db.auth.host .Values.db.auth.port .Values.db.ssl.certFile }}
+          {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak?ssl=true&ssl_ca=/opt/rapidfort/tls/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.ssl.certFile }}
         {{- else }}
-          {{- printf "jdbc:mysql://keycloak:RF-123579@%s:%s/keycloak?ssl=true" .Values.db.auth.host .Values.db.auth.port }}
+          {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak?ssl=true" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port }}
         {{- end }}
       {{- else }}
-        {{- printf "jdbc:mysql://keycloak:RF-123579@%s:%s/keycloak" "mysql" "3306" }}
+        {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port }}
       {{- end }}
     {{- end }}
   {{- else }}
-    {{- printf "jdbc:mysql://keycloak:RF-123579@%s:%s/keycloak" "mysql" "3306" }}
+    {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port }}
   {{- end }}
 {{- end }}
 

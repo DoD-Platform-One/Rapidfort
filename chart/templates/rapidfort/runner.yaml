@@ -63,7 +63,7 @@ spec:
             {{- if .Values.db.ssl.certFile }}
               {{- tpl (include "rapidfort-platform.db_ssl_cert_volumeMount" .Values.db.ssl ) $ | nindent 12 }}
             {{- end }}
-          {{- end }}          
+          {{- end }}
           {{- if .Values.runner.ports }}
           ports: {{- toYaml .Values.runner.ports | nindent 12 }}
           {{- end }}
