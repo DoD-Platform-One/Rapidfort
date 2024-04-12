@@ -165,13 +165,13 @@ tls:
 Create Volume Mount for SSL Cert
 */}}
 {{- define "rapidfort-platform.db_ssl_cert_volume" -}}
-- name: rapidfort-db-tls-cert
+- name: {{ .secretName }}
   secret:
     secretName: {{ .secretName }}
 {{- end -}}
 
 {{- define "rapidfort-platform.db_ssl_cert_volumeMount" -}}
-- name: rapidfort-db-tls-cert
-  mountPath: /opt/rapidfort/tls/{{ .certFile }}
-  subPath: {{ .certFile }}
+- name: {{ .secretName }}
+  mountPath: /opt/rapidfort/tls/cert.pem
+  subPath: cert.pem
 {{- end -}}
