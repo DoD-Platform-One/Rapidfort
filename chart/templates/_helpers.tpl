@@ -130,7 +130,7 @@ tls:
     {{- if and .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
       {{- if and .Values.db.ssl }}
         {{- if .Values.db.ssl.certFile }}
-          {{- printf "mysql+mysqldb://%s:%s@%s:%s/%s?ssl=true&ssl_ca=/opt/rapidfort/tls/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name .Values.db.ssl.certFile }}
+          {{- printf "mysql+mysqldb://%s:%s@%s:%s/%s?ssl=true&ssl_ca=/opt/rapidfort/tls/cert.pem" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name .Values.db.ssl.certFile }}
         {{- else }}
           {{- printf "mysql+mysqldb://%s:%s@%s:%s/%s?ssl=true" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.db_name }}
         {{- end }}
@@ -148,7 +148,7 @@ tls:
     {{- if and .Values.db.auth.host .Values.db.auth.port }}
       {{- if and .Values.db.ssl }}
         {{- if .Values.db.ssl.certFile }}
-          {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak?ssl=true&ssl_ca=/opt/rapidfort/tls/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.ssl.certFile }}
+          {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak?ssl=true&ssl_ca=/opt/rapidfort/tls/cert.pem" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.ssl.certFile }}
         {{- else }}
           {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak?ssl=true" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port }}
         {{- end }}
