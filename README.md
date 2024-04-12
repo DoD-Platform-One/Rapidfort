@@ -1,6 +1,6 @@
 # bigbang-rapidfort
 
-![Version: 1.2.4-bb.6](https://img.shields.io/badge/Version-1.2.4--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
+![Version: 1.2.4-bb.7](https://img.shields.io/badge/Version-1.2.4--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
 
 BigBang compatible Helm chart for RapidFort
 
@@ -131,7 +131,7 @@ helm install bigbang-rapidfort chart/
 Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
 # rapidfort
 
-![Version: 1.2.4-bb.6](https://img.shields.io/badge/Version-1.2.4--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
+![Version: 1.2.4-bb.7](https://img.shields.io/badge/Version-1.2.4--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -179,14 +179,11 @@ helm install rapidfort chart/
 | serviceAccount.create | bool | `true` |  |
 | storageClass.create | bool | `true` |  |
 | storageClass.name | string | `"rf-storage-rw"` |  |
-| db.auth.host | string | `""` |  |
-| db.auth.username | string | `""` |  |
-| db.auth.password | string | `""` |  |
-| db.auth.port | string | `""` |  |
+| db.auth.username | string | `"rapidfort"` |  |
+| db.auth.password | string | `"WPLqAmFjF6"` |  |
+| db.auth.port | int | `3306` |  |
+| db.auth.host | string | `"mysql"` |  |
 | db.auth.db_name | string | `"standalone"` |  |
-| db.ssl.enabled | bool | `true` |  |
-| db.ssl.secretName | string | `""` |  |
-| db.ssl.certFile | string | `"cert.pem"` |  |
 | aggregator.enabled | bool | `true` |  |
 | aggregator.replicaCount | int | `1` |  |
 | aggregator.image | string | `"registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.45-rfhardened"` |  |
@@ -476,7 +473,7 @@ helm install rapidfort chart/
 | keycloak.ingress.hosts[0].paths[0].path | string | `"/auth/"` |  |
 | keycloak.ingress.hosts[0].paths[0].pathType | string | `"Prefix"` |  |
 | keycloak.resources | object | `{}` |  |
-| keycloak.envVars.KC_DB_URL | string | `"{{ (include \"rapidfort-platform.db_url\" .) }}"` |  |
+| keycloak.envVars.KC_DB_URL | string | `"{{ (include \"rapidfort-platform.jdbc_db_url\" .) }}"` |  |
 | keycloak.envVarsSecret | object | `{}` |  |
 | keycloak.startupProbe | object | `{}` |  |
 | keycloak.livenessProbe.httpGet.path | string | `"/auth/health/live"` |  |
@@ -547,7 +544,6 @@ helm install rapidfort chart/
 | mysql.resources | object | `{}` |  |
 | mysql.envVars.MYSQL_DATABASE | string | `"keycloak"` |  |
 | mysql.envVars.MYSQL_AUTHENTICATION_PLUGIN | string | `"mysql_native_password"` |  |
-| mysql.envVars.MYSQL_ROOT_PASSWORD | string | `"RF-123579"` |  |
 | mysql.envVarsSecret | object | `{}` |  |
 | mysql.startupProbe | object | `{}` |  |
 | mysql.livenessProbe.exec.command[0] | string | `"mysql"` |  |
@@ -555,7 +551,7 @@ helm install rapidfort chart/
 | mysql.livenessProbe.exec.command[2] | string | `"localhost"` |  |
 | mysql.livenessProbe.exec.command[3] | string | `"-u"` |  |
 | mysql.livenessProbe.exec.command[4] | string | `"root"` |  |
-| mysql.livenessProbe.exec.command[5] | string | `"-pRF-123579"` |  |
+| mysql.livenessProbe.exec.command[5] | string | `"-p{{ .Values.db.auth.password }}"` |  |
 | mysql.livenessProbe.exec.command[6] | string | `"-e"` |  |
 | mysql.livenessProbe.exec.command[7] | string | `"SHOW DATABASES;"` |  |
 | mysql.livenessProbe.failureThreshold | int | `10` |  |
@@ -564,7 +560,7 @@ helm install rapidfort chart/
 | mysql.readinessProbe.exec.command[2] | string | `"localhost"` |  |
 | mysql.readinessProbe.exec.command[3] | string | `"-u"` |  |
 | mysql.readinessProbe.exec.command[4] | string | `"root"` |  |
-| mysql.readinessProbe.exec.command[5] | string | `"-pRF-123579"` |  |
+| mysql.readinessProbe.exec.command[5] | string | `"-p{{ .Values.db.auth.password }}"` |  |
 | mysql.readinessProbe.exec.command[6] | string | `"-e"` |  |
 | mysql.readinessProbe.exec.command[7] | string | `"SHOW DATABASES;"` |  |
 | mysql.readinessProbe.failureThreshold | int | `10` |  |
