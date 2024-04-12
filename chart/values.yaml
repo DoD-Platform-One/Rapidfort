@@ -453,11 +453,7 @@ keycloak:
   resources: {}
   envVars: {}
   envVarsSecret:
-<<<<<<< HEAD
-    - JDBC_DB_URL
-=======
     - KC_DB_URL
->>>>>>> update-db-ssl-using-certfile-as-input
   startupProbe: {}
   livenessProbe:
     httpGet:
