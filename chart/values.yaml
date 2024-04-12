@@ -29,19 +29,19 @@ serviceAccount:
 storageClass:
   create: true
   name: "rf-storage-rw"
-db: {}
-# # this is only used when connecting to external MySQL DB
-# auth:
-#   host: ""
-#   username: ""
-#   password: ""
-#   port: ""
-#   db_name: "standalone"
-# # this is only used when connecting to external MySQL DB with SSL
-# ssl:
-#   enabled: true
-#   secretName: ""
-#   certFile: "cert.pem"
+
+db:
+  auth:
+    username: "root"
+    password: "RF-123579"
+    port: "3306"
+    host: "mysql"
+    db_name: "standalone" # please contact RapidFort if you need to change this Database Name.
+  # this is only used when connecting to external MySQL DB with SSL
+  # ssl:
+  #   enabled: true
+  #   secretName: ""
+  #   certFile: "cert.pem"
 
 db:
   auth:
