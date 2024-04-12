@@ -39,7 +39,7 @@ db:
     db_name: "standalone" # please contact RapidFort if you need to change this Database Name.
   # this is only used when connecting to external MySQL DB with SSL
   ssl:
-    enabled: true
+    enabled: false
     secretName: rapidfort-db-connection-certs
     certFile: ""
 
