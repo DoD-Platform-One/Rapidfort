@@ -315,20 +315,6 @@ db:
       hkOYz6ouPjqgbIC84cVSzuJBkiCcfLlSoaUS4IIY3FOSztwsxtr2DrA8HBo=
       -----END CERTIFICATE-----
 
-
-
-db:
-  auth:
-    username: rapidfort
-    password: WPLqAmFjF6
-    port: 3306
-    host: mysql
-    db_name: standalone # please contact RapidFort if you need to change this Database Name.
-    # this is only used when connecting to external MySQL DB with SSL
-    # ssl:
-    #   enabled: true
-    #   secretName: ""
-    #   certFile: "cert.pem"
 #
 # aggregator
 #
@@ -736,9 +722,9 @@ keycloak:
           - path: /auth/
             pathType: Prefix
   resources: {}
-  envVars:
-    KC_DB_URL: '{{ (include "rapidfort-platform.jdbc_db_url" .) }}'
-  envVarsSecret: {}
+  envVars: {}
+  envVarsSecret:
+    - JDBC_DB_URL
   startupProbe: {}
   livenessProbe:
     httpGet:
@@ -842,7 +828,7 @@ mysql:
         - "-h"
         - "localhost"
         - "-u"
-        - "root"
+        - "{{ .Values.db.auth.username }}"
         - "-p{{ .Values.db.auth.password }}"
         - "-e"
         - "SHOW DATABASES;"
@@ -854,7 +840,7 @@ mysql:
         - "-h"
         - "localhost"
         - "-u"
-        - "root"
+        - "{{ .Values.db.auth.username }}"
         - "-p{{ .Values.db.auth.password }}"
         - "-e"
         - "SHOW DATABASES;"

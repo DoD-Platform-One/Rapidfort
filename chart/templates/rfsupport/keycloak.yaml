@@ -60,7 +60,6 @@ spec:
           {{- end }}
           {{- if or $.Values.keycloak.envVars $.Values.keycloak.envVarsSecret }}
           env:
-            
             {{- range $key, $value := $.Values.keycloak.envVars }}
             - name: {{ $key }}
               value: {{ tpl $value $ | quote }}
