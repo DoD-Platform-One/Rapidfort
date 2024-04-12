@@ -32,15 +32,14 @@ storageClass:
   create: true
   name: "rf-storage-rw"
 
-db: {}
-  # # this is only used when connecting to external MySQL DB
-  # auth:
-  #   host: ""
-  #   username: ""
-  #   password: ""
-  #   port: ""
-  #   db_name: "standalone"
-  # # this is only used when connecting to external MySQL DB with SSL
+db:
+  auth:
+    username: "root"
+    password: "RF-123579"
+    port: "3306"
+    host: "mysql"
+    db_name: "standalone" # please contact RapidFort if you need to change this Database Name.
+  # this is only used when connecting to external MySQL DB with SSL
   # ssl:
   #   enabled: true
   #   secretName: ""
@@ -558,16 +557,31 @@ mysql:
   envVars:
     MYSQL_DATABASE: keycloak
     MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
-    MYSQL_ROOT_PASSWORD: RF-123579
   envVarsSecret: {}
   startupProbe: {}
   livenessProbe:
     exec:
-      command: ["mysql", "-h", "localhost", "-u", "root", "-pRF-123579", "-e", "SHOW DATABASES;"]
+      command:
+        - "mysql"
+        - "-h"
+        - "localhost"
+        - "-u"
+        - "root"
+        - "-p{{ .Values.db.auth.password }}"
+        - "-e"
+        - "SHOW DATABASES;"
     failureThreshold: 10
   readinessProbe:
     exec:
-      command: ["mysql", "-h", "localhost", "-u", "root", "-pRF-123579", "-e", "SHOW DATABASES;"]
+      command:
+        - "mysql"
+        - "-h"
+        - "localhost"
+        - "-u"
+        - "root"
+        - "-p{{ .Values.db.auth.password }}"
+        - "-e"
+        - "SHOW DATABASES;"
     failureThreshold: 10
 
 #

@@ -35,7 +35,7 @@ spec:
         {{- if .Values.db.ssl.certFile }}
           {{- (tpl (include "rapidfort-platform.db_ssl_cert_volume" .Values.db.ssl ) .)| nindent 8 }}
         {{- end }}
-      {{- end }}      
+      {{- end }}
       {{- if .Values.fileupload.initContainers }}
       initContainers:
         {{- toYaml (index .Values.fileupload.initContainers ) | nindent 8 }}

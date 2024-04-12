@@ -57,6 +57,8 @@ spec:
           {{- end }}
           {{- if or $.Values.mysql.envVars $.Values.mysql.envVarsSecret }}
           env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.db.auth.password }}      
             {{- range $key, $value := $.Values.mysql.envVars }}
             - name: {{ $key }}
               value: {{ $value | quote }}
@@ -79,11 +81,11 @@ spec:
           {{- end }}
           {{- if .Values.mysql.livenessProbe}}
           livenessProbe:
-            {{- toYaml .Values.mysql.livenessProbe | nindent 12 }}
+            {{- tpl (toYaml ( .Values.mysql.livenessProbe )) . | nindent 12 }}
           {{- end }}
           {{- if .Values.mysql.readinessProbe}}
           readinessProbe:
-            {{- toYaml .Values.mysql.readinessProbe | nindent 12 }}
+            {{- tpl (toYaml ( .Values.mysql.readinessProbe )) . | nindent 12 }}
           {{- end }}
       {{- with .Values.mysql.nodeSelector }}
       nodeSelector:
@@ -122,7 +124,7 @@ metadata:
   name: mysql-initdb-config  
 data:
   init.sql: "-- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)\n--\n-- Host: localhost
-    \   Database: standalone\n-- ------------------------------------------------------\n--
+    \   Database: {{ .Values.db.auth.db_name }}\n-- ------------------------------------------------------\n--
     Server version\t8.0.29\n\n/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT
     */;\n/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n/*!40101
     SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n/*!50503 SET NAMES utf8
@@ -130,13 +132,14 @@ data:
     */;\n/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;\n/*!40014
     SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;\n/*!40101
     SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;\n/*!40111 SET
-    @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;\n\n--\n-- Current Database: `standalone`\n--\n\nCREATE
-    DATABASE /*!32312 IF NOT EXISTS*/ `standalone` /*!40100 DEFAULT CHARACTER SET utf8mb4
-    COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;\n\nUSE `standalone`;\n\n--\n--
+    @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;\n\n--\n-- Current Database: `{{ .Values.db.auth.db_name }}`\n--\n\nCREATE
+    DATABASE /*!32312 IF NOT EXISTS*/ `{{ .Values.db.auth.db_name }}` /*!40100 DEFAULT CHARACTER SET utf8mb4
+    COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;\n\nUSE `{{ .Values.db.auth.db_name }}`;\n\n--\n--
     Current Database: `keycloak`\n--\n\nCREATE DATABASE /*!32312 IF NOT EXISTS*/ `keycloak`
     /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT
-    ENCRYPTION='N' */;\nCREATE USER IF NOT EXISTS 'keycloak'@'%' identified by 'RF-123579';\nGRANT
-    ALL PRIVILEGES ON keycloak.* TO 'keycloak'@'%' WITH GRANT OPTION;\nFLUSH PRIVILEGES;\n\nUSE
+    ENCRYPTION='N' */;\nCREATE USER IF NOT EXISTS '{{ .Values.db.auth.username }}'@'%' identified by '{{ .Values.db.auth.password }}';\nGRANT
+    ALL PRIVILEGES ON keycloak.* TO '{{ .Values.db.auth.username }}'@'%' WITH GRANT OPTION;\nGRANT
+    ALL PRIVILEGES ON {{ .Values.db.auth.db_name }}.* TO '{{ .Values.db.auth.username }}'@'%' WITH GRANT OPTION;\nFLUSH PRIVILEGES;\n\nUSE
     `keycloak`;\n\n--\n-- Table structure for table `ADMIN_EVENT_ENTITY`\n--\n\nDROP
     TABLE IF EXISTS `ADMIN_EVENT_ENTITY`;\n/*!40101 SET @saved_cs_client     = @@character_set_client
     */;\n/*!50503 SET character_set_client = utf8mb4 */;\nCREATE TABLE `ADMIN_EVENT_ENTITY`
