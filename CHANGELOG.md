@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.4-bb.7]
+- Update For DB Connection with centralize Params reference from values.yaml
+
 ## [1.2.4-bb.6]
 - Update For SSL Connection with SSL Certificate
 
