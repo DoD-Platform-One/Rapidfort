@@ -1,6 +1,6 @@
 # bigbang-rapidfort
 
-![Version: 1.2.4-bb.8](https://img.shields.io/badge/Version-1.2.4--bb.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
+![Version: 1.2.4-bb.9](https://img.shields.io/badge/Version-1.2.4--bb.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
 
 BigBang compatible Helm chart for RapidFort
 
