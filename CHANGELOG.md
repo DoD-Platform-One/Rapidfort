@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.4-bb.9]
+- Updaste DB Connection SSL Cert input which creates secret in external db seed job.
+
 ## [1.2.4-bb.8]
 - Updaste DB Connection SSL Cert input which creates secret.
 
