@@ -14,6 +14,15 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: init-config
+          configMap:
+            name: mysql-initdb-config
+      {{- if .Values.db.ssl }}
+        {{- if .Values.db.ssl.certFile }}
+          {{- (tpl (include "rapidfort-platform.db_ssl_cert_volume" .Values.db.ssl ) .)| nindent 8 }}
+        {{- end }}
+      {{- end }}      
       containers:
       - name: external-mysql-seed
         image: "{{ .Values.mysql.image }}"
@@ -21,14 +30,35 @@ spec:
           - "/bin/sh"
           - "-c"
           - |
-            mysql --port={{ .Values.db.auth.port }} --host={{ .Values.db.auth.host }} --user={{ .Values.db.auth.username }} --password={{ .Values.db.auth.password }} < /data/init.sql
+            DB_USER=$(echo $DB_URL | awk -F ':' '{ print $2 }' | awk -F '//' '{ print $2}')
+            DB_PASS=$(echo $DB_URL | awk -F ':' '{ print $3 }' | awk -F '@' '{ print $1}')
+            DB_PORT=$(echo $DB_URL | awk -F ':' '{ print $4 }' | awk -F '/' '{ print $1}')
+            DB_HOST=$(echo $DB_URL | awk -F ':' '{ print $3 }' | awk -F '@' '{ print $2}')
+            DB_SSL_MODE=$(echo $DB_URL | awk -F '&' '{ print $1}' | awk -F '?' '{ print $2}')
+            DB_SSL_PARAMS=""
+            if ! test -z "DB_SSL_MODE";
+            then
+              DB_SSL_PARAMS="--ssl-mode=VERIFY_CA"
+              DB_SSL_CERT=$(echo $DB_URL | awk -F ':' '{ print $4 }' |awk -F '&' '{ print $2}')
+              DB_SSL_PARAMS="--ssl-mode=VERIFY_CA --$DB_SSL_CERT"
+              mysql --port=${DB_PORT} --host=${DB_HOST} --user=${DB_USER} --password=${DB_PASS} ${DB_SSL_PARAMS} < /data/init.sql
+            else
+              mysql --port=${DB_PORT} --host=${DB_HOST} --user=${DB_USER} --password=${DB_PASS} < /data/init.sql
+            fi
             x=$(echo $?); curl -fsI -X POST http://localhost:15020/quitquitquit && exit $x
         volumeMounts:
-        - name: init-config
-          mountPath: /data
-      volumes:
-      - name: init-config
-        configMap:
-          name: mysql-initdb-config
+          - name: init-config
+            mountPath: /data
+        {{- if .Values.db.ssl }}
+          {{- if .Values.db.ssl.certFile }}
+            {{- tpl (include "rapidfort-platform.db_ssl_cert_volumeMount" .Values.db.ssl ) $ | nindent 10 }}
+          {{- end }}
+        {{- end }}          
+        env:
+          - name: DB_URL
+            valueFrom:
+              secretKeyRef:
+                name: rapidfort-secret
+                key: DB_URL
       restartPolicy: Never
 {{- end}}
