@@ -3,10 +3,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: external-db-seed
-  annotations:
-    "helm.sh/hook-weight": "-4"
-    "helm.sh/hook": pre-install
-    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   template:
     spec:
@@ -40,7 +36,6 @@ spec:
 
             if ! test -n "DB_SSL_MODE";
             then
-              DB_SSL_PARAMS="--ssl-mode=VERIFY_CA"
               DB_SSL_CERT=$(echo $DB_URL | awk -F ':' '{ print $4 }' |awk -F '&' '{ print $2}')
               DB_SSL_PARAMS="--ssl-mode=VERIFY_CA --$DB_SSL_CERT"
             fi
