@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.4-bb.11]
+- Update DB Initialization update for helm hook.
+
 ## [1.2.4-bb.10]
 - Update DB Initialization to stop overwriting db.
 
