@@ -29,7 +29,6 @@ serviceAccount:
 storageClass:
   create: true
   name: "rf-storage-rw"
-
 db:
   auth:
     username: "root"
@@ -42,8 +41,6 @@ db:
     enabled: false
     secretName: rapidfort-db-connection-certs
     certFile: ""
-
-
 #
 # aggregator
 #
