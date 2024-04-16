@@ -2,11 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.4-bb.10]
+- Update DB Initialization to stop overwriting db.
+
 ## [1.2.4-bb.9]
-- Updaste DB Connection SSL Cert input which creates secret in external db seed job.
+- Update DB Connection SSL Cert input which creates secret in external db seed job.
 
 ## [1.2.4-bb.8]
-- Updaste DB Connection SSL Cert input which creates secret.
+- Update DB Connection SSL Cert input which creates secret.
 
 ## [1.2.4-bb.7]
 - Update For DB Connection with centralize Params reference from values.yaml

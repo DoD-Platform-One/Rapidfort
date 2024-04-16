@@ -3,10 +3,10 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: external-db-seed
-  # annotations:
-  #   # "helm.sh/hook-weight": "-4"
-  #   # "helm.sh/hook": pre-install
-  #   # "helm.sh/hook-delete-policy": before-hook-creation
+  annotations:
+    "helm.sh/hook-weight": "-4"
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   template:
     spec:
@@ -30,20 +30,28 @@ spec:
           - "/bin/sh"
           - "-c"
           - |
+            #!/bin/bash
             DB_USER=$(echo $DB_URL | awk -F ':' '{ print $2 }' | awk -F '//' '{ print $2}')
             DB_PASS=$(echo $DB_URL | awk -F ':' '{ print $3 }' | awk -F '@' '{ print $1}')
             DB_PORT=$(echo $DB_URL | awk -F ':' '{ print $4 }' | awk -F '/' '{ print $1}')
             DB_HOST=$(echo $DB_URL | awk -F ':' '{ print $3 }' | awk -F '@' '{ print $2}')
             DB_SSL_MODE=$(echo $DB_URL | awk -F '&' '{ print $1}' | awk -F '?' '{ print $2}')
             DB_SSL_PARAMS=""
-            if ! test -z "DB_SSL_MODE";
+
+            if ! test -n "DB_SSL_MODE";
             then
               DB_SSL_PARAMS="--ssl-mode=VERIFY_CA"
               DB_SSL_CERT=$(echo $DB_URL | awk -F ':' '{ print $4 }' |awk -F '&' '{ print $2}')
               DB_SSL_PARAMS="--ssl-mode=VERIFY_CA --$DB_SSL_CERT"
-              mysql --port=${DB_PORT} --host=${DB_HOST} --user=${DB_USER} --password=${DB_PASS} ${DB_SSL_PARAMS} < /data/init.sql
+            fi
+
+            COUNT_USERS=$(mysql --port=${DB_PORT} --host=${DB_HOST} --user=${DB_USER} --password=${DB_PASS} ${DB_SSL_PARAMS} standalone -se 'select count(*) from user;')
+            QUERY_STATUS=$?
+            if [[ "$QUERY_STATUS" == "0" ]] && [[ $COUNT_USERS > 0 ]];
+            then
+              echo "RapidFort DB already initialized..."
             else
-              mysql --port=${DB_PORT} --host=${DB_HOST} --user=${DB_USER} --password=${DB_PASS} < /data/init.sql
+              mysql --port=${DB_PORT} --host=${DB_HOST} --user=${DB_USER} --password=${DB_PASS} ${DB_SSL_PARAMS} < /data/init.sql
             fi
             x=$(echo $?); curl -fsI -X POST http://localhost:15020/quitquitquit && exit $x
         volumeMounts:
