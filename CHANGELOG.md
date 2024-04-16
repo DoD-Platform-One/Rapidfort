@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.4-bb.13]
+- Remove rf user from KeyCloak Database.
+
 ## [1.2.4-bb.12]
 - Update DB Initialization update for bash variable check.
 
