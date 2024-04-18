@@ -23,6 +23,9 @@ global:
     aws_secret_access_key: ""
     region: us-east-1
     storage: rapidfort-bucket
+  keycloak_admin: "keycloakAdmin"
+  keycloak_admin_passwd: "Dz4HEhDCaEEoDPom"
+  keycloak_service_account_client_secret: ""
 
 #Rapidfort Service Account
 serviceAccount:
@@ -460,8 +463,11 @@ keycloak:
             pathType: Prefix
   resources: {}
   envVars: {}
+
   envVarsSecret:
     - KC_DB_URL
+    - KEYCLOAK_ADMIN
+    - KEYCLOAK_ADMIN_PASSWORD
   startupProbe: {}
   livenessProbe:
     httpGet:
