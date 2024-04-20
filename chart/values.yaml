@@ -47,7 +47,7 @@ db:
 aggregator:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/aggregator-exe:1.1.0-348714f-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/aggregator-exe:1.1.0-348714f-1261061067-rfhardened-DoD
   ports: {}
   ephemeralVolumeClaimTemplates:
     - name: aggregator-data
@@ -101,7 +101,7 @@ aggregator:
 backend:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend-exe:1.1.0-7d27411e-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend-exe:1.1.0-a58959f0-1261061067-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -240,7 +240,7 @@ filesredis:
 fileupload:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/fileupload:1.1.0-d960c2b-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/fileupload:1.1.0-d960c2b-1261061067-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -308,7 +308,7 @@ fileupload:
 frontrow:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/frontrow:1.1.0-7e8c159a-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/frontrow:1.1.0-eee0e2fd-1261061067-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -355,7 +355,7 @@ frontrow:
 isomaster:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/iso-master-exe:1.1.0-d01e784-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/iso-master-exe:1.1.0-60923ff-1261061067-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -628,7 +628,7 @@ redis:
 rfscan:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan-exe:1.1.0-d01e784-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan-exe:1.1.0-60923ff-1261061067-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -696,7 +696,7 @@ rfscan:
 rfapi:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi-exe:1.1.0-6ed7411-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi-exe:1.1.0-6ed7411-1261061067-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -747,7 +747,7 @@ rfapi:
 rfpubsub:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub-exe:1.1.0-2467ae6-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub-exe:1.1.0-2467ae6-1261061067-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -795,7 +795,7 @@ rfpubsub:
 runner:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.0-e237cbe-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.0-e237cbe-1261061067-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
@@ -923,7 +923,7 @@ rfvdb:
 vulnsdb:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db:1.1.0-ea150fc-1259748056-rfhardened-DoD
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db:1.1.0-0b125d0-1261061067-rfhardened-DoD
   ports:
     - name: http
       containerPort: 8080
