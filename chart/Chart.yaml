@@ -2,7 +2,7 @@ apiVersion: v2
 name: rapidfort
 description: Automated Container Hardening
 type: application
-version: 1.2.4-bb.87
+version: 1.2.4-bb.88
 appVersion: 1.1.45
 dependencies:
   - name: gluon
