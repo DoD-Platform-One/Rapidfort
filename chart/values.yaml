@@ -511,7 +511,7 @@ lockredis:
 # mysql
 #
 mysql:
-  enabled: false
+  enabled: true
   replicaCount: 1
   image: registry1.dso.mil/ironbank/bitnami/mysql8:8.0.36-debian-11-r1
   ports:
