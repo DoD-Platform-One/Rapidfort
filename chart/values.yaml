@@ -513,7 +513,7 @@ lockredis:
 mysql:
   enabled: false
   replicaCount: 1
-  image: registry1.dso.mil/ironbank/bitnami/mysql8:8.0.29-debian-10-r37
+  image: registry1.dso.mil/ironbank/bitnami/mysql8:8.0.36-debian-11-r1
   ports:
     - name: mysql
       containerPort: 3306
