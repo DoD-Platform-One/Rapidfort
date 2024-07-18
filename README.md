@@ -1,6 +1,6 @@
 # bigbang-rapidfort
 
-![Version: 1.2.4-bb.9](https://img.shields.io/badge/Version-1.2.4--bb.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
+![Version: 1.2.4-bb.15](https://img.shields.io/badge/Version-1.2.4--bb.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
 
 BigBang compatible Helm chart for RapidFort
 
@@ -37,7 +37,7 @@ helm install bigbang-rapidfort chart/
 | rapidfort.git.path | string | `"chart"` |  |
 | rapidfort.helmRepo.repoName | string | `"registry1"` |  |
 | rapidfort.helmRepo.chartName | string | `"rapidfort"` |  |
-| rapidfort.helmRepo.tag | string | `"1.2.4-bb.0"` |  |
+| rapidfort.helmRepo.tag | string | `"1.2.4-bb.12"` |  |
 | rapidfort.flux | object | `{}` |  |
 | rapidfort.ingress.gateway | string | `""` |  |
 | rapidfort.objectStorage.aws_access_key_id | string | `"AKI***"` | Access key for connecting to object storage endpoint. |
@@ -131,7 +131,7 @@ helm install bigbang-rapidfort chart/
 Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
 # rapidfort
 
-![Version: 1.2.4-bb.9](https://img.shields.io/badge/Version-1.2.4--bb.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
+![Version: 1.2.4-bb.15](https://img.shields.io/badge/Version-1.2.4--bb.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.45](https://img.shields.io/badge/AppVersion-1.1.45-informational?style=flat-square)
 
 Automated Container Hardening
 
@@ -176,6 +176,9 @@ helm install rapidfort chart/
 | global.aws.aws_secret_access_key | string | `""` |  |
 | global.aws.region | string | `"us-east-1"` |  |
 | global.aws.storage | string | `"rapidfort-bucket"` |  |
+| global.keycloak_admin | string | `"keycloakAdmin"` |  |
+| global.keycloak_admin_passwd | string | `"Dz4HEhDCaEEoDPom"` |  |
+| global.keycloak_service_account_client_secret | string | `""` |  |
 | serviceAccount.create | bool | `true` |  |
 | storageClass.create | bool | `true` |  |
 | storageClass.name | string | `"rf-storage-rw"` |  |
@@ -478,6 +481,8 @@ helm install rapidfort chart/
 | keycloak.resources | object | `{}` |  |
 | keycloak.envVars | object | `{}` |  |
 | keycloak.envVarsSecret[0] | string | `"KC_DB_URL"` |  |
+| keycloak.envVarsSecret[1] | string | `"KEYCLOAK_ADMIN"` |  |
+| keycloak.envVarsSecret[2] | string | `"KEYCLOAK_ADMIN_PASSWORD"` |  |
 | keycloak.startupProbe | object | `{}` |  |
 | keycloak.livenessProbe.httpGet.path | string | `"/auth/health/live"` |  |
 | keycloak.livenessProbe.httpGet.port | int | `8080` |  |

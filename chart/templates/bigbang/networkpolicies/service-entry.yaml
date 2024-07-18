@@ -2,12 +2,13 @@
 apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
-  name: allow-rf-community
+  name: allow-vuln-db
   namespace: {{ .Release.Namespace }}
 spec:
   hosts: 
-  #TODO: update to values.yaml reference
-  - us01.rapidfort.com
+  - {{ .Values.vulnsdb.envVars.RFVDB_HOST }}
+  exportTo:
+    - .
   ports:
   - number: 443
     name: https
@@ -23,6 +24,8 @@ metadata:
 spec:
   hosts: 
   - "*.amazonaws.com"
+  exportTo:
+    - .
   ports:
   - number: 443
     name: https
@@ -39,6 +42,8 @@ metadata:
 spec:
   hosts:
   - {{ .Values.db.auth.host }}
+  exportTo:
+    - .
   ports:
   - number: {{ .Values.db.auth.port }}
     name: mysql
