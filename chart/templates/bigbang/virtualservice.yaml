@@ -30,7 +30,7 @@ spec:
   - name: frontrow
     match:
     - uri:
-        regex: "/cli/.*"
+        prefix: "/cli"
     - uri:
         regex: "/app/.*"
     route:
