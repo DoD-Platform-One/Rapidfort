@@ -20,7 +20,7 @@ spec:
   - name: backend
     match:
     - uri:
-        regex: "/api/v1/.*"
+        prefix: "/api/v1/"
     route:
     - destination:
         port:
@@ -32,7 +32,7 @@ spec:
     - uri:
         prefix: "/cli"
     - uri:
-        regex: "/app/.*"
+        prefix: "/"
     route:
     - destination:
         port:
@@ -42,7 +42,7 @@ spec:
   - name: iso-master
     match:
     - uri:
-        regex: "/iso-master/.*"
+        prefix: "/iso-master/"
     route:
     - destination:
         port:
@@ -52,7 +52,7 @@ spec:
   - name: keycloak
     match:
     - uri:
-        regex: "/auth/.*"
+        prefix: "/auth/"
     route:
     - destination:
         port:
@@ -62,7 +62,7 @@ spec:
   - name: rf-scan
     match:
     - uri:
-        regex: "/rf-scan/.*"
+        prefix: "/rf-scan/"
     route:
     - destination:
         port:
@@ -72,7 +72,7 @@ spec:
   - name: vulnsdb
     match:
     - uri:
-        regex: "/vulns-db/.*"
+        prefix: "/vulns-db/"
     route:
     - destination:
         port:
@@ -104,7 +104,7 @@ spec:
   - name: rfapi
     match:
     - uri:
-        regex: "/rfapi.*"
+        prefix: "/rfapi"
     route:
     - destination:
         port:
@@ -136,7 +136,7 @@ spec:
   - name: runner
     match:
     - uri:
-        regex: "/runner/.*"
+        prefix: "/runner/"
     route:
     - destination:
         port:
@@ -154,13 +154,6 @@ spec:
         port:
           number: {{ index .Values "fileupload" "service" "port" | default "80" }}
         host: fileupload
-
-  - name: catchall-redirect-frontrow
-    match:
-    - uri:
-        regex: ".*"
-    redirect:
-      uri: "/app/"
 {{- end }}
 # Header modification notes:
 # https://istio.io/latest/docs/reference/config/networking/envoy-filter/
