@@ -27,18 +27,6 @@ spec:
           number: {{ .Values.backend.service.port | default "80" }}
         host: backend
 
-  - name: frontrow
-    match:
-    - uri:
-        prefix: "/cli"
-    - uri:
-        prefix: "/"
-    route:
-    - destination:
-        port:
-          number: {{ .Values.frontrow.service.port | default "80" }}
-        host: frontrow
-
   - name: iso-master
     match:
     - uri:
@@ -154,6 +142,18 @@ spec:
         port:
           number: {{ index .Values "fileupload" "service" "port" | default "80" }}
         host: fileupload
+
+  - name: frontrow
+    match:
+    - uri:
+        prefix: "/cli"
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.frontrow.service.port | default "80" }}
+        host: frontrow
 {{- end }}
 # Header modification notes:
 # https://istio.io/latest/docs/reference/config/networking/envoy-filter/
