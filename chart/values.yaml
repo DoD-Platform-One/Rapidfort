@@ -50,17 +50,13 @@ db:
 aggregator:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/aggregator-exe:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/aggregator-exe:1.1.89-rfhardened
   ports: {}
   ephemeralVolumeClaimTemplates:
     - name: aggregator-data
       accessMode: "ReadWriteOnce"
       storageClassName: "{{ .Values.storageClass.name }}"
-      size: 256Gi
-    - name: aggregator-data-local-bucket
-      accessMode: "ReadWriteOnce"
-      storageClassName: "{{ .Values.storageClass.name }}"
-      size: 256Gi
+      size: 29Gi
   volumes: []
   volumeMounts:
     - name: aggregator-data
@@ -104,19 +100,18 @@ aggregator:
 backend:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend-exe:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
-  ephemeralVolumeClaimTemplates:
-    - name: backend-data
-      accessMode: "ReadWriteOnce"
-      storageClassName: "{{ .Values.storageClass.name }}"
-      size: 128Gi
-  volumes: []
+  ephemeralVolumeClaimTemplates: []
+  volumes:
+    - name: imgs-work-dir
+      emptyDir:
+        sizeLimit: 10Gi
   volumeMounts:
-    - name: backend-data
-      mountPath: /opt/rapidfort/local-bucket
+    - name: imgs-work-dir
+      mountPath: /opt/rapidfort/backend/app/imgs_work_dir # cache dir
   initContainers: []
   podSecurityContext: {}
   containerSecurityContext: {}
@@ -243,19 +238,13 @@ filesredis:
 fileupload:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/fileupload:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/fileupload:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
-  ephemeralVolumeClaimTemplates:
-    - name: fileupload-data
-      accessMode: "ReadWriteOnce"
-      storageClassName: "{{ .Values.storageClass.name }}"
-      size: 256Gi
+  ephemeralVolumeClaimTemplates: []
   volumes: []
-  volumeMounts:
-    - name: fileupload-data
-      mountPath: /opt/rapidfort/local-bucket
+  volumeMounts: []
   podSecurityContext: {}
   containerSecurityContext: {}
   service:
@@ -311,7 +300,7 @@ fileupload:
 frontrow:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/frontrow:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/frontrow:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -358,19 +347,18 @@ frontrow:
 isomaster:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/iso-master-exe:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/iso-master-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
-  ephemeralVolumeClaimTemplates:
+  ephemeralVolumeClaimTemplates: []
+  volumes:
     - name: imgs-work-dir
-      accessMode: "ReadWriteOnce"
-      storageClassName: "{{ .Values.storageClass.name }}"
-      size: 256Gi
-  volumes: []
+      emptyDir:
+        sizeLimit: 10Gi
   volumeMounts:
     - name: imgs-work-dir
-      mountPath: /opt/rapidfort/local-bucket
+      mountPath: /opt/rapidfort/iso-master/app/imgs_work_dir # cache dir
   initContainers: []
   serviceAccount: {}
   podSecurityContext: {}
@@ -633,19 +621,18 @@ redis:
 rfscan:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan-exe:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
-  ephemeralVolumeClaimTemplates:
+  ephemeralVolumeClaimTemplates: []
+  volumes:
     - name: imgs-work-dir
-      accessMode: "ReadWriteOnce"
-      storageClassName: "{{ .Values.storageClass.name }}"
-      size: 256Gi
-  volumes: []
+      emptyDir:
+        sizeLimit: 10Gi
   volumeMounts:
     - name: imgs-work-dir
-      mountPath: /opt/rapidfort/local-bucket
+      mountPath: /opt/rapidfort/iso-master/app/imgs_work_dir # cache dir
   initContainers: []
   serviceAccount: {}
   podSecurityContext: {}
@@ -701,7 +688,7 @@ rfscan:
 rfapi:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi-exe:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -752,7 +739,7 @@ rfapi:
 rfpubsub:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub-exe:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -800,7 +787,7 @@ rfpubsub:
 runner:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -809,14 +796,8 @@ runner:
       accessMode: "ReadWriteOnce"
       storageClassName: "{{ .Values.storageClass.name }}"
       size: 256Gi
-    - name: imgs-work-dir
-      accessMode: "ReadWriteOnce"
-      storageClassName: "{{ .Values.storageClass.name }}"
-      size: 256Gi
   volumes: []
   volumeMounts:
-    - name: imgs-work-dir
-      mountPath: /opt/rapidfort/local-bucket
     - name: var-lib-containers
       mountPath: /var/lib/containers
   initContainers: []
@@ -928,7 +909,7 @@ rfvdb:
 vulnsdb:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db:1.1.108-rfhardened
+  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db:1.1.101-rfhardened
   ports:
     - name: http
       containerPort: 8080
