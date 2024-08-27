@@ -61,8 +61,6 @@ aggregator:
   volumeMounts:
     - name: aggregator-data
       mountPath: /mnt/raid/aggregator
-    - name: aggregator-data-local-bucket
-      mountPath: /opt/rapidfort/local-bucket
   initContainers: []
   podSecurityContext:
     fsGroup: 1000
