@@ -18,10 +18,6 @@ aggregator:
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
-  - name: aggregator-data-local-bucket
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 10Gi
   initContainers: []
   resources: {}
     # limits:
@@ -36,11 +32,7 @@ aggregator:
 #
 backend:
   resources: {}
-  ephemeralVolumeClaimTemplates:
-  - name: backend-data
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 10Gi
+  ephemeralVolumeClaimTemplates: []
   initContainers: []
     # limits:
     #   cpu: "2000m"
@@ -59,19 +51,11 @@ filesredis:
 
 fileupload:
   enabled: true
-  ephemeralVolumeClaimTemplates:
-  - name: fileupload-data
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 10Gi
+  ephemeralVolumeClaimTemplates: []
 
 isomaster:
   initContainers: []
-  ephemeralVolumeClaimTemplates:
-  - name: imgs-work-dir
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 10Gi
+  ephemeralVolumeClaimTemplates: []
 
 keycloak:
   initContainers: []
@@ -119,11 +103,7 @@ redis:
 
 rfscan:
   initContainers: []
-  ephemeralVolumeClaimTemplates:
-  - name: imgs-work-dir
-    accessMode: "ReadWriteOnce"
-    storageClassName: "{{ .Values.storageClass.name }}"
-    size: 10Gi
+  ephemeralVolumeClaimTemplates: []
 
 rfapi:
   initContainers: []
