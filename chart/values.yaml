@@ -50,7 +50,7 @@ db:
 aggregator:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/aggregator-exe:1.1.89-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.89-rfhardened
   ports: {}
   ephemeralVolumeClaimTemplates:
     - name: aggregator-data
@@ -100,7 +100,7 @@ aggregator:
 backend:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/backend-exe:1.1.89-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -238,7 +238,7 @@ filesredis:
 fileupload:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/fileupload:1.1.89-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -300,7 +300,7 @@ fileupload:
 frontrow:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/frontrow:1.1.89-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -347,7 +347,7 @@ frontrow:
 isomaster:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/iso-master-exe:1.1.89-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -621,7 +621,7 @@ redis:
 rfscan:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rf-scan-exe:1.1.89-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -688,7 +688,7 @@ rfscan:
 rfapi:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfapi-exe:1.1.89-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -739,7 +739,7 @@ rfapi:
 rfpubsub:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/rfpubsub-exe:1.1.89-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -787,7 +787,7 @@ rfpubsub:
 runner:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/runner:1.1.89-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/runner:1.1.89-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -909,7 +909,7 @@ rfvdb:
 vulnsdb:
   enabled: true
   replicaCount: 1
-  image: 274057717848.dkr.ecr.us-east-1.amazonaws.com/vulns-db:1.1.101-rfhardened
+  image: registry1.dso.mil/ironbank/rapidfort/vulns-db:1.1.101-rfhardened
   ports:
     - name: http
       containerPort: 8080
