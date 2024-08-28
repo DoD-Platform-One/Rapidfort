@@ -2,9 +2,11 @@ apiVersion: v2
 name: rapidfort
 description: Automated Container Hardening
 type: application
-version: 1.2.4-bb.15
-appVersion: 1.1.45
+version: 1.2.5-bb.0
+appVersion: 1.1.89
 dependencies:
   - name: gluon
     version: "0.4.8"
     repository: "oci://registry1.dso.mil/bigbang"
+annotations:
+  bigbang.dev/upstreamReleaseNotesMarkdown: ""    

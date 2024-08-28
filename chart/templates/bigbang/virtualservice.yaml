@@ -20,29 +20,17 @@ spec:
   - name: backend
     match:
     - uri:
-        regex: "/api/v1/.*"
+        prefix: "/api/v1/"
     route:
     - destination:
         port:
           number: {{ .Values.backend.service.port | default "80" }}
         host: backend
 
-  - name: frontrow
-    match:
-    - uri:
-        regex: "/cli/.*"
-    - uri:
-        regex: "/app/.*"
-    route:
-    - destination:
-        port:
-          number: {{ .Values.frontrow.service.port | default "80" }}
-        host: frontrow
-
   - name: iso-master
     match:
     - uri:
-        regex: "/iso-master/.*"
+        prefix: "/iso-master/"
     route:
     - destination:
         port:
@@ -52,7 +40,7 @@ spec:
   - name: keycloak
     match:
     - uri:
-        regex: "/auth/.*"
+        prefix: "/auth/"
     route:
     - destination:
         port:
@@ -62,7 +50,7 @@ spec:
   - name: rf-scan
     match:
     - uri:
-        regex: "/rf-scan/.*"
+        prefix: "/rf-scan/"
     route:
     - destination:
         port:
@@ -72,7 +60,7 @@ spec:
   - name: vulnsdb
     match:
     - uri:
-        regex: "/vulns-db/.*"
+        prefix: "/vulns-db/"
     route:
     - destination:
         port:
@@ -104,7 +92,7 @@ spec:
   - name: rfapi
     match:
     - uri:
-        regex: "/rfapi.*"
+        prefix: "/rfapi"
     route:
     - destination:
         port:
@@ -136,7 +124,7 @@ spec:
   - name: runner
     match:
     - uri:
-        regex: "/runner/.*"
+        prefix: "/runner/"
     route:
     - destination:
         port:
@@ -155,12 +143,17 @@ spec:
           number: {{ index .Values "fileupload" "service" "port" | default "80" }}
         host: fileupload
 
-  - name: catchall-redirect-frontrow
+  - name: frontrow
     match:
     - uri:
-        regex: ".*"
-    redirect:
-      uri: "/app/"
+        prefix: "/cli"
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.frontrow.service.port | default "80" }}
+        host: frontrow
 {{- end }}
 # Header modification notes:
 # https://istio.io/latest/docs/reference/config/networking/envoy-filter/
