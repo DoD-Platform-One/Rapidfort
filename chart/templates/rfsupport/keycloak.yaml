@@ -112,7 +112,11 @@ spec:
   ports:
     - port: {{ .Values.keycloak.service.port }}
       protocol: TCP
-      name: http
+      name: {{ .Values.keycloak.service.targetPort }}
+      targetPort: {{ .Values.keycloak.service.targetPort }}
+    - port: {{ .Values.keycloak.service.healthPort }}
+      protocol: TCP
+      name: health
       targetPort: {{ .Values.keycloak.service.targetPort }}
   selector:
     app.kubernetes.io/name: keycloak

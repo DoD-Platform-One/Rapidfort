@@ -8,6 +8,7 @@ global:
   passwd: p@ssw0rd
   hostname: rapidfort.bigbang.dev
   cloud: "kind"
+  api_key: "testRapidFortKey"
 
 #
 # aggregator

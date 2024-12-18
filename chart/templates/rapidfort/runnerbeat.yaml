@@ -66,6 +66,9 @@ spec:
           {{- end }}               
           {{- if .Values.runner.ports }}
           env:
+            # disable rf installation due to not running as root.
+            - name: INSTALL_RF_CLI
+              value: "false"
             - name: RUNNER_BEAT_MODE
               value: "1"
             {{- range $key, $value := $.Values.runner.envVars }}
