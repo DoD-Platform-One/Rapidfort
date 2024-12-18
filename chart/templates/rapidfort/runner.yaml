@@ -69,6 +69,9 @@ spec:
           {{- end }}
           {{- if or $.Values.runner.envVars $.Values.runner.envVarsSecret }}
           env:
+            # disable rf installation due to not running as root.
+            - name: INSTALL_RF_CLI
+              value: "false"
             {{- range $key, $value := $.Values.runner.envVars }}
             - name: {{ $key }}
               value: {{ $value | quote }}

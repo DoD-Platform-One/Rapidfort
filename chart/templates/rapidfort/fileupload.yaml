@@ -38,7 +38,7 @@ spec:
       {{- end }}
       {{- if .Values.fileupload.initContainers }}
       initContainers:
-        {{- toYaml (index .Values.fileupload.initContainers ) | nindent 8 }}
+        {{- tpl (toYaml (index .Values.fileupload.initContainers )) . | nindent 8 }}
       {{- end }}
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
