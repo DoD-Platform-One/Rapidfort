@@ -8,6 +8,8 @@ metadata:
   name: rfvdb
   labels:
     app.kubernetes.io/name: rfvdb
+    app.kubernetes.io/instance: rfvdb
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.rfvdb.replicaCount }}
   selector:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: rfvdb
+        app.kubernetes.io/instance: rfvdb
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.rfvdb.podSecurityContext }}
       securityContext:
@@ -41,7 +45,7 @@ spec:
           {{- if .Values.rfvdb.containerSecurityContext }}
           securityContext: {{- toYaml .Values.rfvdb.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.rfvdb.image }}
+          image: "{{ .Values.rfvdb.image.repository }}:{{ .Values.rfvdb.image.tag }}"
           imagePullPolicy: IfNotPresent
           {{- if .Values.rfvdb.volumeMounts }}
           volumeMounts:

@@ -8,6 +8,8 @@ metadata:
   name: runner
   labels:
     app.kubernetes.io/name: runner
+    app.kubernetes.io/instance: runner
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.runner.replicaCount }}
   selector:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: runner
+        app.kubernetes.io/instance: runner
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.runner.podSecurityContext }}
       securityContext:
@@ -53,7 +57,7 @@ spec:
           {{- if .Values.runner.containerSecurityContext }}
           securityContext: {{- toYaml .Values.runner.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.runner.image }}
+          image: "{{ .Values.runner.image.repository }}:{{ .Values.runner.image.tag }}"
           imagePullPolicy: IfNotPresent
           volumeMounts:          
           {{- if .Values.runner.volumeMounts }}

@@ -2,7 +2,7 @@ apiVersion: v2
 name: bigbang-rapidfort
 description: BigBang compatible Helm chart for RapidFort
 type: application
-version: 1.2.5-bb.2
+version: 1.2.5-bb.3
 appVersion: 1.1.165
 annotations:
   bigbang.dev/upstreamReleaseNotesMarkdown: ""

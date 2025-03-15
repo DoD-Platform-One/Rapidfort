@@ -8,6 +8,8 @@ metadata:
   name: fileupload
   labels:
     app.kubernetes.io/name: fileupload
+    app.kubernetes.io/instance: fileupload
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.fileupload.replicaCount }}
   selector:
@@ -17,13 +19,15 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: fileupload
+        app.kubernetes.io/instance: fileupload
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.fileupload.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.fileupload.podSecurityContext | nindent 8 }}
-      {{- end }}
-      volumes:      
+      {{- end }}   
       {{- if .Values.fileupload.volumes }}
+      volumes:         
         {{- tpl (toYaml (index .Values.fileupload.volumes )) . | nindent 8 }}
       {{- end }}
       {{- if .Values.fileupload.ephemeralVolumeClaimTemplates }}
@@ -53,10 +57,10 @@ spec:
           {{- if .Values.fileupload.containerSecurityContext }}
           securityContext: {{- toYaml .Values.fileupload.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.fileupload.image }}
+          image: "{{ .Values.fileupload.image.repository }}:{{ .Values.fileupload.image.tag }}"
           imagePullPolicy: IfNotPresent
-          volumeMounts:          
           {{- if .Values.fileupload.volumeMounts }}
+          volumeMounts:          
             {{- toYaml (index .Values.fileupload.volumeMounts ) | nindent 12 }}
           {{- end }}
           {{- if .Values.db.ssl }}

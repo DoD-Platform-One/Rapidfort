@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # bigbang-rapidfort
 
-![Version: 1.2.5-bb.2](https://img.shields.io/badge/Version-1.2.5--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.3](https://img.shields.io/badge/Version-1.2.5--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 BigBang compatible Helm chart for RapidFort
 
@@ -151,7 +151,7 @@ _This file is programatically generated using `helm-docs` and some BigBang-speci
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # rapidfort
 
-![Version: 1.2.5-bb.2](https://img.shields.io/badge/Version-1.2.5--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.3](https://img.shields.io/badge/Version-1.2.5--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 Automated Container Hardening
 
@@ -223,7 +223,8 @@ helm install rapidfort chart/
 | db.ssl.certFile | string | `""` |  |
 | aggregator.enabled | bool | `true` |  |
 | aggregator.replicaCount | int | `1` |  |
-| aggregator.image | string | `"registry1.dso.mil/ironbank/rapidfort/aggregator-exe:1.1.165-rfhardened"` |  |
+| aggregator.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/aggregator-exe"` |  |
+| aggregator.image.tag | string | `"1.1.165-rfhardened"` |  |
 | aggregator.ports | object | `{}` |  |
 | aggregator.ephemeralVolumeClaimTemplates[0].name | string | `"aggregator-data"` |  |
 | aggregator.ephemeralVolumeClaimTemplates[0].accessMode | string | `"ReadWriteOnce"` |  |
@@ -259,7 +260,8 @@ helm install rapidfort chart/
 | aggregator.readinessProbe | object | `{}` |  |
 | backend.enabled | bool | `true` |  |
 | backend.replicaCount | int | `1` |  |
-| backend.image | string | `"registry1.dso.mil/ironbank/rapidfort/backend-exe:1.1.165-rfhardened"` |  |
+| backend.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/backend-exe"` |  |
+| backend.image.tag | string | `"1.1.165-rfhardened"` |  |
 | backend.ports[0].name | string | `"http"` |  |
 | backend.ports[0].containerPort | int | `8080` |  |
 | backend.ephemeralVolumeClaimTemplates | list | `[]` |  |
@@ -318,7 +320,8 @@ helm install rapidfort chart/
 | backend.readinessProbe.failureThreshold | int | `10` |  |
 | filesredis.enabled | bool | `true` |  |
 | filesredis.replicaCount | int | `1` |  |
-| filesredis.image | string | `"registry1.dso.mil/ironbank/bitnami/redis:7.2.4"` |  |
+| filesredis.image.repository | string | `"registry1.dso.mil/ironbank/bitnami/redis"` |  |
+| filesredis.image.tag | string | `"7.2.4"` |  |
 | filesredis.ports[0].containerPort | int | `6379` |  |
 | filesredis.ports[0].name | string | `"redis"` |  |
 | filesredis.volumeClaimTemplates[0].name | string | `"redis-data"` |  |
@@ -355,7 +358,8 @@ helm install rapidfort chart/
 | filesredis.readinessProbe.failureThreshold | int | `10` |  |
 | fileupload.enabled | bool | `true` |  |
 | fileupload.replicaCount | int | `1` |  |
-| fileupload.image | string | `"registry1.dso.mil/ironbank/rapidfort/fileupload:1.1.165-rfhardened"` |  |
+| fileupload.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/fileupload"` |  |
+| fileupload.image.tag | string | `"1.1.165-rfhardened"` |  |
 | fileupload.ports[0].name | string | `"http"` |  |
 | fileupload.ports[0].containerPort | int | `8080` |  |
 | fileupload.ephemeralVolumeClaimTemplates | list | `[]` |  |
@@ -402,7 +406,8 @@ helm install rapidfort chart/
 | fileupload.readinessProbe.failureThreshold | int | `99` |  |
 | frontrow.enabled | bool | `true` |  |
 | frontrow.replicaCount | int | `1` |  |
-| frontrow.image | string | `"registry1.dso.mil/ironbank/rapidfort/frontrow:1.1.165-rfhardened"` |  |
+| frontrow.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/frontrow"` |  |
+| frontrow.image.tag | string | `"1.1.165-2-rfhardened"` |  |
 | frontrow.ports[0].name | string | `"http"` |  |
 | frontrow.ports[0].containerPort | int | `8080` |  |
 | frontrow.volumes | object | `{}` |  |
@@ -434,7 +439,8 @@ helm install rapidfort chart/
 | frontrow.readinessProbe.failureThreshold | int | `10` |  |
 | isomaster.enabled | bool | `true` |  |
 | isomaster.replicaCount | int | `1` |  |
-| isomaster.image | string | `"registry1.dso.mil/ironbank/rapidfort/iso-master-exe:1.1.165-rfhardened"` |  |
+| isomaster.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/iso-master-exe"` |  |
+| isomaster.image.tag | string | `"1.1.165-rfhardened"` |  |
 | isomaster.ports[0].name | string | `"http"` |  |
 | isomaster.ports[0].containerPort | int | `8080` |  |
 | isomaster.ephemeralVolumeClaimTemplates | list | `[]` |  |
@@ -482,7 +488,8 @@ helm install rapidfort chart/
 | isomaster.readinessProbe.failureThreshold | int | `10` |  |
 | keycloak.enabled | bool | `true` |  |
 | keycloak.replicaCount | int | `1` |  |
-| keycloak.image | string | `"registry1.dso.mil/ironbank/rapidfort/keycloak:24.0.1"` |  |
+| keycloak.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/keycloak"` |  |
+| keycloak.image.tag | string | `"24.0.1"` |  |
 | keycloak.ports[0].name | string | `"http"` |  |
 | keycloak.ports[0].containerPort | int | `8080` |  |
 | keycloak.volumes | object | `{}` |  |
@@ -514,7 +521,8 @@ helm install rapidfort chart/
 | keycloak.readinessProbe.failureThreshold | int | `99` |  |
 | lockredis.enabled | bool | `true` |  |
 | lockredis.replicaCount | int | `1` |  |
-| lockredis.image | string | `"registry1.dso.mil/ironbank/bitnami/redis:7.2.4"` |  |
+| lockredis.image.repository | string | `"registry1.dso.mil/ironbank/bitnami/redis"` |  |
+| lockredis.image.tag | string | `"7.2.4"` |  |
 | lockredis.ports[0].containerPort | int | `6379` |  |
 | lockredis.ports[0].name | string | `"redis"` |  |
 | lockredis.volumeClaimTemplates[0].name | string | `"redis-data"` |  |
@@ -548,7 +556,8 @@ helm install rapidfort chart/
 | lockredis.readinessProbe.failureThreshold | int | `10` |  |
 | mysql.enabled | bool | `true` |  |
 | mysql.replicaCount | int | `1` |  |
-| mysql.image | string | `"registry1.dso.mil/ironbank/bitnami/mysql8:8.0.36-debian-11-r1"` |  |
+| mysql.image.repository | string | `"registry1.dso.mil/ironbank/bitnami/mysql8"` |  |
+| mysql.image.tag | string | `"8.0.36-debian-11-r1"` |  |
 | mysql.ports[0].name | string | `"mysql"` |  |
 | mysql.ports[0].containerPort | int | `3306` |  |
 | mysql.volumes[0].name | string | `"mysql-initdb"` |  |
@@ -596,7 +605,8 @@ helm install rapidfort chart/
 | mysql.readinessProbe.failureThreshold | int | `10` |  |
 | redis.enabled | bool | `true` |  |
 | redis.replicaCount | int | `1` |  |
-| redis.image | string | `"registry1.dso.mil/ironbank/bitnami/redis:7.2.4"` |  |
+| redis.image.repository | string | `"registry1.dso.mil/ironbank/bitnami/redis"` |  |
+| redis.image.tag | string | `"7.2.4"` |  |
 | redis.ports[0].containerPort | int | `6379` |  |
 | redis.ports[0].name | string | `"redis"` |  |
 | redis.volumeMounts[0].name | string | `"redis-data"` |  |
@@ -633,7 +643,8 @@ helm install rapidfort chart/
 | redis.readinessProbe.failureThreshold | int | `10` |  |
 | rfscan.enabled | bool | `true` |  |
 | rfscan.replicaCount | int | `1` |  |
-| rfscan.image | string | `"registry1.dso.mil/ironbank/rapidfort/rf-scan-exe:1.1.165-rfhardened"` |  |
+| rfscan.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/rf-scan-exe"` |  |
+| rfscan.image.tag | string | `"1.1.165-rfhardened"` |  |
 | rfscan.ports[0].name | string | `"http"` |  |
 | rfscan.ports[0].containerPort | int | `8080` |  |
 | rfscan.ephemeralVolumeClaimTemplates | list | `[]` |  |
@@ -681,7 +692,8 @@ helm install rapidfort chart/
 | rfscan.readinessProbe.failureThreshold | int | `10` |  |
 | rfapi.enabled | bool | `true` |  |
 | rfapi.replicaCount | int | `1` |  |
-| rfapi.image | string | `"registry1.dso.mil/ironbank/rapidfort/rfapi-exe:1.1.165-rfhardened"` |  |
+| rfapi.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/rfapi-exe"` |  |
+| rfapi.image.tag | string | `"1.1.165-rfhardened"` |  |
 | rfapi.ports[0].name | string | `"http"` |  |
 | rfapi.ports[0].containerPort | int | `8080` |  |
 | rfapi.volumes | object | `{}` |  |
@@ -709,7 +721,8 @@ helm install rapidfort chart/
 | rfapi.readinessProbe | object | `{}` |  |
 | rfpubsub.enabled | bool | `true` |  |
 | rfpubsub.replicaCount | int | `1` |  |
-| rfpubsub.image | string | `"registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe:1.1.165-rfhardened"` |  |
+| rfpubsub.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe"` |  |
+| rfpubsub.image.tag | string | `"1.1.165-rfhardened"` |  |
 | rfpubsub.ports[0].name | string | `"http"` |  |
 | rfpubsub.ports[0].containerPort | int | `8080` |  |
 | rfpubsub.volumes | object | `{}` |  |
@@ -738,7 +751,8 @@ helm install rapidfort chart/
 | rfpubsub.readinessProbe | object | `{}` |  |
 | runner.enabled | bool | `true` |  |
 | runner.replicaCount | int | `1` |  |
-| runner.image | string | `"registry1.dso.mil/ironbank/rapidfort/runner:1.1.165-rfhardened"` |  |
+| runner.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/runner"` |  |
+| runner.image.tag | string | `"1.1.165-rfhardened"` |  |
 | runner.ports[0].name | string | `"http"` |  |
 | runner.ports[0].containerPort | int | `8080` |  |
 | runner.ephemeralVolumeClaimTemplates[0].name | string | `"var-lib-containers"` |  |
@@ -788,7 +802,8 @@ helm install rapidfort chart/
 | runner.readinessProbe.failureThreshold | int | `10` |  |
 | rfvdb.enabled | bool | `false` |  |
 | rfvdb.replicaCount | int | `1` |  |
-| rfvdb.image | string | `"registry1.dso.mil/ironbank/rapidfort/rfvdb:1.1.45-rfhardened"` |  |
+| rfvdb.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/rfvdb"` |  |
+| rfvdb.image.tag | string | `"1.1.45-rfhardened"` |  |
 | rfvdb.ports[0].name | string | `"http"` |  |
 | rfvdb.ports[0].containerPort | int | `8080` |  |
 | rfvdb.volumes | object | `{}` |  |
@@ -826,7 +841,8 @@ helm install rapidfort chart/
 | rfvdb.readinessProbe.failureThreshold | int | `10` |  |
 | vulnsdb.enabled | bool | `true` |  |
 | vulnsdb.replicaCount | int | `1` |  |
-| vulnsdb.image | string | `"registry1.dso.mil/ironbank/rapidfort/vulns-db:1.1.165-rfhardened"` |  |
+| vulnsdb.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/vulns-db"` |  |
+| vulnsdb.image.tag | string | `"1.1.165-rfhardened"` |  |
 | vulnsdb.ports[0].name | string | `"http"` |  |
 | vulnsdb.ports[0].containerPort | int | `8080` |  |
 | vulnsdb.volumes | object | `{}` |  |

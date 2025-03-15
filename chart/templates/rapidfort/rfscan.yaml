@@ -8,6 +8,8 @@ metadata:
   name: rfscan
   labels:
     app.kubernetes.io/name: rfscan
+    app.kubernetes.io/instance: rfscan
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.rfscan.replicaCount }}
   selector:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: rfscan
+        app.kubernetes.io/instance: rfscan
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.rfscan.podSecurityContext }}
       securityContext:
@@ -53,7 +57,7 @@ spec:
           {{- if .Values.rfscan.containerSecurityContext }}
           securityContext: {{- toYaml .Values.rfscan.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.rfscan.image }}
+          image: "{{ .Values.rfscan.image.repository }}:{{ .Values.rfscan.image.tag }}"
           imagePullPolicy: IfNotPresent
           volumeMounts:          
           {{- if .Values.rfscan.volumeMounts }}

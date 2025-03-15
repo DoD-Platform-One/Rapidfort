@@ -8,6 +8,8 @@ metadata:
   name: keycloak
   labels:
     app.kubernetes.io/name: keycloak
+    app.kubernetes.io/instance: keycloak
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.keycloak.replicaCount }}
   selector:
@@ -17,14 +19,17 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: keycloak
+        app.kubernetes.io/instance: keycloak
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.keycloak.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.keycloak.podSecurityContext | nindent 8 }}
       {{- end }}
-      volumes:
       {{- if .Values.keycloak.volumes }}
+      volumes:      
         {{- tpl (toYaml (index .Values.keycloak.volumes )) . | nindent 8 }}
+      {{- else }}      
       {{- end }}
       {{- if .Values.db.ssl }}
         {{- if .Values.db.ssl.certFile }}
@@ -44,10 +49,10 @@ spec:
           {{- if .Values.keycloak.containerSecurityContext }}
           securityContext: {{- toYaml .Values.keycloak.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.keycloak.image }}
+          image: {{ .Values.keycloak.image.repository }}:{{ .Values.keycloak.image.tag }}
           imagePullPolicy: IfNotPresent
-          volumeMounts:          
           {{- if .Values.keycloak.volumeMounts }}
+          volumeMounts:          
             {{- toYaml (index .Values.keycloak.volumeMounts ) | nindent 12 }}
           {{- end }}
           {{- if .Values.db.ssl }}

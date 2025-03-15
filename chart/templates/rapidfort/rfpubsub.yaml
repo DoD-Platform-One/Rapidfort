@@ -8,6 +8,8 @@ metadata:
   name: rfpubsub
   labels:
     app.kubernetes.io/name: rfpubsub
+    app.kubernetes.io/instance: rfpubsub
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.rfpubsub.replicaCount }}
   selector:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: rfpubsub
+        app.kubernetes.io/instance: rfpubsub
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.rfpubsub.podSecurityContext }}
       securityContext:
@@ -43,7 +47,7 @@ spec:
           {{- if .Values.rfpubsub.containerSecurityContext }}
           securityContext: {{- toYaml .Values.rfpubsub.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.rfpubsub.image }}
+          image: "{{ .Values.rfpubsub.image.repository }}:{{ .Values.rfpubsub.image.tag }}"
           imagePullPolicy: IfNotPresent
           {{- if .Values.rfpubsub.volumeMounts }}
           volumeMounts:
