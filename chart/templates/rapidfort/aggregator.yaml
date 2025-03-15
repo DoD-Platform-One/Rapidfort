@@ -8,6 +8,8 @@ metadata:
   name: aggregator
   labels:
     app.kubernetes.io/name: aggregator
+    app.kubernetes.io/instance: aggregator
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.aggregator.replicaCount }}
   selector:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: aggregator
+        app.kubernetes.io/instance: aggregator
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.aggregator.podSecurityContext }}
       securityContext:
@@ -51,7 +55,7 @@ spec:
           {{- if .Values.aggregator.containerSecurityContext }}
           securityContext: {{- toYaml .Values.aggregator.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.aggregator.image }}
+          image: "{{ .Values.aggregator.image.repository }}:{{ .Values.aggregator.image.tag }}"
           imagePullPolicy: IfNotPresent
           {{- if .Values.aggregator.volumeMounts }}
           volumeMounts:

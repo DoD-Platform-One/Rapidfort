@@ -8,6 +8,8 @@ metadata:
   name: lock-redis
   labels:
     app.kubernetes.io/name: lock-redis
+    app.kubernetes.io/instance: lock-redis
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   serviceName: lock-redis
   replicas: {{ .Values.lockredis.replicaCount }}
@@ -24,6 +26,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: lock-redis
+        app.kubernetes.io/instance: lock-redis
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.lockredis.podSecurityContext }}
       securityContext:
@@ -46,7 +50,7 @@ spec:
           {{- if .Values.lockredis.containerSecurityContext }}
           securityContext: {{- toYaml .Values.lockredis.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.lockredis.image }}
+          image: "{{ .Values.lockredis.image.repository }}:{{ .Values.lockredis.image.tag }}"
           imagePullPolicy: IfNotPresent
           {{- if .Values.lockredis.volumeMounts }}
           volumeMounts:

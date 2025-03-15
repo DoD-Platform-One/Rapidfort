@@ -8,6 +8,8 @@ metadata:
   name: frontrow
   labels:
     app.kubernetes.io/name: frontrow
+    app.kubernetes.io/instance: frontrow
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.frontrow.replicaCount }}
   selector:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: frontrow
+        app.kubernetes.io/instance: frontrow
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.frontrow.podSecurityContext }}
       securityContext:
@@ -39,7 +43,7 @@ spec:
           {{- if .Values.frontrow.containerSecurityContext }}
           securityContext: {{- toYaml .Values.frontrow.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.frontrow.image }}
+          image: "{{ .Values.frontrow.image.repository }}:{{ .Values.frontrow.image.tag }}"
           imagePullPolicy: IfNotPresent
           {{- if .Values.frontrow.volumeMounts }}
           volumeMounts:

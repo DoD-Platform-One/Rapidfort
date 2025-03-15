@@ -8,6 +8,8 @@ metadata:
   name: mysql
   labels:
     app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   serviceName: mysql
   replicas: {{ .Values.mysql.replicaCount }}
@@ -24,6 +26,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: mysql
+        app.kubernetes.io/instance: mysql
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.mysql.podSecurityContext }}
       securityContext:
@@ -46,7 +50,7 @@ spec:
           {{- if .Values.mysql.containerSecurityContext }}
           securityContext: {{- toYaml .Values.mysql.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.mysql.image }}
+          image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
           imagePullPolicy: IfNotPresent
           {{- if .Values.mysql.volumeMounts }}
           volumeMounts:

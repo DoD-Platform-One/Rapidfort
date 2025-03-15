@@ -2,11 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [1.2.5-bb.0]
-- RapidFort Release 1.1.165
+## [1.2.5-bb.3]
+- Update values for image to change to image.repository and image.tag.
+
+## [1.2.5-bb.2]
+- RapidFort Release 1.1.165 patch 2.
+
+## [1.2.5-bb.1]
+- RapidFort Release 1.1.165 patch.
 
 ## [1.2.5-bb.0]
-- Update RapidFort Service Entry configuration to make it local.
+- RapidFort Release 1.1.165
 
 ## [1.2.4-bb.15]
 - Update RapidFort Service Entry configuration to make it local.

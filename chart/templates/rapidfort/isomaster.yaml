@@ -8,6 +8,8 @@ metadata:
   name: isomaster
   labels:
     app.kubernetes.io/name: isomaster
+    app.kubernetes.io/instance: isomaster
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.isomaster.replicaCount }}
   selector:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: isomaster
+        app.kubernetes.io/instance: isomaster
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
@@ -49,7 +53,7 @@ spec:
       containers:
         - name: isomaster
           securityContext: {{- toYaml .Values.isomaster.containerSecurityContext | nindent 12 }}
-          image: {{ .Values.isomaster.image }}
+          image: "{{ .Values.isomaster.image.repository }}:{{ .Values.isomaster.image.tag }}"
           imagePullPolicy: IfNotPresent
           volumeMounts:
           {{- if .Values.isomaster.volumeMounts }}          

@@ -8,6 +8,8 @@ metadata:
   name: rfapi
   labels:
     app.kubernetes.io/name: rfapi
+    app.kubernetes.io/instance: rfapi
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.rfapi.replicaCount }}
   selector:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: rfapi
+        app.kubernetes.io/instance: rfapi
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.rfapi.podSecurityContext }}
       securityContext:
@@ -43,7 +47,7 @@ spec:
           {{- if .Values.rfapi.containerSecurityContext }}
           securityContext: {{- toYaml .Values.rfapi.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.rfapi.image }}
+          image: "{{ .Values.rfapi.image.repository }}:{{ .Values.rfapi.image.tag }}"
           imagePullPolicy: IfNotPresent
           {{- if .Values.rfapi.volumeMounts }}
           volumeMounts:

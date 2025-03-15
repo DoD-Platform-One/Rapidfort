@@ -8,12 +8,14 @@ metadata:
   name: redis
   labels:
     app.kubernetes.io/name: redis
+    app.kubernetes.io/instance: redis
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   serviceName: redis
   replicas: {{ .Values.redis.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: redis   
+      app.kubernetes.io/name: redis
   {{- if .Values.redis.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range .Values.redis.volumeClaimTemplates -}}
@@ -24,6 +26,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: redis
+        app.kubernetes.io/instance: redis
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.redis.podSecurityContext }}
       securityContext:
@@ -46,7 +50,7 @@ spec:
           {{- if .Values.redis.containerSecurityContext }}
           securityContext: {{- toYaml .Values.redis.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: "{{ .Values.redis.image }}"
+          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
           {{- if .Values.redis.command }}
           command: {{- toYaml .Values.redis.command | nindent 12 }}
           {{- end }}

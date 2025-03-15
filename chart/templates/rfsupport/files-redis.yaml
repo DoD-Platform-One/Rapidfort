@@ -8,6 +8,8 @@ metadata:
   name: files-redis
   labels:
     app.kubernetes.io/name: files-redis
+    app.kubernetes.io/instance: files-redis
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.filesredis.replicaCount }}
   selector:
@@ -24,6 +26,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: files-redis
+        app.kubernetes.io/instance: files-redis
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.filesredis.podSecurityContext }}
       securityContext:
@@ -46,7 +50,7 @@ spec:
           {{- if .Values.filesredis.containerSecurityContext }}
           securityContext: {{- toYaml .Values.filesredis.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.filesredis.image }}
+          image: "{{ .Values.filesredis.image.repository }}:{{ .Values.filesredis.image.tag }}"
           imagePullPolicy: IfNotPresent
           {{- if .Values.filesredis.volumeMounts }}
           volumeMounts:

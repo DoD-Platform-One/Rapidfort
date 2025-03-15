@@ -8,6 +8,8 @@ metadata:
   name: vulnsdb
   labels:
     app.kubernetes.io/name: vulnsdb
+    app.kubernetes.io/instance: vulnsdb
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.vulnsdb.replicaCount }}
   selector:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: vulnsdb
+        app.kubernetes.io/instance: vulnsdb
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
     spec:
       {{- if .Values.vulnsdb.podSecurityContext }}
       securityContext:
@@ -43,7 +47,7 @@ spec:
           {{- if .Values.vulnsdb.containerSecurityContext }}
           securityContext: {{- toYaml .Values.vulnsdb.containerSecurityContext | nindent 12 }}
           {{- end }}
-          image: {{ .Values.vulnsdb.image }}
+          image: "{{ .Values.vulnsdb.image.repository }}:{{ .Values.vulnsdb.image.tag }}"
           imagePullPolicy: IfNotPresent
           {{- if .Values.vulnsdb.volumeMounts }}
           volumeMounts:
