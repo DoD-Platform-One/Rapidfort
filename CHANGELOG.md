@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.5-bb.4]
+- fix volume mount.
+
 ## [1.2.5-bb.3]
 - Update values for image to change to image.repository and image.tag.
 

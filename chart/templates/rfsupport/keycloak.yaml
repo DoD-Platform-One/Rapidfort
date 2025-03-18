@@ -26,8 +26,8 @@ spec:
       securityContext:
         {{- toYaml .Values.keycloak.podSecurityContext | nindent 8 }}
       {{- end }}
-      {{- if .Values.keycloak.volumes }}
       volumes:      
+      {{- if .Values.keycloak.volumes }}
         {{- tpl (toYaml (index .Values.keycloak.volumes )) . | nindent 8 }}
       {{- else }}      
       {{- end }}
@@ -51,8 +51,8 @@ spec:
           {{- end }}
           image: {{ .Values.keycloak.image.repository }}:{{ .Values.keycloak.image.tag }}
           imagePullPolicy: IfNotPresent
-          {{- if .Values.keycloak.volumeMounts }}
           volumeMounts:          
+          {{- if .Values.keycloak.volumeMounts }}
             {{- toYaml (index .Values.keycloak.volumeMounts ) | nindent 12 }}
           {{- end }}
           {{- if .Values.db.ssl }}

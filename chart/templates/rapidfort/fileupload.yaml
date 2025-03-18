@@ -26,8 +26,8 @@ spec:
       securityContext:
         {{- toYaml .Values.fileupload.podSecurityContext | nindent 8 }}
       {{- end }}   
+      volumes:
       {{- if .Values.fileupload.volumes }}
-      volumes:         
         {{- tpl (toYaml (index .Values.fileupload.volumes )) . | nindent 8 }}
       {{- end }}
       {{- if .Values.fileupload.ephemeralVolumeClaimTemplates }}
@@ -59,8 +59,8 @@ spec:
           {{- end }}
           image: "{{ .Values.fileupload.image.repository }}:{{ .Values.fileupload.image.tag }}"
           imagePullPolicy: IfNotPresent
-          {{- if .Values.fileupload.volumeMounts }}
           volumeMounts:          
+          {{- if .Values.fileupload.volumeMounts }}
             {{- toYaml (index .Values.fileupload.volumeMounts ) | nindent 12 }}
           {{- end }}
           {{- if .Values.db.ssl }}

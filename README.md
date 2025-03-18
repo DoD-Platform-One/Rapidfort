@@ -151,7 +151,7 @@ _This file is programatically generated using `helm-docs` and some BigBang-speci
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # rapidfort
 
-![Version: 1.2.5-bb.3](https://img.shields.io/badge/Version-1.2.5--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.4](https://img.shields.io/badge/Version-1.2.5--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 Automated Container Hardening
 
@@ -211,6 +211,7 @@ helm install rapidfort chart/
 | global.keycloak_service_account_client_secret | string | `""` |  |
 | global.api_key | string | `""` |  |
 | serviceAccount.create | bool | `true` |  |
+| serviceAccount.automountServiceAccountToken | bool | `true` |  |
 | storageClass.create | bool | `true` |  |
 | storageClass.name | string | `"rf-storage-rw"` |  |
 | db.auth.username | string | `"root"` |  |
@@ -286,6 +287,7 @@ helm install rapidfort chart/
 | backend.resources.requests.cpu | string | `"500m"` |  |
 | backend.resources.requests.memory | string | `"512Mi"` |  |
 | backend.envVars.AUTH_SERVER_ROOT_URL | string | `"http://keycloak"` |  |
+| backend.envVars.RF_INTERNAL_KEYCLOAK_URL | string | `"keycloak:9000"` |  |
 | backend.envVars.LC_ALL | string | `"en_US.UTF-8"` |  |
 | backend.envVars.QUAY_ENABLED_RF_APP_HOST | string | `"preprod.azure.rapidfort.io us01.rapidfort.com"` |  |
 | backend.envVarsSecret[0] | string | `"RF_APP_HOST"` |  |
@@ -492,8 +494,8 @@ helm install rapidfort chart/
 | keycloak.image.tag | string | `"24.0.1"` |  |
 | keycloak.ports[0].name | string | `"http"` |  |
 | keycloak.ports[0].containerPort | int | `8080` |  |
-| keycloak.volumes | object | `{}` |  |
-| keycloak.volumeMounts | object | `{}` |  |
+| keycloak.volumes | list | `[]` |  |
+| keycloak.volumeMounts | list | `[]` |  |
 | keycloak.podSecurityContext | object | `{}` |  |
 | keycloak.containerSecurityContext | object | `{}` |  |
 | keycloak.service.type | string | `"ClusterIP"` |  |
@@ -701,6 +703,7 @@ helm install rapidfort chart/
 | rfapi.initContainers | list | `[]` |  |
 | rfapi.service.port | int | `80` |  |
 | rfapi.service.targetPort | int | `8080` |  |
+| rfapi.service.type | string | `"ClusterIP"` |  |
 | rfapi.ingress.ingressClassName | string | `""` |  |
 | rfapi.ingress.http.annotations."nginx.ingress.kubernetes.io/proxy-read-timeout" | string | `"3600"` |  |
 | rfapi.ingress.http.hosts[0].host | string | `nil` |  |
