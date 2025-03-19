@@ -151,7 +151,7 @@ _This file is programatically generated using `helm-docs` and some BigBang-speci
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # rapidfort
 
-![Version: 1.2.5-bb.4](https://img.shields.io/badge/Version-1.2.5--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.5](https://img.shields.io/badge/Version-1.2.5--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 Automated Container Hardening
 
@@ -545,7 +545,8 @@ helm install rapidfort chart/
 | lockredis.service.type | string | `"ClusterIP"` |  |
 | lockredis.service.port | int | `6379` |  |
 | lockredis.ingress | object | `{}` |  |
-| lockredis.resources | object | `{}` |  |
+| lockredis.resources.requests.cpu | string | `"500m"` |  |
+| lockredis.resources.requests.memory | string | `"1024Mi"` |  |
 | lockredis.envVars.ALLOW_EMPTY_PASSWORD | string | `"yes"` |  |
 | lockredis.envVars.REDIS_AOF_ENABLED | string | `"no"` |  |
 | lockredis.envVarsSecret | object | `{}` |  |

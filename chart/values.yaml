@@ -512,7 +512,10 @@ lockredis:
     type: ClusterIP
     port: 6379
   ingress: {}
-  resources: {}
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1024Mi"
   envVars:
     ALLOW_EMPTY_PASSWORD: "yes"
     REDIS_AOF_ENABLED: "no"
