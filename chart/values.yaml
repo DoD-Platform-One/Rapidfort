@@ -316,7 +316,7 @@ frontrow:
   replicaCount: 1
   image: 
     repository: registry1.dso.mil/ironbank/rapidfort/frontrow
-    tag: 1.1.165-2-rfhardened
+    tag: 1.1.194-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -829,7 +829,7 @@ runner:
   replicaCount: 1
   image: 
     repository: registry1.dso.mil/ironbank/rapidfort/runner
-    tag: 1.1.165-rfhardened
+    tag: 1.1.194-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -955,7 +955,7 @@ vulnsdb:
   replicaCount: 1
   image: 
     repository: registry1.dso.mil/ironbank/rapidfort/vulns-db
-    tag: 1.1.165-rfhardened
+    tag: 1.1.194-rfhardened
   ports:
     - name: http
       containerPort: 8080
