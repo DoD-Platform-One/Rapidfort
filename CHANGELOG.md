@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.5-bb.6]
+- RapidFort Release 1.1.165 Patch 3
+
 ## [1.2.5-bb.5]
 - Update resource requirement for lock redis.
 

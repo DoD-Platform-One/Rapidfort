@@ -115,6 +115,7 @@ metadata:
 spec:
   type: {{ .Values.keycloak.service.type }}
   ports:
+  ports:
     - port: {{ .Values.keycloak.service.port }}
       protocol: TCP
       name: {{ .Values.keycloak.service.targetPort }}

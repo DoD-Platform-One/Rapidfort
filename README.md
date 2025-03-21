@@ -151,7 +151,7 @@ _This file is programatically generated using `helm-docs` and some BigBang-speci
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # rapidfort
 
-![Version: 1.2.5-bb.5](https://img.shields.io/badge/Version-1.2.5--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.6](https://img.shields.io/badge/Version-1.2.5--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165-1](https://img.shields.io/badge/AppVersion-1.1.165--1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 Automated Container Hardening
 
@@ -409,7 +409,7 @@ helm install rapidfort chart/
 | frontrow.enabled | bool | `true` |  |
 | frontrow.replicaCount | int | `1` |  |
 | frontrow.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/frontrow"` |  |
-| frontrow.image.tag | string | `"1.1.165-2-rfhardened"` |  |
+| frontrow.image.tag | string | `"1.1.194-rfhardened"` |  |
 | frontrow.ports[0].name | string | `"http"` |  |
 | frontrow.ports[0].containerPort | int | `8080` |  |
 | frontrow.volumes | object | `{}` |  |
@@ -499,10 +499,10 @@ helm install rapidfort chart/
 | keycloak.podSecurityContext | object | `{}` |  |
 | keycloak.containerSecurityContext | object | `{}` |  |
 | keycloak.service.type | string | `"ClusterIP"` |  |
-| keycloak.service.port | int | `80` |  |
-| keycloak.service.healthPort | int | `9000` |  |
-| keycloak.service.targetPort | string | `"http"` |  |
-| keycloak.service.targetHealthPort | string | `"http"` |  |
+| keycloak.service.port | int | `9000` |  |
+| keycloak.service.healthPort | int | `8080` |  |
+| keycloak.service.targetPort | int | `8080` |  |
+| keycloak.service.targetHealthPort | int | `8080` |  |
 | keycloak.ingress.enabled | bool | `false` |  |
 | keycloak.ingress.className | string | `""` |  |
 | keycloak.ingress.annotations | string | `nil` |  |
@@ -756,7 +756,7 @@ helm install rapidfort chart/
 | runner.enabled | bool | `true` |  |
 | runner.replicaCount | int | `1` |  |
 | runner.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/runner"` |  |
-| runner.image.tag | string | `"1.1.165-rfhardened"` |  |
+| runner.image.tag | string | `"1.1.194-rfhardened"` |  |
 | runner.ports[0].name | string | `"http"` |  |
 | runner.ports[0].containerPort | int | `8080` |  |
 | runner.ephemeralVolumeClaimTemplates[0].name | string | `"var-lib-containers"` |  |
@@ -846,7 +846,7 @@ helm install rapidfort chart/
 | vulnsdb.enabled | bool | `true` |  |
 | vulnsdb.replicaCount | int | `1` |  |
 | vulnsdb.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/vulns-db"` |  |
-| vulnsdb.image.tag | string | `"1.1.165-rfhardened"` |  |
+| vulnsdb.image.tag | string | `"1.1.194-rfhardened"` |  |
 | vulnsdb.ports[0].name | string | `"http"` |  |
 | vulnsdb.ports[0].containerPort | int | `8080` |  |
 | vulnsdb.volumes | object | `{}` |  |
