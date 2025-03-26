@@ -115,7 +115,6 @@ metadata:
 spec:
   type: {{ .Values.keycloak.service.type }}
   ports:
-  ports:
     - port: {{ .Values.keycloak.service.port }}
       protocol: TCP
       name: {{ .Values.keycloak.service.targetPort }}
@@ -123,7 +122,7 @@ spec:
     - port: {{ .Values.keycloak.service.healthPort }}
       protocol: TCP
       name: health
-      targetPort: {{ .Values.keycloak.service.targetPort }}
+      targetPort: {{ .Values.keycloak.service.targetHealthPort }}
   selector:
     app.kubernetes.io/name: keycloak
 # Option to enable ingress when there is something to debug with KeyCloak service.    
