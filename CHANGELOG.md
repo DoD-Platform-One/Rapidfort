@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.5-bb.7]
+- RapidFort Release 1.1.165, helm chart fix for keycloak service.
+
 ## [1.2.5-bb.6]
 - RapidFort Release 1.1.165 Patch 3
 

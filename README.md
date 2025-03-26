@@ -151,7 +151,7 @@ _This file is programatically generated using `helm-docs` and some BigBang-speci
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # rapidfort
 
-![Version: 1.2.5-bb.6](https://img.shields.io/badge/Version-1.2.5--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165-1](https://img.shields.io/badge/AppVersion-1.1.165--1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.7](https://img.shields.io/badge/Version-1.2.5--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165-1](https://img.shields.io/badge/AppVersion-1.1.165--1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 Automated Container Hardening
 
@@ -499,10 +499,10 @@ helm install rapidfort chart/
 | keycloak.podSecurityContext | object | `{}` |  |
 | keycloak.containerSecurityContext | object | `{}` |  |
 | keycloak.service.type | string | `"ClusterIP"` |  |
-| keycloak.service.port | int | `9000` |  |
-| keycloak.service.healthPort | int | `8080` |  |
-| keycloak.service.targetPort | int | `8080` |  |
-| keycloak.service.targetHealthPort | int | `8080` |  |
+| keycloak.service.port | int | `80` |  |
+| keycloak.service.healthPort | int | `9000` |  |
+| keycloak.service.targetPort | string | `"http"` |  |
+| keycloak.service.targetHealthPort | string | `"http"` |  |
 | keycloak.ingress.enabled | bool | `false` |  |
 | keycloak.ingress.className | string | `""` |  |
 | keycloak.ingress.annotations | string | `nil` |  |
