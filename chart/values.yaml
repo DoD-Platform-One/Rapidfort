@@ -54,9 +54,9 @@ db:
 aggregator:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/aggregator-exe
-    tag: 1.1.165-rfhardened
+    tag: 1.1.207-rfhardened
   ports: {}
   ephemeralVolumeClaimTemplates:
     - name: aggregator-data
@@ -104,9 +104,9 @@ aggregator:
 backend:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/backend-exe
-    tag: 1.1.165-rfhardened
+    tag: 1.1.223-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -197,9 +197,9 @@ backend:
 filesredis:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/bitnami/redis
-    tag: 7.2.4
+    tag: 7.2.4  
   ports:
     - containerPort: 6379
       name: redis
@@ -250,9 +250,9 @@ filesredis:
 fileupload:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/fileupload
-    tag: 1.1.165-rfhardened
+    tag: 1.1.207-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -314,9 +314,9 @@ fileupload:
 frontrow:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/frontrow
-    tag: 1.1.194-rfhardened
+    tag: 1.1.207-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -363,9 +363,9 @@ frontrow:
 isomaster:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/iso-master-exe
-    tag: 1.1.165-rfhardened
+    tag: 1.1.207-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -535,7 +535,7 @@ lockredis:
 mysql:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/bitnami/mysql8
     tag: 8.0.36-debian-11-r1
   ports:
@@ -601,7 +601,7 @@ mysql:
 redis:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/bitnami/redis
     tag: 7.2.4
   ports:
@@ -654,9 +654,9 @@ redis:
 rfscan:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe
-    tag: 1.1.165-rfhardened
+    tag: 1.1.207-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -723,9 +723,9 @@ rfscan:
 rfapi:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/rfapi-exe
-    tag: 1.1.165-rfhardened
+    tag: 1.1.207-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -777,9 +777,9 @@ rfapi:
 rfpubsub:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe
-    tag: 1.1.165-rfhardened
+    tag: 1.1.207-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -827,9 +827,9 @@ rfpubsub:
 runner:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/runner
-    tag: 1.1.194-rfhardened
+    tag: 1.1.207-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -897,7 +897,7 @@ runner:
 rfvdb:
   enabled: false
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/rfvdb
     tag: 1.1.45-rfhardened
   ports:
@@ -953,9 +953,9 @@ rfvdb:
 vulnsdb:
   enabled: true
   replicaCount: 1
-  image: 
+  image:
     repository: registry1.dso.mil/ironbank/rapidfort/vulns-db
-    tag: 1.1.194-rfhardened
+    tag: 1.1.207-rfhardened
   ports:
     - name: http
       containerPort: 8080
