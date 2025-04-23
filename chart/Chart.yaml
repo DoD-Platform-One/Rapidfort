@@ -1,8 +1,8 @@
 apiVersion: v2
 name: rapidfort
-description: Automated Container Hardening
+description: RapidFort Big Bang Helm Chart
 type: application
-version: 1.2.5-bb.8
+version: 1.2.5-bb.9
 appVersion: 1.1.207
 dependencies:
   - name: gluon
