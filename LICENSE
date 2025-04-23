@@ -1,202 +1,46 @@
+End-User License Agreement 
+PLEASE READ THIS END-USER LICENSE AGREEMENT (“TERMS”) CAREFULLY BEFORE USING THE LICENSED PRODUCTS OFFERED BY RAPIDFORT, INC. (“RAPIDFORT”).  CUSTOMER (“CUSTOMER”) AGREES TO BE BOUND BY THESE TERMS (TOGETHER WITH THE MASTER AGREEMENT, THE “AGREEMENT”) TO THE EXCLUSION OF ALL OTHER TERMS.  IF THE TERMS OF THIS AGREEMENT ARE CONSIDERED AN OFFER, ACCEPTANCE IS EXPRESSLY LIMITED TO SUCH TERMS.
 
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+Licensed Products
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+Subject to Customer’s compliance with these Terms, RapidFort grants Customer a limited, personal, non-sublicensable, non-transferable, nonexclusive license during the Term to use internally the licensed product(s) specified in the Agreement (collectively, the “Licensed Product,” or “Licensed Products”) during the Term (as defined below) for the internal business purposes of Customer, only as provided herein and only in accordance with RapidFort’s applicable official user documentation (the “Documentation”).  RapidFort shall provide access to the Licensed Products solely pursuant to one or more license key(s) delivered to Customer for the applicable Licensed Product. Customer acknowledges that any Licensed Products provided to Customer without charge (a) may have limited features, functions, or other limitations of any kind, and may not be functional or may not operate correctly; (b) may not be at the level of performance or compatibility of generally available version of the Licensed Products; and (c) may be modified from time to time without notice. 
 
-   1. Definitions.
+Support & Maintenance; Upgrades
 
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+From time to time, RapidFort may provide upgrades, patches, enhancements, or fixes for the Licensed Products to its customers generally without additional charge (“Updates”), and such Updates will become part of the Licensed Products and subject to these Terms; provided that RapidFort shall have no obligation under these Terms or otherwise to provide any such Updates. Customer understands that RapidFort may cease supporting old versions or releases of the Licensed Products at any time in its sole discretion; provided that RapidFort shall use commercially reasonable efforts to give Customer prior notice of any major changes.
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
+Ownership; Feedback
 
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
+As between the parties, RapidFort retains all right, title, and interest in and to the Licensed Products, and all software, products, works, and other intellectual property and moral rights related thereto or created, used, or provided by RapidFort for the purposes of this Agreement, including any copies and derivative works of the foregoing.  Any software which is distributed or otherwise provided to Customer hereunder shall be deemed a part of the “Licensed Products” and subject to these Terms.  RapidFort grants no rights or licenses to Customer except for those rights and licenses expressly and unambiguously set forth in these Terms.  From time to time Customer may, but is not obligated to, provide suggestions, comments or other feedback to RapidFort with respect to the Licensed Products or RapidFort’s business (“Feedback”).  Feedback, even if designated as confidential by Customer, shall not create any confidentiality obligation for RapidFort notwithstanding anything else.  Customer shall, and hereby does, grant to RapidFort a nonexclusive, worldwide, perpetual, irrevocable, transferable, sublicensable, royalty-free, fully paid up license to use, modify and exploit the Feedback for any purpose.  Nothing in this Agreement will impair RapidFort’s right to develop, acquire, license, market, promote or distribute products, software or technologies that perform the same or similar functions as, or otherwise compete with any products, software or technologies that Customer may develop, produce, market, or distribute.
 
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
+Equipment
 
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
+The Customer server(s) (and related or peripheral equipment and software) on which the Licensed Product is to be installed (the “Equipment”).    Customer will maintain the Equipment in good working order (including but not limited to backup, recovery, and reboot services as necessary).  Customer will have full responsibility for security of all Equipment (physical, electronic and otherwise) such that no person or entity other than Customer will have any direct or indirect access to any Licensed Product. RapidFort will have no obligation to insure or be responsible for any loss or damage to property of any kind owned or leased by Customer or its employees, contractors, and agents. Upon any termination or expiration of this Agreement, Customer upon request, will confirm removal of all RapidFort property, including but not limited to Licensed Product.
 
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
+Additional Restrictions
 
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
+Except as expressly set forth in these Terms, Customer shall not (and shall not permit any third party to), directly or indirectly: (a) reverse engineer, decompile, disassemble, or otherwise attempt to discover the source code, object code, or underlying structure, ideas, or algorithms of the Licensed Product (except to the extent applicable laws specifically prohibit such restriction); (b) modify, translate, or create derivative works based on the Licensed Product; (c) copy, rent, lease, distribute, pledge, assign, or otherwise transfer or encumber rights to the Licensed Product; (d) use the Licensed Product for the benefit of a third party; (e) remove or otherwise alter any proprietary notices or labels from the Licensed Product or any portion thereof; (f) use the Licensed Product to build an application or product that is competitive with any RapidFort product or service; (g) interfere or attempt to interfere with the proper working of the Licensed Product or any activities conducted on the Licensed Product;  (h) bypass any measures (including license keys) RapidFort may use to prevent or restrict access to the Licensed Product (or other accounts, computer systems or networks connected to the Licensed Product); or (i) violate any applicable law or regulation, or any third party intellectual property, proprietary, or contractual rights, in connection with these Terms or Customer’s use of the Licensed Product. Customer is responsible for all of Customer’s activity in connection with the Licensed Product, including but not limited to importing or storing data on the Licensed Product. Customer acknowledges and agrees that the Licensed Products (including, without limitation, any source code contained therein to which Customer may be given access hereunder), the Documentation, and any other non-public information relating to the Licensed Products and/or the business of RapidFort  (collectively, the “RapidFort Materials”) represent valuable trade secret and confidential information of RapidFort.  Accordingly, Customer (x) shall not use any RapidFort Materials except as expressly set forth herein, (y) shall not disclose any RapidFort Materials to any third party, and (z) shall use reasonable efforts to prevent any such unauthorized use or disclosure (but at least the same efforts that Customer uses to protect its own most highly sensitive and confidential information).  Customer acknowledges and agrees that due to the unique nature of the RapidFort Materials, there can be no adequate remedy at law for any breach of its obligations under this Section 5, which breach may result in irreparable harm to RapidFort, and therefore, that upon any such breach or any threat thereof, RapidFort shall be entitled to appropriate equitable relief, without the requirement of posting a bond, in addition to whatever remedies it might have at law.
 
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
+Term; Termination
 
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
+These Terms shall commence upon the effective date set forth in the Master Agreement (“Effective Date”), and, unless earlier terminated in accordance with the Agreement, shall continue until expiration as set forth in the Master Agreement (collectively, the “Term”). In the event of a material breach of these Terms by either party, the non-breaching party may terminate this Agreement by providing written notice to the breaching party, provided that the breaching party does not materially cure such breach within thirty (30) days of receipt of such notice.  Upon termination or expiration of this Agreement, Customer shall promptly cease use of all applicable Licensed Products, and shall delete all copies and license keys thereof (and, upon request, shall certify such destruction in writing to RapidFort).  All provisions of these Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability. 
 
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
+Indemnification
 
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
+Customer (“Indemnitor”) shall defend, indemnify, and hold harmless RapidFort, its affiliates and each of its and its affiliates’ employees, contractors, directors, suppliers and representatives (collectively, the “Indemnitee”) from all liabilities, claims, and expenses paid or payable to an unaffiliated third party (including reasonable attorneys’ fees) (“Losses”), that arise from or relate to Customer’s breach of these Terms. Indemnitor’s indemnification obligations hereunder shall be conditioned upon the Indemnitee providing the Indemnitor with: (i) prompt written notice of any claim (provided that a failure to provide such notice shall only relieve the Indemnitor of its indemnity obligations if the Indemnitor is materially prejudiced by such failure); (ii) the option to assume sole control over the defense and settlement of any claim (provided that the Indemnitee may participate in such defense and settlement at its own expense); and (iii) reasonable information and assistance in connection with such defense and settlement (at the Indemnitor’s expense).
 
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
+Disclaimer
 
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
+EXCEPT AS EXPRESSLY SET FORTH HEREIN, THE LICENSED PRODUCTS ARE PROVIDED “AS IS” AND “AS AVAILABLE” AND ARE WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND ANY WARRANTIES IMPLIED BY ANY COURSE OF PERFORMANCE, USAGE OF TRADE, OR COURSE OF DEALING, ALL OF WHICH ARE EXPRESSLY DISCLAIMED. WITHOUT LIMITING THE GENERALITY OF THE FOREGOING, RAPIDFORT DOES NOT WARRANT THAT USE OF THE SOFTWARE WILL BE UNINTERRUPTED, ERROR FREE OR SECURE, OR THAT ALL DEFECTS WILL BE CORRECTED. 
 
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
+Limitation of Liability
 
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
+EXCEPT FOR CUSTOMER’S INDEMNIFICATION OBLIGATIONS OR FOR CUSTOMER’S BREACH OF SECTION 5, IN NO EVENT SHALL EITHER PARTY, NOR ITS DIRECTORS, EMPLOYEES, AGENTS, PARTNERS, SUPPLIERS OR CONTENT PROVIDERS, BE LIABLE UNDER CONTRACT, TORT, STRICT LIABILITY, NEGLIGENCE OR ANY OTHER LEGAL OR EQUITABLE THEORY WITH RESPECT TO THE SUBJECT MATTER OF THIS AGREEMENT (I) FOR ANY LOST PROFITS, DATA LOSS, COST OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR SPECIAL, INDIRECT, INCIDENTAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES OF ANY KIND WHATSOEVER, SUBSTITUTE GOODS OR SERVICES (HOWEVER ARISING), (II) FOR ANY BUGS, VIRUSES, TROJAN HORSES, OR THE LIKE (REGARDLESS OF THE SOURCE OF ORIGINATION), OR (III) FOR ANY DIRECT DAMAGES IN EXCESS OF  $100 (US$ ONE HUNDRED).
 
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
+Government End User Rights
 
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
+The Licensed Products and Documentation are “commercial items” as that term is defined at 48 C.F.R. § 2.101, consisting of “commercial computer software” and “commercial computer software documentation” as such terms are used in 48 C.F.R. § 12.212. Accordingly, if Customer is an agency of the US Government or any contractor therefor, Customer only receives those rights with respect to the Licensed Products and Documentation as are granted to all other end users under license, in accordance with (a) 48 C.F.R. § 227.7201 through 48 C.F.R. § 227.7204, with respect to the Department of Defense and their contractors, or (b) 48 C.F.R. § 12.212, with respect to all other US Government users and their contractors.
 
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
+Miscellaneous
 
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
-
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
-
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
-
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
-
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
-
-   END OF TERMS AND CONDITIONS
-
-   APPENDIX: How to apply the Apache License to your work.
-
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "[]"
-      replaced with your own identifying information. (Don't include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
-
-   Copyright [yyyy] [name of copyright owner]
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+These Terms shall be governed by and construed in accordance with the laws of the State of California, excluding its conflicts of law rules, and the parties consent to exclusive jurisdiction and venue in the state and federal courts located in San Francisco, California. All notices under these Terms shall be in writing and shall be deemed to have been duly given when received, if personally delivered or sent by certified or registered mail, return receipt requested; when receipt is electronically confirmed, if transmitted by facsimile or e-mail; or the day after it is sent, if sent for next day delivery by recognized overnight delivery service.  Notices must be sent to the contacts for each party set forth on the Master Agreement.  Either party may update its address by giving notice in accordance with this section. This Agreement represents the entire agreement between Customer and RapidFort with respect to the subject matter hereof, and supersedes all prior or contemporaneous communications and proposals (whether oral, written or electronic) between Customer and RapidFort with respect thereto. These Terms take precedence over any conflicting terms in any other agreement between the parties, including the Master Agreement or any other attachment or exhibit thereto, unless such agreement expressly provides to the contrary, or excludes or modifies a provision of these Terms by expressly referring to the section in these Terms being excluded or modified. This Terms may be amended only by a writing executed by both parties. Notwithstanding the foregoing, the Parties shall not modify or exclude the provisions of these Terms relating to limitations of liability and intellectual property rights except in an amendment to these Terms. Except for payment obligations, neither party shall be liable for any failure to perform its obligations hereunder where such failure results from any cause beyond such party’s reasonable control, including, without limitation, the elements; fire; flood; severe weather; earthquake; vandalism; accidents; sabotage; power failure; denial of service attacks or similar attacks; Internet failure; acts of God and the public enemy; acts of war; acts of terrorism; riots; civil or public disturbances; strikes lock-outs or labor disruptions; any laws, orders, rules, regulations, acts or restraints of any government or governmental body or authority, civil or military, including the orders and judgments of courts. Neither party may assign any of its rights or obligations hereunder without the other party’s consent; provided that (a) either party may assign all of its rights and obligations hereunder without such consent to a successor-in-interest in connection with a sale of substantially all of such party’s business relating to this Agreement, and (b) RapidFort may utilize subcontractors in the performance of its obligations hereunder.  No agency, partnership, joint venture, or employment relationship is created as a result of this Agreement and neither party has any authority of any kind to bind the other in any respect. In any action or proceeding to enforce rights under this Agreement, the prevailing party shall be entitled to recover costs and attorneys’ fees. If any provision of these Terms is held to be unenforceable for any reason, such provision shall be reformed only to the extent necessary to make it enforceable.  The failure of either party to act with respect to a breach of these Terms by the other party shall not constitute a waiver and shall not limit such party’s rights with respect to such breach or any subsequent breaches.
