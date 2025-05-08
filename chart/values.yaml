@@ -185,12 +185,14 @@ backend:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
 #
 # files-redis
@@ -240,11 +242,13 @@ filesredis:
   livenessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 16
   readinessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 16
 #
 # fileupload
 #
@@ -303,12 +307,14 @@ fileupload:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
 #
 # frontrow
@@ -354,11 +360,13 @@ frontrow:
       path: /
       port: 8080
     failureThreshold: 10
+    timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /
       port: 8080
     failureThreshold: 10
+    timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
 #
 # iso-master
@@ -426,12 +434,14 @@ isomaster:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
 #
 # keycloak
@@ -476,13 +486,15 @@ keycloak:
       path: /auth/health/live
       # port: 9000
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /auth/health/ready
       # port: 9000
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
 #
 # lock-redis
 #
@@ -528,11 +540,13 @@ lockredis:
   livenessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 99
+    timeoutSeconds: 16
+    failureThreshold: 4
   readinessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 99
+    timeoutSeconds: 16
+    failureThreshold: 4
 #
 # mysql
 #
@@ -586,7 +600,8 @@ mysql:
         - "-p{{ .Values.db.auth.password }}"
         - "-e"
         - "SHOW DATABASES;"
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 16
   readinessProbe:
     exec:
       command:
@@ -598,7 +613,8 @@ mysql:
         - "-p{{ .Values.db.auth.password }}"
         - "-e"
         - "SHOW DATABASES;"
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 16
 #
 # redis
 #
@@ -647,11 +663,13 @@ redis:
   livenessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 16
   readinessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 16
 #
 # rf-scan
 #
@@ -715,12 +733,14 @@ rfscan:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
 #
 # rfapi
@@ -890,12 +910,14 @@ runner:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5    
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5    
   terminationGracePeriodSeconds: 600
 #
 # rfvdb
@@ -948,11 +970,13 @@ rfvdb:
       path: /
       port: 8080
     failureThreshold: 10
+    timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /
       port: 8080
     failureThreshold: 10
+    timeoutSeconds: 5
 #
 # vulns-db
 #
@@ -1000,12 +1024,14 @@ vulnsdb:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5    
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 99
+    failureThreshold: 10
+    timeoutSeconds: 5    
   terminationGracePeriodSeconds: 600
 # -- Big Bang Values
 domain: bigbang.dev
