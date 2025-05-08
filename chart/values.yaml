@@ -185,12 +185,13 @@ backend:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
+  terminationGracePeriodSeconds: 600
 #
 # files-redis
 #
@@ -239,11 +240,11 @@ filesredis:
   livenessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 10
+    failureThreshold: 99
 #
 # fileupload
 #
@@ -308,6 +309,7 @@ fileupload:
       path: /
       port: 8080
     failureThreshold: 99
+  terminationGracePeriodSeconds: 600
 #
 # frontrow
 #
@@ -357,6 +359,7 @@ frontrow:
       path: /
       port: 8080
     failureThreshold: 10
+  terminationGracePeriodSeconds: 600
 #
 # iso-master
 #
@@ -423,12 +426,13 @@ isomaster:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
+  terminationGracePeriodSeconds: 600
 #
 # keycloak
 #
@@ -524,11 +528,11 @@ lockredis:
   livenessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 10
+    failureThreshold: 99
 #
 # mysql
 #
@@ -582,7 +586,7 @@ mysql:
         - "-p{{ .Values.db.auth.password }}"
         - "-e"
         - "SHOW DATABASES;"
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     exec:
       command:
@@ -594,7 +598,7 @@ mysql:
         - "-p{{ .Values.db.auth.password }}"
         - "-e"
         - "SHOW DATABASES;"
-    failureThreshold: 10
+    failureThreshold: 99
 #
 # redis
 #
@@ -643,11 +647,11 @@ redis:
   livenessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     exec:
       command: ["redis-cli", "ping"]
-    failureThreshold: 10
+    failureThreshold: 99
 #
 # rf-scan
 #
@@ -711,12 +715,13 @@ rfscan:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
+  terminationGracePeriodSeconds: 600
 #
 # rfapi
 #
@@ -885,12 +890,13 @@ runner:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
+  terminationGracePeriodSeconds: 600
 #
 # rfvdb
 #
@@ -994,12 +1000,13 @@ vulnsdb:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
   readinessProbe:
     httpGet:
       path: /
       port: 8080
-    failureThreshold: 10
+    failureThreshold: 99
+  terminationGracePeriodSeconds: 600
 # -- Big Bang Values
 domain: bigbang.dev
 istio:

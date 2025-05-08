@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.5-bb.10]
+- Update Healthcheck and Readiness Probe Configuration.
+
 ## [1.2.5-bb.9]
 - Update documentation for RapidFort Release 1.1.207.
 
