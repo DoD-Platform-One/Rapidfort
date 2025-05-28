@@ -56,7 +56,7 @@ aggregator:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/aggregator-exe
-    tag: 1.1.207-rfhardened
+    tag: 1.1.207-patch-rfhardened
   ports: {}
   ephemeralVolumeClaimTemplates:
     - name: aggregator-data
