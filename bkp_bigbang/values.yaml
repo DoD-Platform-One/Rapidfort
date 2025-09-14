@@ -8,7 +8,7 @@ rapidfort:
   helmRepo:
     repoName: "registry1"
     chartName: "rapidfort"
-    tag: "1.2.4-bb.12"
+    tag: "1.2.5-bb.11"
 
   flux: {}
 

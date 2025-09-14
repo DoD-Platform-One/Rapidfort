@@ -6,6 +6,7 @@ global:
   passwd: "P@ssw0rd!" # this should be replaced with actual password
   hostname: "test.example.com" # this should hostname where rapidfort is deployed and availabe to conenct via https
   cloud: "eks"
+  organization_name: "Rapidfort_Inc"
   type: ""
   communityservice:
     enabled: false

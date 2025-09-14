@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # bigbang-rapidfort
 
-![Version: 1.2.5-bb.3](https://img.shields.io/badge/Version-1.2.5--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.165](https://img.shields.io/badge/AppVersion-1.1.165-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.11](https://img.shields.io/badge/Version-1.2.5--bb.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.207](https://img.shields.io/badge/AppVersion-1.1.207-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 RapidFort Big Bang Helm Chart
 
@@ -51,7 +51,7 @@ helm install bigbang-rapidfort chart/
 | rapidfort.git.path | string | `"chart"` |  |
 | rapidfort.helmRepo.repoName | string | `"registry1"` |  |
 | rapidfort.helmRepo.chartName | string | `"rapidfort"` |  |
-| rapidfort.helmRepo.tag | string | `"1.2.4-bb.12"` |  |
+| rapidfort.helmRepo.tag | string | `"1.2.5-bb.11"` |  |
 | rapidfort.flux | object | `{}` |  |
 | rapidfort.ingress.gateway | string | `""` |  |
 | rapidfort.objectStorage.aws_access_key_id | string | `"AKI***"` | Access key for connecting to object storage endpoint. |
@@ -151,7 +151,7 @@ _This file is programatically generated using `helm-docs` and some BigBang-speci
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # rapidfort
 
-![Version: 1.2.5-bb.11](https://img.shields.io/badge/Version-1.2.5--bb.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.207](https://img.shields.io/badge/AppVersion-1.1.207-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.12](https://img.shields.io/badge/Version-1.2.5--bb.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.207](https://img.shields.io/badge/AppVersion-1.1.207-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 RapidFort Big Bang Helm Chart
 
@@ -198,6 +198,7 @@ helm install rapidfort chart/
 | global.passwd | string | `"P@ssw0rd!"` |  |
 | global.hostname | string | `"test.example.com"` |  |
 | global.cloud | string | `"eks"` |  |
+| global.organization_name | string | `"Rapidfort_Inc"` |  |
 | global.type | string | `""` |  |
 | global.communityservice.enabled | bool | `false` |  |
 | global.imagePullSecrets[0].name | string | `"private-registry"` |  |
