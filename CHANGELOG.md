@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.5-bb.12]
+- Adding User Onboarding job for creating Admin during initial bootstrap.
+
 ## [1.2.5-bb.11]
 - Update Security issue for Aggreagtor image patch.
 

@@ -1,0 +1,99 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: user-onboard
+  annotations:
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: wait-for-rapidfort
+          image: "{{ .Values.runner.image.repository }}:{{ .Values.runner.image.tag }}"
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              end=$((SECONDS+600))  # 5 min timeout
+              until curl -sf http://backend/; do
+                if [ $SECONDS -ge $end ]; then
+                  echo "Timeout waiting for RapidFort Backend Service"
+                  exit 1
+                fi
+                echo "Waiting for RapidFort Backend Service..."
+                sleep 5
+              done
+              echo "RapidFort Backend Service is ready!"
+      containers:
+      - name: user-onboard
+        image: "{{ .Values.runner.image.repository }}:{{ .Values.runner.image.tag }}"
+        command:
+          - "/bin/sh"
+          - "-c"
+          - |
+            #!/bin/bash
+
+            admin_email="${RF_APP_ADMIN}"
+            admin_password="${RF_APP_ADMIN_PASSWD}"
+            organization_name="${ORGANIZATION_NAME}"
+            rf_app_host="${RF_APP_HOST}"
+            api_key="${API_KEY}"
+            url="http://backend/api/v1/onboard"
+            if test -z "$organization_name"; then
+                organization_name=$(echo "$email" | sed -E 's/.*@//' | tr '.' '_')
+            fi
+
+            header="api-key: $api_key"
+            payload="{\"admin_email\": \"$admin_email\", \
+                      \"admin_password\": \"$admin_password\",
+                      \"organization_name_pretty\": \"$organization_name\"}"
+
+            reponse_text_file=$(mktemp)
+            response=$(curl \
+                        -k \
+                        -X POST -d "$payload" \
+                        -H "$header" \
+                        -H "Content-Type: application/json" \
+                        --connect-timeout 10 \
+                        -o $reponse_text_file \
+                        -s -w "%{http_code}" "$url")
+
+            if [ "$response" -ne 200 ]; then
+                echo "ERROR failed to onboard organization"
+            fi
+
+            grep -o '{.*}' $reponse_text_file | jq .        
+        env:
+          - name: RF_APP_ADMIN
+            valueFrom:
+              secretKeyRef:
+                name: rapidfort-secret
+                key: RF_APP_ADMIN
+          - name: RF_APP_ADMIN_PASSWD
+            valueFrom:
+              secretKeyRef:
+                name: rapidfort-secret
+                key: RF_APP_ADMIN_PASSWD
+          - name: ORGANIZATION_NAME
+            valueFrom:
+              secretKeyRef:
+                name: rapidfort-secret
+                key: ORGANIZATION_NAME
+                optional: true
+          - name: RF_APP_HOST
+            valueFrom:
+              secretKeyRef:
+                name: rapidfort-secret
+                key: RF_APP_HOST
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: rapidfort-secret
+                key: ONBOARD_API_KEY           
+      restartPolicy: Never
