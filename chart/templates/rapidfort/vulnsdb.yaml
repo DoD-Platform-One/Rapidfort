@@ -41,6 +41,9 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}
+      {{- if .Values.vulnsdb.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.vulnsdb.terminationGracePeriodSeconds }}
       {{- end }}      
       containers:
         - name: vulnsdb
@@ -86,14 +89,42 @@ spec:
           readinessProbe:
             {{- toYaml .Values.vulnsdb.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- if .Values.vulnsdb.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.vulnsdb.lifecycle | nindent 12 }}
+          {{- end }}
       {{- with .Values.vulnsdb.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.vulnsdb.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.vulnsdb.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.vulnsdb.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: vulnsdb
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: vulnsdb
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: vulnsdb
       {{- with .Values.vulnsdb.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

@@ -82,14 +82,42 @@ spec:
           readinessProbe:
             {{- toYaml .Values.frontrow.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- if .Values.frontrow.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.frontrow.lifecycle | nindent 12 }}
+          {{- end }}
       {{- with .Values.frontrow.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.frontrow.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.frontrow.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.frontrow.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: frontrow
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: frontrow
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: frontrow
       {{- with .Values.frontrow.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
@@ -101,13 +129,15 @@ metadata:
   name: frontrow
   labels:
     app.kubernetes.io/name: frontrow
+    app.kubernetes.io/instance: frontrow
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
 spec:
   type: {{ .Values.frontrow.service.type }}
   ports:
     - port: {{ .Values.frontrow.service.port }}
       protocol: TCP
       name: http
-      targetPort: {{ .Values.frontrow.service.targetPort }}
+      targetPort: {{ .Values.frontrow.service.targetPort }}    
   selector:
     app.kubernetes.io/name: frontrow
 {{- if .Values.global.ingress.enabled }}
@@ -118,6 +148,8 @@ metadata:
   name: frontrow
   labels:
     app.kubernetes.io/name: frontrow
+    app.kubernetes.io/instance: frontrow
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
   annotations:
   {{- with .Values.frontrow.ingress.annotations }}  
     {{- toYaml . | nindent 4 }}  
@@ -144,6 +176,41 @@ spec:
                 port:
                   number: {{ $.Values.frontrow.service.port }}
           {{- end }}
+    {{- end }} 
+{{- end }}
+---
+{{- if .Values.frontrow.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontrow
+  labels:
+    app.kubernetes.io/name: frontrow
+    app.kubernetes.io/instance: frontrow
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontrow
+  minReplicas: {{ .Values.frontrow.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.frontrow.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.frontrow.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.frontrow.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.frontrow.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.frontrow.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}
 {{- end }}

@@ -41,6 +41,9 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}
+      {{- if .Values.rfpubsub.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.rfpubsub.terminationGracePeriodSeconds }}
       {{- end }}      
       containers:
         - name: rfpubsub
@@ -86,14 +89,42 @@ spec:
           readinessProbe:
             {{- toYaml .Values.rfpubsub.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- if .Values.rfpubsub.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.rfpubsub.lifecycle | nindent 12 }}
+          {{- end }}          
       {{- with .Values.rfpubsub.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.rfpubsub.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.rfpubsub.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.rfpubsub.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: rfpubsub
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: rfpubsub
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: rfpubsub
       {{- with .Values.rfpubsub.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
@@ -165,5 +196,38 @@ spec:
           {{- end }}
     {{- end }}
   {{- end -}}
+{{- end }}
+---
+{{- if .Values.rfpubsub.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rfpubsub
+  labels:
+    app.kubernetes.io/name: rfpubsub
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rfpubsub
+  minReplicas: {{ .Values.rfpubsub.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.rfpubsub.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.rfpubsub.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.rfpubsub.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.rfpubsub.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.rfpubsub.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
 {{- end }}
 {{- end }}

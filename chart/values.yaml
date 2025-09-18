@@ -20,14 +20,21 @@ global:
     tls: []
     # secretName: rapidfort-tls-cert
   aws: {}
-    # aws_access_key_id: ""
-    # aws_secret_access_key: ""
-    # region: us-east-1
-    # storage: rapidfort-bucket
+  # aws_access_key_id: ""
+  # aws_secret_access_key: ""
+  # region: us-east-1
+  # storage: rapidfort-bucket
+  minio: {}
+  #  access_key: minio
+  #  secret_key: minio123
+  #  secure: false
+  #  endpoint: ""
+  #  storage: mi://rapidfort-bucket
   keycloak_admin: "keycloakAdmin"
   keycloak_admin_passwd: "Dz4HEhDCaEEoDPom"
   keycloak_service_account_client_secret: ""
   api_key: ""
+
 #Rapidfort Service Account
 serviceAccount:
   create: true
@@ -44,11 +51,13 @@ db:
     port: "3306"
     host: "mysql"
     db_name: "standalone" # please contact RapidFort if you need to change this Database Name.
+    keycloak_db_name: "keycloak"
   # this is only used when connecting to external MySQL DB with SSL
   ssl:
     enabled: false
     secretName: rapidfort-db-connection-certs
     certFile: ""
+
 #
 # aggregator
 #
@@ -57,7 +66,7 @@ aggregator:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/aggregator-exe
-    tag: 1.1.207-patch-rfhardened
+    tag: 1.1.300-rfhardened
   ports: {}
   ephemeralVolumeClaimTemplates:
     - name: aggregator-data
@@ -74,6 +83,9 @@ aggregator:
   containerSecurityContext: {}
   service: {}
   ingress: {}
+  affinity:
+    nodeAffinity: {}
+    antiAffinity: "" #accepts strict only  
   resources:
     limits:
       cpu: "2000m"
@@ -92,6 +104,10 @@ aggregator:
     - AWS_SECRET_ACCESS_KEY
     - RF_GS_CREDS
     - RF_ROLE_ARN
+    - MINIO_ENDPOINT
+    - MINIO_ACCESS_KEY
+    - MINIO_SECRET_KEY
+    - MINIO_SECURE
     - RF_APP_HOST
     - DEPLOY_MODE
     - RF_VERBOSE
@@ -99,6 +115,17 @@ aggregator:
   startupProbe: {}
   livenessProbe: {}
   readinessProbe: {}
+  terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
 #
 # backend
 #
@@ -107,7 +134,7 @@ backend:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/backend-exe
-    tag: 1.1.223-rfhardened
+    tag: 1.1.300-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -172,6 +199,10 @@ backend:
     - RF_ROLE_ARN
     - RF_GS_CREDS
     - RF_AZURE_CONNECTION_STRING
+    - MINIO_ENDPOINT
+    - MINIO_ACCESS_KEY
+    - MINIO_SECRET_KEY
+    - MINIO_SECURE  
     - KEYCLOAK_JWT_PUB_KEY
     - KEYCLOAK_CLIENT_ID
     - KEYCLOAK_REALM
@@ -195,6 +226,72 @@ backend:
     failureThreshold: 10
     timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
+  affinity:
+    nodeAffinity: {}
+    antiAffinity: "" #accepts strict only
+#
+# Documentation
+#
+documentation:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: registry1.dso.mil/ironbank/rapidfort/documentation
+    tag: "1.1.300-rfhardened"
+  ports:
+    - name: http
+      containerPort: 8080
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  ingress:
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host:
+        paths:
+          - path: /docs
+            pathType: Prefix
+  resources: {}
+  envVars:
+    PORT: "8080"
+  envVarsSecret: []
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /docs
+      port: http
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /docs
+      port: http
+    failureThreshold: 10
+  terminationGracePeriodSeconds: 600
+  lifecycle: {}
+  affinity:
+    nodeAffinity: {}
+    antiAffinity: "" #accepts strict only
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
 #
 # files-redis
 #
@@ -203,7 +300,7 @@ filesredis:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/bitnami/redis
-    tag: 7.2.4  
+    tag: 7.2.4
   ports:
     - containerPort: 6379
       name: redis
@@ -258,7 +355,7 @@ fileupload:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/fileupload
-    tag: 1.1.207-rfhardened
+    tag: 1.1.300-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -302,6 +399,10 @@ fileupload:
     - RF_GS_CREDS
     - RF_AZURE_CONNECTION_STRING
     - AWS_SECRET_ACCESS_KEY
+    - MINIO_ENDPOINT
+    - MINIO_ACCESS_KEY
+    - MINIO_SECRET_KEY
+    - MINIO_SECURE  
     - RF_VERBOSE
   startupProbe: {}
   livenessProbe:
@@ -317,6 +418,19 @@ fileupload:
     failureThreshold: 10
     timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  affinity:
+    nodeAffinity: {}
+    antiAffinity: "" #accepts strict only
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
 #
 # frontrow
 #
@@ -325,7 +439,7 @@ frontrow:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/frontrow
-    tag: 1.1.207-rfhardened
+    tag: 1.1.300-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -369,6 +483,19 @@ frontrow:
     failureThreshold: 10
     timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  affinity:
+    nodeAffinity: {}
+    antiAffinity: "" #accepts strict only
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
 #
 # iso-master
 #
@@ -377,7 +504,7 @@ isomaster:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/iso-master-exe
-    tag: 1.1.207-rfhardened
+    tag: 1.1.300-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -422,6 +549,10 @@ isomaster:
     - RF_ROLE_ARN
     - RF_GS_CREDS
     - RF_AZURE_CONNECTION_STRING
+    - MINIO_ENDPOINT
+    - MINIO_ACCESS_KEY
+    - MINIO_SECRET_KEY
+    - MINIO_SECURE   
     - RF_APP_HOST
     - DEPLOY_MODE
     - RF_VERBOSE
@@ -444,6 +575,19 @@ isomaster:
     failureThreshold: 10
     timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  affinity:
+    nodeAffinity: {}
+    antiAffinity: "" #accepts strict only
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
 #
 # keycloak
 #
@@ -652,10 +796,10 @@ redis:
   resources:
     limits:
       cpu: "2"
-      memory: "6144Mi"
+      memory: "8192Mi"
     requests:
       cpu: "1"
-      memory: "2048Mi"
+      memory: "8192Mi"
   envVars:
     ALLOW_EMPTY_PASSWORD: "yes"
     REDIS_AOF_ENABLED: "no"
@@ -679,7 +823,7 @@ rfscan:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe
-    tag: 1.1.207-rfhardened
+    tag: 1.1.300-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -720,6 +864,10 @@ rfscan:
     - AWS_SECRET_ACCESS_KEY
     - RF_ROLE_ARN
     - RF_GS_CREDS
+    - MINIO_ENDPOINT
+    - MINIO_ACCESS_KEY
+    - MINIO_SECRET_KEY
+    - MINIO_SECURE
     - KEYCLOAK_JWT_PUB_KEY
     - KEYCLOAK_REALM
     - KEYCLOAK_CLIENT_ID
@@ -743,6 +891,18 @@ rfscan:
     failureThreshold: 10
     timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  affinity:
+    nodeAffinity: {}
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
 #
 # rfapi
 #
@@ -751,7 +911,7 @@ rfapi:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/rfapi-exe
-    tag: 1.1.207-rfhardened
+    tag: 1.1.300-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -797,6 +957,19 @@ rfapi:
   startupProbe: {}
   livenessProbe: {}
   readinessProbe: {}
+  terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  affinity:
+    nodeAffinity: {}
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
 #
 # rfpubsub
 #
@@ -805,7 +978,7 @@ rfpubsub:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe
-    tag: 1.1.207-rfhardened
+    tag: 1.1.300-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -847,15 +1020,91 @@ rfpubsub:
   startupProbe: {}
   livenessProbe: {}
   readinessProbe: {}
+  terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  affinity:
+    nodeAffinity: {}
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
+#
+# rfx
+#
+rfx:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: registry1.dso.mil/ironbank/rapidfort/rfx
+    tag: "1.1.300-1-rfhardened"
+  ports:
+    - name: http
+      containerPort: 8080
+  volumes: {}
+  volumeMounts: {}
+  initContainers: {}
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  ingress:
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host:
+        paths:
+          - path: /cli
+            pathType: Prefix
+          - path: /cat
+            pathType: Prefix
+  resources: {}
+  envVars: {}
+  envVarsSecret:
+    - RF_APP_HOST
+    - DEPLOY_MODE
+  startupProbe: {}
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    failureThreshold: 10
+  terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  affinity:
+    nodeAffinity: {}
+    antiAffinity: "" #accepts strict only
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
 #
 # runner
 #
-runner:
+runner: &runner
   enabled: true
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/runner
-    tag: 1.1.207-rfhardened
+    tag: 1.1.300-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -905,6 +1154,10 @@ runner:
     - RF_ROLE_ARN
     - RF_GS_CREDS
     - RF_AZURE_CONNECTION_STRING
+    - MINIO_ENDPOINT
+    - MINIO_ACCESS_KEY
+    - MINIO_SECRET_KEY
+    - MINIO_SECURE
     - KEYCLOAK_JWT_PUB_KEY
   startupProbe: {}
   livenessProbe:
@@ -912,14 +1165,29 @@ runner:
       path: /
       port: 8080
     failureThreshold: 10
-    timeoutSeconds: 5    
+    timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /
       port: 8080
     failureThreshold: 10
-    timeoutSeconds: 5    
+    timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  affinity:
+    nodeAffinity: {}
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 80
+runnerbeat:
+  !!merge <<: *runner
+  enabled: false
 #
 # rfvdb
 #
@@ -966,6 +1234,10 @@ rfvdb:
     - DEPLOY_MODE
     - RF_VERBOSE
     - RF_AZURE_CONNECTION_STRING
+    - MINIO_ENDPOINT
+    - MINIO_ACCESS_KEY
+    - MINIO_SECRET_KEY
+    - MINIO_SECURE
   livenessProbe:
     httpGet:
       path: /
@@ -986,7 +1258,7 @@ vulnsdb:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/vulns-db
-    tag: 1.1.207-rfhardened
+    tag: 1.1.300-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -1026,14 +1298,20 @@ vulnsdb:
       path: /
       port: 8080
     failureThreshold: 10
-    timeoutSeconds: 5    
+    timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /
       port: 8080
     failureThreshold: 10
-    timeoutSeconds: 5    
+    timeoutSeconds: 5
   terminationGracePeriodSeconds: 600
+  lifecycle:
+    preStop:
+      exec:
+        command: ["pre_stop.sh"]
+  affinity:
+    nodeAffinity: {}
 # -- Big Bang Values
 domain: bigbang.dev
 istio:

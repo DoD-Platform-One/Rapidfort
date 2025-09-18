@@ -51,6 +51,9 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}
+      {{- if .Values.rfscan.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.rfscan.terminationGracePeriodSeconds }}
       {{- end }}      
       containers:
         - name: rfscan
@@ -83,6 +86,7 @@ spec:
                 secretKeyRef:
                   name: rapidfort-secret
                   key: {{ . }}
+                  optional: true
             {{- end }}
           {{- end }}
           {{- if .Values.rfscan.resources}}
@@ -101,14 +105,42 @@ spec:
           readinessProbe:
             {{- toYaml .Values.rfscan.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- if .Values.rfscan.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.rfscan.lifecycle | nindent 12 }}
+          {{- end }}
       {{- with .Values.rfscan.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.rfscan.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.rfscan.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.rfscan.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: rfscan
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: rfscan
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: rfscan
       {{- with .Values.rfscan.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
@@ -163,6 +195,39 @@ spec:
                 port:
                   number: {{ $.Values.rfscan.service.port }}
           {{- end }}
+    {{- end }}
+{{- end }}
+---
+{{- if .Values.rfscan.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rfscan
+  labels:
+    app.kubernetes.io/name: rfscan
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rfscan
+  minReplicas: {{ .Values.rfscan.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.rfscan.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.rfscan.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.rfscan.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.rfscan.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.rfscan.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}
 {{- end }}

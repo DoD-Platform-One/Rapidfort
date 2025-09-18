@@ -139,12 +139,12 @@ data:
     @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;\n\n--\n-- Current Database: `{{ .Values.db.auth.db_name }}`\n--\n\nCREATE
     DATABASE /*!32312 IF NOT EXISTS*/ `{{ .Values.db.auth.db_name }}` /*!40100 DEFAULT CHARACTER SET utf8mb4
     COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;\n\nUSE `{{ .Values.db.auth.db_name }}`;\n\n--\n--
-    Current Database: `keycloak`\n--\n\nCREATE DATABASE /*!32312 IF NOT EXISTS*/ `keycloak`
+    Current Database: `{{ .Values.db.auth.keycloak_db_name }}`\n--\n\nCREATE DATABASE /*!32312 IF NOT EXISTS*/ `{{ .Values.db.auth.keycloak_db_name }}`
     /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT
     ENCRYPTION='N' */;\nCREATE USER IF NOT EXISTS '{{ .Values.db.auth.username }}'@'%' identified by '{{ .Values.db.auth.password }}';\nGRANT
-    ALL PRIVILEGES ON keycloak.* TO '{{ .Values.db.auth.username }}'@'%' WITH GRANT OPTION;\nGRANT
+    ALL PRIVILEGES ON {{ .Values.db.auth.keycloak_db_name }}.* TO '{{ .Values.db.auth.username }}'@'%' WITH GRANT OPTION;\nGRANT
     ALL PRIVILEGES ON {{ .Values.db.auth.db_name }}.* TO '{{ .Values.db.auth.username }}'@'%' WITH GRANT OPTION;\nFLUSH PRIVILEGES;\n\nUSE
-    `keycloak`;\n\n--\n-- Table structure for table `ADMIN_EVENT_ENTITY`\n--\n\nDROP
+    `{{ .Values.db.auth.keycloak_db_name }}`;\n\n--\n-- Table structure for table `ADMIN_EVENT_ENTITY`\n--\n\nDROP
     TABLE IF EXISTS `ADMIN_EVENT_ENTITY`;\n/*!40101 SET @saved_cs_client     = @@character_set_client
     */;\n/*!50503 SET character_set_client = utf8mb4 */;\nCREATE TABLE `ADMIN_EVENT_ENTITY`
     (\n  `ID` varchar(36) NOT NULL,\n  `ADMIN_EVENT_TIME` bigint DEFAULT NULL,\n  `REALM_ID`

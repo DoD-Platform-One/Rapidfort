@@ -148,16 +148,16 @@ tls:
     {{- if and .Values.db.auth.host .Values.db.auth.port }}
       {{- if and .Values.db.ssl }}
         {{- if .Values.db.ssl.certFile }}
-          {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak?ssl=true&ssl_ca=/opt/rapidfort/tls/cert.pem" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port }}
+          {{- printf "jdbc:mysql://%s:%s@%s:%s/%s?ssl=true&ssl_ca=/opt/rapidfort/tls/cert.pem" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.keycloak_db_name }}
         {{- else }}
-          {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak?ssl=true" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port }}
+          {{- printf "jdbc:mysql://%s:%s@%s:%s/%s?ssl=true" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.keycloak_db_name }}
         {{- end }}
       {{- else }}
-        {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port }}
+        {{- printf "jdbc:mysql://%s:%s@%s:%s/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.keycloak_db_name }}
       {{- end }}
     {{- end }}
   {{- else }}
-    {{- printf "jdbc:mysql://%s:%s@%s:%s/keycloak" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port }}
+    {{- printf "jdbc:mysql://%s:%s@%s:%s/%s" .Values.db.auth.username .Values.db.auth.password .Values.db.auth.host .Values.db.auth.port .Values.db.auth.keycloak_db_name }}
   {{- end }}
 {{- end }}
 
