@@ -51,6 +51,9 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}
+      {{- if .Values.fileupload.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.fileupload.terminationGracePeriodSeconds }}
       {{- end }}      
       containers:
         - name: fileupload
@@ -83,6 +86,7 @@ spec:
                 secretKeyRef:
                   name: rapidfort-secret
                   key: {{ . }}
+                  optional: true
             {{- end }}
           {{- end }}
           {{- if .Values.fileupload.resources}}
@@ -101,14 +105,42 @@ spec:
           readinessProbe:
             {{- toYaml .Values.fileupload.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- if .Values.fileupload.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.fileupload.lifecycle | nindent 12 }}
+          {{- end }}          
       {{- with .Values.fileupload.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.fileupload.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.fileupload.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.fileupload.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: fileupload
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: fileupload
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: fileupload
       {{- with .Values.fileupload.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
@@ -165,4 +197,37 @@ spec:
           {{- end }}
     {{- end }}
 {{- end }}
+{{- end }}
+---
+{{- if .Values.fileupload.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: fileupload
+  labels:
+    app.kubernetes.io/name: fileupload
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fileupload
+  minReplicas: {{ .Values.fileupload.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.fileupload.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.fileupload.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.fileupload.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.fileupload.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.fileupload.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
 {{- end }}

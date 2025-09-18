@@ -49,6 +49,9 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}
+      {{- if .Values.isomaster.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.isomaster.terminationGracePeriodSeconds }}
       {{- end }}      
       containers:
         - name: isomaster
@@ -79,6 +82,7 @@ spec:
                 secretKeyRef:
                   name: rapidfort-secret
                   key: {{ . }}
+                  optional: true
             {{- end }}
           {{- end }}
           {{- if .Values.isomaster.resources}}
@@ -97,14 +101,42 @@ spec:
           readinessProbe:
             {{- toYaml .Values.isomaster.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- if .Values.isomaster.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.isomaster.lifecycle | nindent 12 }}
+          {{- end }}          
       {{- with .Values.isomaster.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.isomaster.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.isomaster.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.isomaster.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: isomaster
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: isomaster
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: isomaster
       {{- with .Values.isomaster.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
@@ -159,6 +191,39 @@ spec:
                 port:
                   number: {{ $.Values.isomaster.service.port }}
           {{- end }}
+    {{- end }}
+{{- end }}
+---
+{{- if .Values.isomaster.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: isomaster
+  labels:
+    app.kubernetes.io/name: isomaster
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: isomaster
+  minReplicas: {{ .Values.isomaster.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.isomaster.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.isomaster.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.isomaster.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.isomaster.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.isomaster.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}
 {{- end }}

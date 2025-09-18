@@ -2,6 +2,9 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.5-bb.14]
+- RapidFort Release 1.1.300
+
 ## [1.2.5-bb.13]
 - Adding Pod Labels for Job, update secret for organization name.
 

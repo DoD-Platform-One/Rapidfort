@@ -52,6 +52,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.backend.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.backend.terminationGracePeriodSeconds }}
+      {{- end }}      
       containers:
         - name: backend
           {{- if .Values.backend.containerSecurityContext }}
@@ -83,6 +86,7 @@ spec:
                 secretKeyRef:
                   name: rapidfort-secret
                   key: {{ . }}
+                  optional: true
             {{- end }}
           {{- end }}
           {{- if .Values.backend.resources}}
@@ -101,14 +105,42 @@ spec:
           readinessProbe:
             {{- toYaml .Values.backend.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- if .Values.backend.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.backend.lifecycle | nindent 12 }}
+          {{- end }}          
       {{- with .Values.backend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.backend.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.backend.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.backend.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: backend
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: backend
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: backend
       {{- with .Values.backend.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
@@ -213,4 +245,37 @@ spec:
         path: /api/v1/imgs_work_dir/7b2f45e2-03f9-45bf-b301-136e8b136338/
         pathType: Prefix
 {{- end }}
+---
+{{- if .Values.backend.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend
+  labels:
+    app.kubernetes.io/name: backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: {{ .Values.backend.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.backend.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.backend.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.backend.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.backend.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.backend.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
 {{- end }}
+{{- end }} # .Values.backend.enabled

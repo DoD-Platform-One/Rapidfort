@@ -1,0 +1,223 @@
+{{- /*
+  Copyright RapidFort, Inc.
+*/}}
+{{- if .Values.rfx.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rfx
+  labels:
+    app.kubernetes.io/name: rfx
+    app.kubernetes.io/instance: rfx
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
+spec:
+  {{- if not .Values.rfx.autoscaling.enabled }}
+  replicas: {{ .Values.rfx.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rfx
+      app.kubernetes.io/instance: rfx
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rfx
+        app.kubernetes.io/instance: rfx
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
+    spec:
+      {{- if .Values.rfx.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.rfx.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.rfx.volumes }}
+      volumes:
+        {{- tpl (toYaml (index .Values.rfx.volumes )) . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.rfx.initContainers }}
+      initContainers:
+        {{- toYaml (index .Values.rfx.initContainers ) | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.rfx.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.rfx.terminationGracePeriodSeconds }}
+      {{- end }}
+      containers:
+        - name: rfx
+          {{- if .Values.rfx.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.rfx.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.rfx.image.repository }}:{{ .Values.rfx.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          {{- if .Values.rfx.volumeMounts }}
+          volumeMounts:
+            {{- toYaml (index .Values.rfx.volumeMounts ) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.rfx.ports }}
+          ports: {{- toYaml .Values.rfx.ports | nindent 12 }}
+          {{- end }}
+          {{- if or $.Values.rfx.envVars $.Values.rfx.envVarsSecret }}
+          env:
+            {{- range $key, $value := $.Values.rfx.envVars }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- range .Values.rfx.envVarsSecret }}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: rapidfort-secret
+                  key: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.rfx.resources}}
+          resources:
+            {{- toYaml .Values.rfx.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.rfx.startupProbe}}
+          startupProbe:
+            {{- toYaml .Values.rfx.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.rfx.livenessProbe}}
+          livenessProbe:
+            {{- toYaml .Values.rfx.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.rfx.readinessProbe}}
+          readinessProbe:
+            {{- toYaml .Values.rfx.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.rfx.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.rfx.lifecycle | nindent 12 }}
+          {{- end }}
+      {{- with .Values.rfx.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+        {{- with .Values.rfx.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.rfx.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: rfx
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: rfx
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: rfx
+      {{- with .Values.rfx.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rfx
+  labels:
+    app.kubernetes.io/name: rfx
+    app.kubernetes.io/instance: rfx
+    app.kubernetes.io/version: "{{ .Chart.Version }}"    
+spec:
+  type: {{ .Values.rfx.service.type }}
+  ports:
+    - port: {{ .Values.rfx.service.port }}
+      protocol: TCP
+      name: http
+      targetPort: {{ .Values.rfx.service.targetPort }}
+  selector:
+    app.kubernetes.io/name: rfx
+{{- if .Values.global.ingress.enabled }}    
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rfx
+  labels:
+    app.kubernetes.io/name: rfx
+    app.kubernetes.io/instance: rfx
+    app.kubernetes.io/version: "{{ .Chart.Version }}"    
+  annotations:
+  {{- with .Values.rfx.ingress.annotations }}  
+    {{- toYaml . | nindent 4 }}  
+  {{- end }}
+  {{- with .Values.global.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }} 
+spec:
+  ingressClassName: {{ default .Values.rfx.ingress.ingressClassName .Values.global.ingress.className }}
+  {{- if .Values.global.ingress.tls }}
+    {{ include "platform.ingress.tls" . | nindent 2 }}
+  {{- end }}
+  rules:
+    {{- range .Values.rfx.ingress.hosts }}
+    - host: {{ include "prefix.isFQDN" $.Values.global.hostname | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: rfx
+                port:
+                  number: {{ $.Values.rfx.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+---
+{{- if .Values.rfx.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rfx
+  labels:
+    app.kubernetes.io/name: rfx
+    app.kubernetes.io/instance: rfx
+    app.kubernetes.io/version: "{{ .Chart.Version }}"    
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rfx
+  minReplicas: {{ .Values.rfx.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.rfx.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.rfx.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.rfx.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.rfx.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.rfx.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
+{{- end }}

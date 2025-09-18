@@ -143,10 +143,30 @@ spec:
           number: {{ index .Values "fileupload" "service" "port" | default "80" }}
         host: fileupload
 
-  - name: frontrow
+  - name: documentation
+    match:
+    - uri:
+        prefix: "/docs"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.documentation.service.port | default "80" }}
+        host: documentation
+
+  - name: rfx
     match:
     - uri:
         prefix: "/cli"
+    - uri:
+        prefix: "/cat"
+    route:
+    - destination:
+        port:
+          number: {{ .Values.frontrow.service.port | default "80" }}
+        host: rfx
+
+  - name: frontrow
+    match:
     - uri:
         prefix: "/"
     route:

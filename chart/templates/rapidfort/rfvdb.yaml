@@ -66,6 +66,7 @@ spec:
                 secretKeyRef:
                   name: rapidfort-secret
                   key: {{ . }}
+                  optional: true
             {{- end }}
           {{- end }}
           {{- if .Values.rfvdb.resources}}

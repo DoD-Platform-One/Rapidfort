@@ -51,6 +51,9 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccount: {{ include "rapidfort-platform.serviceAccountName" . }}
       serviceAccountName: {{ include "rapidfort-platform.serviceAccountName" . }}
+      {{- end }}
+      {{- if .Values.runner.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.runner.terminationGracePeriodSeconds }}
       {{- end }}      
       containers:
         - name: runner
@@ -86,6 +89,7 @@ spec:
                 secretKeyRef:
                   name: rapidfort-secret
                   key: {{ . }}
+                  optional: true
             {{- end }}
           {{- end }}
           {{- if .Values.runner.resources}}
@@ -104,14 +108,42 @@ spec:
           readinessProbe:
             {{- toYaml .Values.runner.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- if .Values.runner.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.runner.lifecycle | nindent 12 }}
+          {{- end }}
       {{- with .Values.runner.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.runner.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.runner.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.runner.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: runner
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: runner
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: runner
       {{- with .Values.runner.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
@@ -166,6 +198,39 @@ spec:
                 port:
                   number: {{ $.Values.runner.service.port }}
           {{- end }}
+    {{- end }}
+{{- end }}
+---
+{{- if .Values.runner.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: runner
+  labels:
+    app.kubernetes.io/name: runner
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: runner
+  minReplicas: {{ .Values.runner.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.runner.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.runner.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.runner.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.runner.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.runner.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}
 {{- end }}

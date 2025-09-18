@@ -41,7 +41,10 @@ spec:
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-      {{- end }}      
+      {{- end }}
+      {{- if .Values.rfapi.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.rfapi.terminationGracePeriodSeconds }}
+      {{- end }}           
       containers:
         - name: rfapi
           {{- if .Values.rfapi.containerSecurityContext }}
@@ -86,14 +89,42 @@ spec:
           readinessProbe:
             {{- toYaml .Values.rfapi.readinessProbe | nindent 12 }}
           {{- end }}
+          {{- if .Values.rfapi.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.rfapi.lifecycle | nindent 12 }}
+          {{- end }}          
       {{- with .Values.rfapi.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.rfapi.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.rfapi.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.rfapi.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: rfapi
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: rfapi
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: rfapi
       {{- with .Values.rfapi.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
@@ -182,6 +213,39 @@ spec:
                 port:
                   number: {{ $.Values.rfapi.service.port }}
           {{- end }}
+    {{- end }}
+{{- end }}
+---
+{{- if .Values.rfapi.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rfapi
+  labels:
+    app.kubernetes.io/name: rfapi
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rfapi
+  minReplicas: {{ .Values.rfapi.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.rfapi.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.rfapi.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.rfapi.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.rfapi.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.rfapi.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}
 {{- end }}

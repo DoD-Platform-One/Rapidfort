@@ -1,0 +1,207 @@
+{{- /*
+  Copyright RapidFort, Inc.
+*/}}
+{{- if .Values.documentation.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: documentation
+  labels:
+    app.kubernetes.io/name: documentation
+    app.kubernetes.io/instance: documentation
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.documentation.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: documentation
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: documentation
+        app.kubernetes.io/instance: documentation
+        app.kubernetes.io/version: "{{ .Chart.Version }}"
+    spec:
+      {{- if .Values.documentation.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.documentation.podSecurityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.documentation.volumes }}
+      volumes:
+        {{- tpl (toYaml (index .Values.documentation.volumes )) . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.documentation.initContainers }}
+      initContainers:
+        {{- toYaml (index .Values.documentation.initContainers ) | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:        
+        - name: documentation
+          {{- if .Values.documentation.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.documentation.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          env:
+            {{- range $key, $value := $.Values.documentation.envVars }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}            
+          image: "{{ .Values.documentation.image.repository }}:{{ .Values.documentation.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          {{- if .Values.documentation.volumeMounts }}
+          volumeMounts:
+            {{- toYaml (index .Values.documentation.volumeMounts ) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.documentation.ports }}
+          ports: {{- toYaml .Values.documentation.ports | nindent 12 }}
+          {{- end }}
+          {{- if .Values.documentation.resources}}
+          resources:
+            {{- toYaml .Values.documentation.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.documentation.startupProbe}}
+          startupProbe:
+            {{- toYaml .Values.documentation.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.documentation.livenessProbe}}
+          livenessProbe:
+            {{- toYaml .Values.documentation.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.documentation.readinessProbe}}
+          readinessProbe:
+            {{- toYaml .Values.documentation.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.documentation.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.documentation.lifecycle | nindent 12 }}
+          {{- end }}
+      {{- with .Values.documentation.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+        {{- with .Values.documentation.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}       
+        podAntiAffinity:
+          {{- if eq .Values.documentation.affinity.antiAffinity "strict" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: documentation
+              topologyKey: "kubernetes.io/hostname"  
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: documentation
+                topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: documentation
+      {{- with .Values.documentation.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: documentation
+  labels:
+    app.kubernetes.io/name: documentation
+    app.kubernetes.io/instance: documentation
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
+spec:
+  type: {{ .Values.documentation.service.type }}
+  ports:
+    - port: {{ .Values.documentation.service.port }}
+      protocol: TCP
+      name: http
+      targetPort: {{ .Values.documentation.service.targetPort }}
+  selector:
+    app.kubernetes.io/name: documentation
+{{- if .Values.global.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: documentation
+  labels:
+    app.kubernetes.io/name: documentation
+    app.kubernetes.io/instance: documentation
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
+  annotations:
+  {{- with .Values.documentation.ingress.annotations }}  
+    {{- toYaml . | nindent 4 }}  
+  {{- end }}
+  {{- with .Values.global.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }} 
+spec:
+  ingressClassName: {{ default .Values.documentation.ingress.ingressClassName .Values.global.ingress.className }}
+  {{- if .Values.global.ingress.tls }}
+    {{ include "rapidfort-platform.ingress.tls" . | nindent 2 }}
+  {{- end }}
+  rules:
+    {{- range .Values.documentation.ingress.hosts }}
+    - host: {{ include "prefix.isFQDN" $.Values.global.hostname | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: documentation
+                port:
+                  number: {{ $.Values.documentation.service.port }}
+          {{- end }}
+    {{- end }} 
+{{- end }}
+---
+{{- if .Values.documentation.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: documentation
+  labels:
+    app.kubernetes.io/name: documentation
+    app.kubernetes.io/instance: documentation
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: documentation
+  minReplicas: {{ .Values.documentation.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.documentation.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.documentation.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.documentation.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.documentation.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: "Utilization"
+          averageUtilization: {{ .Values.documentation.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
+{{- end }}
