@@ -25,8 +25,8 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "^chart/deps/redis-bb/Chart\\.yaml$"
+      "managerFilePatterns": [
+        "/^chart/deps/redis-bb/Chart\\.yaml$/"
       ],
       "matchStrings": [
         "\\nversion:\\s+(?<currentValue>.+)"
