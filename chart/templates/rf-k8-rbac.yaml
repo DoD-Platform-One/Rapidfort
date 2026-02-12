@@ -11,6 +11,19 @@ rules:
   verbs:
   - 'get'
   - 'list'
+{{- $imagePullSecrets := .Values.global.imagePullSecrets }}
+{{- if and .Values.serviceAccount.create $imagePullSecrets }}
+- apiGroups:
+    - ""
+  resources:
+    - secrets
+  resourceNames:
+    {{- range $imagePullSecrets }}
+    - {{ .name | quote }}
+    {{- end }}
+  verbs:
+    - get
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

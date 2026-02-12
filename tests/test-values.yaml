@@ -22,7 +22,7 @@ aggregator:
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi
-  initContainers: []
+  volumes: []
   resources: {}
     # limits:
     #   cpu: "2000m"
@@ -42,25 +42,17 @@ backend:
     storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi  
   volumes: []
-  volumeMounts:
-    - name: imgs-work-dir
-      mountPath: /opt/rapidfort/backend/app/imgs_work_dir # cache dir
 
 #
 # isomaster
 #
 isomaster:
-  initContainers: []
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi  
   volumes: []
-  volumeMounts:
-    - name: imgs-work-dir
-      mountPath: /opt/rapidfort/iso-master/app/imgs_work_dir # cache dir
-
 
 filesredis:
   resources: {}
@@ -69,10 +61,6 @@ filesredis:
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: "10Gi"
-
-fileupload:
-  enabled: true
-  ephemeralVolumeClaimTemplates: []
 
 keycloak:
   initContainers: []
@@ -85,13 +73,6 @@ mysql:
     size: "10Gi"
 
 redis:
-  initContainers:
-  - name: disk-init
-    image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-    command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/redis"]
-    volumeMounts:
-      - name: redis-data
-        mountPath: /opt/rapidfort/local-bucket/data/redis
   # NOTE: disabled till we get and image with xz utility
   # - name: init-vulnsdb
   #   image: quay.io/rapidfort/init:1.0
@@ -119,33 +100,15 @@ redis:
     size: "10Gi"
 
 rfscan:
-  initContainers: []
   ephemeralVolumeClaimTemplates:
   - name: imgs-work-dir
     accessMode: "ReadWriteOnce"
     storageClassName: "{{ .Values.storageClass.name }}"
     size: 10Gi  
   volumes: []
-  volumeMounts:
-    - name: imgs-work-dir
-      mountPath: /opt/rapidfort/iso-master/app/imgs_work_dir # cache dir
-
-rfapi:
-  initContainers: []
-
-rfpubsub:
-  initContainers: []
 
 vulnsdb:
-  initContainers: []
   resources: {}
-
-runner:
-  initContainers: []
-  
-# runner:
-#   secret:
-#     name: rf-runner-secret
 
 # -- Big Bang Values
 domain: bigbang.dev
@@ -159,20 +122,9 @@ istio:
     mode: PERMISSIVE
   rapidfort:
     enabled: false
-    gateways:
-    - istio-system/public
-    hosts:
-    - rapidfort.{{ .Values.domain }}
 
 networkPolicies:
   enabled: false
-  ingressLabels: 
-    app: istio-ingressgateway
-    istio: ingressgateway
-  # -- IP range of api.rapidfort.com
-  rapidfortApiIpRange: ""
-  # -- test
-  controlPlaneCidr: ""
 
 bbtests:
   enabled: false

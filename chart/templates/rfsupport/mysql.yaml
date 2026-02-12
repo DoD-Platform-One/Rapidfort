@@ -45,6 +45,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if or .Values.rfsupportServiceAccount.create .Values.rfsupportServiceAccount.name }}
+      serviceAccountName: {{ include "rapidfort-platform.rfsupportServiceAccountName" . }}
+      {{- end }}
       containers:
         - name: mysql
           {{- if .Values.mysql.containerSecurityContext }}
@@ -126,6 +129,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-initdb-config
+  annotations:
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook": "pre-install,pre-upgrade"  
 data:
   init.sql: "-- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)\n--\n-- Host: localhost
     \   Database: {{ .Values.db.auth.db_name }}\n-- ------------------------------------------------------\n--

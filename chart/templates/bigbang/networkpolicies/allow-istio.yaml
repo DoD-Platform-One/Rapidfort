@@ -13,7 +13,7 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          app.kubernetes.io/name: istio-controlplane
+          {{- toYaml .Values.networkPolicies.ingress.namespaceLabels | default "{}" | nindent 10}}
       podSelector:
         matchLabels:
           {{- toYaml .Values.networkPolicies.ingressLabels | nindent 10}}
@@ -24,7 +24,7 @@ spec:
   - to:
     - namespaceSelector:
         matchLabels:
-          app.kubernetes.io/name: istio-controlplane
+          {{- toYaml .Values.networkPolicies.egress.namespaceLabels | default "{}" | nindent 10}}
       podSelector:
         matchLabels:
           istio: pilot

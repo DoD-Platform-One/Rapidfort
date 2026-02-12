@@ -49,31 +49,38 @@ The RapidFort platform will consume node storage (i.e. emptyDir):
 The platform will create persistent storage using PV and PVCs:
 
 * aggregator service: 29Gi
-* file-redis service: 29Gi
-* lock-redis service: 29Gi
-* redis service: 29Gi
-* runner service: 15 Gi
+* files-redis service: 256Gi
+* lock-redis service: 64Gi
+* redis service: 128Gi
+* runner service: 256Gi
+* mysql service: 256Gi
 
 ### Kubernetes Resource Requests
 
 Minimum resources per pod:
 
-| Service Name | CPU Request | CPU Limit | Memory Request | Memory Limit |
-|--------------|-------------|-----------|----------------|--------------|
-| aggregator   | 0.5         | 2         | 0.5Gi          | 4Gi          |
-| backend      | 0.5         | 2         | 0.5Gi          | 4Gi          |
-| fileupload   | 0.1         | -         | 2Gi            | -            |
-| frontrow     | 0.5         | 512Mi     | 1Gi            | 1Gi          |
-| file-redis   | 1           | 2         | 2Gi            | 6Gi          |
-| isomaster    | 0.5         | 1.5Gi     | 3Gi            | 6Gi          |
-| keycloak     | 0.5         | 1Gi       | -              | -            |
-| lock-redis   | 0.5         | 1Gi       | -              | -            |
-| redis        | 1           | 2         | 2Gi            | 6Gi          |
-| rfscan       | 0.15        | 1Gi       | -              | -            |
-| rfapi        | 0.1         | 0.25Gi    | -              | -            |
-| runner       | 0.1         | 1Gi       | -              | -            |
-| vulnsdb      | 0.1         | 1Gi       | -              | -            |
-| **Total**    | 5.05        | 14.25     | 11Gi           | 27Gi         |
+| Service Name  | CPU Request | CPU Limit | Memory Request | Memory Limit |
+| ------------- | ----------- | --------- | -------------- | ------------ |
+| aggregator    | 0.5         | 2         | 0.5Gi          | 4Gi          |
+| backend       | 0.5         | 2         | 0.5Gi          | 4Gi          |
+| documentation | -           | -         | -              | -            |
+| fileupload    | -           | -         | -              | -            |
+| frontrow      | -           | -         | -              | -            |
+| files-redis   | 1           | 2         | 2Gi            | 6Gi          |
+| isomaster     | -           | -         | -              | -            |
+| keycloak      | -           | -         | -              | -            |
+| lock-redis    | 0.5         | -         | 1Gi            | -            |
+| mysql         | -           | -         | -              | -            |
+| redis         | 1           | 2         | 8Gi            | 8Gi          |
+| rfscan        | -           | -         | -              | -            |
+| rfapi         | -           | -         | -              | -            |
+| rfpubsub      | -           | -         | -              | -            |
+| rfx           | -           | -         | -              | -            |
+| runner        | -           | -         | -              | -            |
+| vulnsdb       | 1           | 2         | 0.5Gi          | 4Gi          |
+| **Total**     | 4.5         | 10        | 12.5Gi         | 26Gi         |
+
+Totals reflect only pods with explicit resource requests/limits configured.
 
 ### Networking
 

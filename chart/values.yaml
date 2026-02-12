@@ -12,6 +12,7 @@ global:
     enabled: false
   imagePullSecrets:
     - name: private-registry
+    - name: rf-private-aws-registry
   ingress:
     enabled: false
     className: "nginx"
@@ -34,16 +35,20 @@ global:
   keycloak_admin_passwd: "Dz4HEhDCaEEoDPom"
   keycloak_service_account_client_secret: ""
   api_key: ""
-
 #Rapidfort Service Account
 serviceAccount:
   create: true
   automountServiceAccountToken: true
-
+rfsupportServiceAccount:
+  create: true
+  name: rf-support-sa
+  automountServiceAccountToken: false
+  annotations: {}
+userOnboard:
+  enabled: true
 storageClass:
   create: true
   name: "rf-storage-rw"
-
 db:
   auth:
     username: "root"
@@ -51,13 +56,12 @@ db:
     port: "3306"
     host: "mysql"
     db_name: "standalone" # please contact RapidFort if you need to change this Database Name.
-    keycloak_db_name: "keycloak"
+    keycloak_db_name: "rf_keycloak"
   # this is only used when connecting to external MySQL DB with SSL
   ssl:
     enabled: false
     secretName: rapidfort-db-connection-certs
     certFile: ""
-
 #
 # aggregator
 #
@@ -66,14 +70,13 @@ aggregator:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/aggregator-exe
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports: {}
-  ephemeralVolumeClaimTemplates:
+  ephemeralVolumeClaimTemplates: []
+  volumes: 
     - name: aggregator-data
-      accessMode: "ReadWriteOnce"
-      storageClassName: "{{ .Values.storageClass.name }}"
-      size: 29Gi
-  volumes: []
+      emptyDir:
+        sizeLimit: 29Gi
   volumeMounts:
     - name: aggregator-data
       mountPath: /mnt/raid/aggregator
@@ -134,7 +137,7 @@ backend:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/backend-exe
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -202,7 +205,7 @@ backend:
     - MINIO_ENDPOINT
     - MINIO_ACCESS_KEY
     - MINIO_SECRET_KEY
-    - MINIO_SECURE  
+    - MINIO_SECURE
     - KEYCLOAK_JWT_PUB_KEY
     - KEYCLOAK_CLIENT_ID
     - KEYCLOAK_REALM
@@ -247,7 +250,7 @@ documentation:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/documentation
-    tag: "1.1.300-rfhardened"
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -312,14 +315,10 @@ filesredis:
   volumeMounts:
     - name: redis-data
       mountPath: /bitnami/redis/data
-  initContainers:
-    - name: disk-init
-      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/files-redis"]
-      volumeMounts:
-        - name: redis-data
-          mountPath: /opt/rapidfort/local-bucket/data/files-redis
-  podSecurityContext: {}
+  initContainers: []
+  podSecurityContext:
+    fsGroup: 1001
+    runAsUser: 1001
   containerSecurityContext: {}
   service:
     type: ClusterIP
@@ -355,7 +354,7 @@ fileupload:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/fileupload
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -402,7 +401,7 @@ fileupload:
     - MINIO_ENDPOINT
     - MINIO_ACCESS_KEY
     - MINIO_SECRET_KEY
-    - MINIO_SECURE  
+    - MINIO_SECURE
     - RF_VERBOSE
   startupProbe: {}
   livenessProbe:
@@ -439,14 +438,16 @@ frontrow:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/frontrow
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
   initContainers: {}
-  podSecurityContext: {}
+  podSecurityContext:
+    fsGroup: 101
+    runAsUser: 101
   containerSecurityContext: {}
   service:
     type: ClusterIP
@@ -504,7 +505,7 @@ isomaster:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/iso-master-exe
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -552,7 +553,7 @@ isomaster:
     - MINIO_ENDPOINT
     - MINIO_ACCESS_KEY
     - MINIO_SECRET_KEY
-    - MINIO_SECURE   
+    - MINIO_SECURE
     - RF_APP_HOST
     - DEPLOY_MODE
     - RF_VERBOSE
@@ -602,7 +603,9 @@ keycloak:
       containerPort: 8080
   volumes: []
   volumeMounts: []
-  podSecurityContext: {}
+  podSecurityContext:
+    fsGroup: 2000
+    runAsUser: 2000
   containerSecurityContext: {}
   service:
     type: ClusterIP
@@ -629,14 +632,12 @@ keycloak:
   livenessProbe:
     httpGet:
       path: /auth/health/live
-      # port: 9000
       port: 8080
     failureThreshold: 10
     timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /auth/health/ready
-      # port: 9000
       port: 8080
     failureThreshold: 10
     timeoutSeconds: 5
@@ -660,14 +661,10 @@ lockredis:
   volumeMounts:
     - name: redis-data
       mountPath: /bitnami/redis/data
-  initContainers:
-    - name: disk-init
-      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/lock-redis"]
-      volumeMounts:
-        - name: redis-data
-          mountPath: /opt/rapidfort/local-bucket/data/lock-redis
-  podSecurityContext: {}
+  initContainers: []
+  podSecurityContext:
+    fsGroup: 1001
+    runAsUser: 1001
   containerSecurityContext: {}
   service:
     type: ClusterIP
@@ -697,6 +694,7 @@ lockredis:
 #
 mysql:
   enabled: true
+  seedDatabase: true
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/bitnami/mysql8
@@ -718,14 +716,10 @@ mysql:
       accessMode: "ReadWriteOnce"
       storageClassName: "{{ .Values.storageClass.name }}"
       size: "256Gi"
-  initContainers:
-    - name: disk-init
-      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/mysql"]
-      volumeMounts:
-        - name: mysql-data
-          mountPath: /opt/rapidfort/local-bucket/data/mysql
-  podSecurityContext: {}
+  initContainers: []
+  podSecurityContext:
+    fsGroup: 1001
+    runAsUser: 1001
   containerSecurityContext: {}
   ingress: {}
   resources: {}
@@ -780,14 +774,10 @@ redis:
       accessMode: "ReadWriteOnce"
       storageClassName: "{{ .Values.storageClass.name }}"
       size: "128Gi"
-  initContainers:
-    - name: disk-init
-      image: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.9
-      command: ["chown", "1001", "/opt/rapidfort/local-bucket/data/redis"]
-      volumeMounts:
-        - name: redis-data
-          mountPath: /opt/rapidfort/local-bucket/data/redis
-  podSecurityContext: {}
+  initContainers: []
+  podSecurityContext:
+    fsGroup: 1001
+    runAsUser: 1001
   containerSecurityContext: {}
   service:
     type: ClusterIP
@@ -823,7 +813,7 @@ rfscan:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/rf-scan-exe
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -834,7 +824,7 @@ rfscan:
         sizeLimit: 10Gi
   volumeMounts:
     - name: imgs-work-dir
-      mountPath: /opt/rapidfort/iso-master/app/imgs_work_dir # cache dir
+      mountPath: /opt/rapidfort/local-bucket # cache dir
   initContainers: []
   serviceAccount: {}
   podSecurityContext: {}
@@ -911,7 +901,7 @@ rfapi:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/rfapi-exe
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -978,7 +968,7 @@ rfpubsub:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/rfpubsub-exe
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -1041,14 +1031,16 @@ rfx:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/rfx
-    tag: "1.1.300-1-rfhardened"
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
   volumes: {}
   volumeMounts: {}
   initContainers: {}
-  podSecurityContext: {}
+  podSecurityContext:
+    fsGroup: 101
+    runAsUser: 101
   containerSecurityContext: {}
   service:
     type: ClusterIP
@@ -1104,7 +1096,7 @@ runner: &runner
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/runner
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -1258,7 +1250,7 @@ vulnsdb:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/vulns-db
-    tag: 1.1.300-rfhardened
+    tag: 1.1.422-rfhardened
   ports:
     - name: http
       containerPort: 8080
@@ -1326,14 +1318,20 @@ istio:
     enabled: true
     allowed_rf_host: "us01.rapidfort.com"
     gateways:
-      - istio-system/public
+      - istio-gateway/public-ingressgateway
     hosts:
       - rapidfort.{{ .Values.domain }}
 networkPolicies:
   enabled: true
+  ingress:
+    namespaceLabels:
+      app.kubernetes.io/name: istio-gateway
   ingressLabels:
     app: public-ingressgateway
     istio: ingressgateway
+  egress:
+    namespaceLabels:
+      app.kubernetes.io/name: istio-gateway
   # -- IP range of api.rapidfort.com
   rapidfortApiIpRange: ""
   # -- test

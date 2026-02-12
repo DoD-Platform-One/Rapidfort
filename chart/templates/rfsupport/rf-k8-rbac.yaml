@@ -1,0 +1,33 @@
+{{- $imagePullSecrets := .Values.global.imagePullSecrets }}
+{{- if and .Values.rfsupportServiceAccount.create $imagePullSecrets }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "rapidfort-platform.rfsupportServiceAccountName" . }}
+  namespace: {{ .Release.namespace }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    resourceNames:
+      {{- range $imagePullSecrets }}
+      - {{ .name | quote }}
+      {{- end }}
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "rapidfort-platform.rfsupportServiceAccountName" . }}
+  namespace: {{ .Release.namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "rapidfort-platform.rfsupportServiceAccountName" . }}
+    namespace: {{ .Release.namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "rapidfort-platform.rfsupportServiceAccountName" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
