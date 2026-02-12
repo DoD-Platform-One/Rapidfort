@@ -2,8 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [1.2.5-bb.14]
-- RapidFort Release 1.1.300
+## [1.2.5-bb.199]
+
+- Fix error with `mktemp`
+- Allow mtls.mode to be set via values
+- Allow setting namespaceSelector labels
+- Add service account for rfsupport components
+- Remove version from matchlabels in rfx
+- Fix default podSecurityContext's
+- Fix automountServiceAccountToken default value
+- Add imagepullsecrets access for rf services
+- Update user-onboard-job
+- Bump chart and app version
+- Add .helmdocsignore for readme generation
+- Update default values
+- Regenerate README
+- Fix indentation for rfx version label
 
 ## [1.2.5-bb.13]
 - Adding Pod Labels for Job, update secret for organization name.
@@ -12,7 +26,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Adding User Onboarding job for creating Admin during initial bootstrap.
 
 ## [1.2.5-bb.11]
-- Update Security issue for Aggreagtor image patch.
+- Update security issue for Aggregator image patch.
 
 ## [1.2.5-bb.10]
 - Update Healthcheck and Readiness Probe Configuration.
@@ -72,7 +86,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Update DB Connection SSL Cert input which creates secret.
 
 ## [1.2.4-bb.7]
-- Update For DB Connection with centralize Params reference from values.yaml
+- Update DB Connection with centralized params reference from values.yaml
 
 ## [1.2.4-bb.6]
 - Update For SSL Connection with SSL Certificate
@@ -96,10 +110,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - RapidFort Release 1.1.89 for Keycloak Update and removal of Init Containers
 
 ## [1.2.3-bb.2]
-- update runner service for critical hot fix
+- update runner service for critical hotfix
 
 ## [1.2.3-bb.1]
-- update runner service for hot fix
+- update runner service for hotfix
 
 ## [1.2.3-bb.0]
 - update storage class creation and provide existing storage class
@@ -111,7 +125,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - update Rapidfort image(s) for new release.
 
 ## [1.2.1-bb.5]
-- update place holder to be appropriate with comments
+- update placeholder to be appropriate with comments
 - update frontrow image tag.
 
 ## [1.2.1-bb.4]
@@ -178,10 +192,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Update Helm Chart for Release 1.1.34
 
 ## [1.1.30-bb.8]
-- Update Helm chart for addning annotation using global service account
+- Update Helm chart for adding annotation using global service account
 
 ## [1.1.30-bb.7]
-- Update Helm chart for addning annotation using global value
+- Update Helm chart for adding annotation using global value
 
 ## [1.1.30-bb.6]
 - Update Helm chart for MYSQL Address for keycloak
@@ -285,7 +299,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
   - wrapped the rfapi initContainer redis command in the timeout command
   - added `--connect-timeout 10 --max-time 15` to runner initContainer curl
 - Fixed a gitignore issue that stopped mysql-bb from working
-  - This readded secrets.yaml to that chart
+  - This re-added secrets.yaml to that chart
 - Fixed the rfapi virtualservice ingress matching
 - Changed initContainers to use IB images
 

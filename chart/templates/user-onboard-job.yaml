@@ -1,3 +1,4 @@
+{{- if .Values.userOnboard.enabled -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -43,6 +44,7 @@ spec:
           - "-c"
           - |
             #!/bin/bash
+            set -x
 
             admin_email="${RF_APP_ADMIN}"
             admin_password="${RF_APP_ADMIN_PASSWD}"
@@ -59,7 +61,7 @@ spec:
                       \"admin_password\": \"$admin_password\",
                       \"organization_name_pretty\": \"$organization_name\"}"
 
-            reponse_text_file=$(mktemp)
+            reponse_text_file="/tmp/tmp.$RANDOM"
             response=$(curl \
                         -k \
                         -X POST -d "$payload" \
@@ -71,9 +73,12 @@ spec:
 
             if [ "$response" -ne 200 ]; then
                 echo "ERROR failed to onboard organization"
+                sed '' $reponse_text_file
+                sleep 60
+                exit 1
             fi
 
-            grep -o '{.*}' $reponse_text_file | jq .        
+            grep -o '{.*}' $reponse_text_file | jq .       
         env:
           - name: RF_APP_ADMIN
             valueFrom:
@@ -102,3 +107,4 @@ spec:
                 name: rapidfort-secret
                 key: ONBOARD_API_KEY           
       restartPolicy: Never
+{{- end }}

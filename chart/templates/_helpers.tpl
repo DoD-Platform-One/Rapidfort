@@ -61,6 +61,17 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
+{{/*
+Create the name of the rfsupport service account to use
+*/}}
+{{- define "rapidfort-platform.rfsupportServiceAccountName" -}}
+{{- if .Values.rfsupportServiceAccount.create }}
+{{- default (printf "%s-rfsupport" (include "rapidfort-platform.fullname" .)) .Values.rfsupportServiceAccount.name }}
+{{- else }}
+{{- default "default" .Values.rfsupportServiceAccount.name }}
+{{- end }}
+{{- end }}
+
 {{- define "prefix.isIPAddress" -}}
 {{- $rc := . -}}
 {{- $parts := splitList "." . -}}
