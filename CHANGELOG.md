@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.5-bb.200]
+
+- Update Keycloak version to 25.0.6
+- Update Redis use opensource/redis/redis7 and upgrade the version to 7.2.11
+
 ## [1.2.5-bb.199]
 
 - Fix error with `mktemp`

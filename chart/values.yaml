@@ -12,7 +12,6 @@ global:
     enabled: false
   imagePullSecrets:
     - name: private-registry
-    - name: rf-private-aws-registry
   ingress:
     enabled: false
     className: "nginx"
@@ -184,7 +183,7 @@ backend:
       memory: "512Mi"
   envVars:
     AUTH_SERVER_ROOT_URL: http://keycloak
-    RF_INTERNAL_KEYCLOAK_URL: keycloak:9000
+    RF_INTERNAL_KEYCLOAK_URL: keycloak:80
     LC_ALL: en_US.UTF-8
     QUAY_ENABLED_RF_APP_HOST: "preprod.azure.rapidfort.io us01.rapidfort.com" # this enables rf deployment with rf_app_host in list to create robot account on quay
   envVarsSecret:
@@ -302,8 +301,8 @@ filesredis:
   enabled: true
   replicaCount: 1
   image:
-    repository: registry1.dso.mil/ironbank/bitnami/redis
-    tag: 7.2.4
+    repository: registry1.dso.mil/ironbank/opensource/redis/redis7
+    tag: 7.2.11
   ports:
     - containerPort: 6379
       name: redis
@@ -597,10 +596,12 @@ keycloak:
   replicaCount: 1
   image:
     repository: registry1.dso.mil/ironbank/rapidfort/keycloak
-    tag: 24.0.1
+    tag: 25.0.6
   ports:
     - name: http
       containerPort: 8080
+    - name: management
+      containerPort: 9000
   volumes: []
   volumeMounts: []
   podSecurityContext:
@@ -612,7 +613,7 @@ keycloak:
     port: 80
     healthPort: 9000
     targetPort: http
-    targetHealthPort: http
+    targetHealthPort: management
   ingress:
     enabled: false
     className: ""
@@ -623,7 +624,9 @@ keycloak:
           - path: /auth/
             pathType: Prefix
   resources: {}
-  envVars: {}
+  envVars:
+    KC_HTTP_ENABLED: "true"
+    KC_PROXY_HEADERS: xforwarded
   envVarsSecret:
     - KC_DB_URL
     - KEYCLOAK_ADMIN
@@ -632,13 +635,13 @@ keycloak:
   livenessProbe:
     httpGet:
       path: /auth/health/live
-      port: 8080
+      port: 9000
     failureThreshold: 10
     timeoutSeconds: 5
   readinessProbe:
     httpGet:
       path: /auth/health/ready
-      port: 8080
+      port: 9000
     failureThreshold: 10
     timeoutSeconds: 5
 #
@@ -648,8 +651,8 @@ lockredis:
   enabled: true
   replicaCount: 1
   image:
-    repository: registry1.dso.mil/ironbank/bitnami/redis
-    tag: 7.2.4
+    repository: registry1.dso.mil/ironbank/opensource/redis/redis7
+    tag: 7.2.11
   ports:
     - containerPort: 6379
       name: redis
@@ -761,8 +764,8 @@ redis:
   enabled: true
   replicaCount: 1
   image:
-    repository: registry1.dso.mil/ironbank/bitnami/redis
-    tag: 7.2.4
+    repository: registry1.dso.mil/ironbank/opensource/redis/redis7
+    tag: 7.2.11
   ports:
     - containerPort: 6379
       name: redis

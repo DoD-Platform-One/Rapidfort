@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # rapidfort
 
-![Version: 1.2.5-bb.199](https://img.shields.io/badge/Version-1.2.5--bb.199-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.409](https://img.shields.io/badge/AppVersion-1.1.409-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.200](https://img.shields.io/badge/Version-1.2.5--bb.200-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.409](https://img.shields.io/badge/AppVersion-1.1.409-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 RapidFort Big Bang Helm Chart
 
@@ -52,7 +52,6 @@ helm install rapidfort chart/
 | global.type | string | `""` |  |
 | global.communityservice.enabled | bool | `false` |  |
 | global.imagePullSecrets[0].name | string | `"private-registry"` |  |
-| global.imagePullSecrets[1].name | string | `"rf-private-aws-registry"` |  |
 | global.ingress.enabled | bool | `false` |  |
 | global.ingress.className | string | `"nginx"` |  |
 | global.ingress.annotations | object | `{}` |  |
@@ -157,7 +156,7 @@ helm install rapidfort chart/
 | backend.resources.requests.cpu | string | `"500m"` |  |
 | backend.resources.requests.memory | string | `"512Mi"` |  |
 | backend.envVars.AUTH_SERVER_ROOT_URL | string | `"http://keycloak"` |  |
-| backend.envVars.RF_INTERNAL_KEYCLOAK_URL | string | `"keycloak:9000"` |  |
+| backend.envVars.RF_INTERNAL_KEYCLOAK_URL | string | `"keycloak:80"` |  |
 | backend.envVars.LC_ALL | string | `"en_US.UTF-8"` |  |
 | backend.envVars.QUAY_ENABLED_RF_APP_HOST | string | `"preprod.azure.rapidfort.io us01.rapidfort.com"` |  |
 | backend.envVarsSecret[0] | string | `"RF_APP_HOST"` |  |
@@ -242,8 +241,8 @@ helm install rapidfort chart/
 | documentation.autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | filesredis.enabled | bool | `true` |  |
 | filesredis.replicaCount | int | `1` |  |
-| filesredis.image.repository | string | `"registry1.dso.mil/ironbank/bitnami/redis"` |  |
-| filesredis.image.tag | string | `"7.2.4"` |  |
+| filesredis.image.repository | string | `"registry1.dso.mil/ironbank/opensource/redis/redis7"` |  |
+| filesredis.image.tag | string | `"7.2.11"` |  |
 | filesredis.ports[0].containerPort | int | `6379` |  |
 | filesredis.ports[0].name | string | `"redis"` |  |
 | filesredis.volumeClaimTemplates[0].name | string | `"redis-data"` |  |
@@ -450,9 +449,11 @@ helm install rapidfort chart/
 | keycloak.enabled | bool | `true` |  |
 | keycloak.replicaCount | int | `1` |  |
 | keycloak.image.repository | string | `"registry1.dso.mil/ironbank/rapidfort/keycloak"` |  |
-| keycloak.image.tag | string | `"24.0.1"` |  |
+| keycloak.image.tag | string | `"25.0.6"` |  |
 | keycloak.ports[0].name | string | `"http"` |  |
 | keycloak.ports[0].containerPort | int | `8080` |  |
+| keycloak.ports[1].name | string | `"management"` |  |
+| keycloak.ports[1].containerPort | int | `9000` |  |
 | keycloak.volumes | list | `[]` |  |
 | keycloak.volumeMounts | list | `[]` |  |
 | keycloak.podSecurityContext.fsGroup | int | `2000` |  |
@@ -462,7 +463,7 @@ helm install rapidfort chart/
 | keycloak.service.port | int | `80` |  |
 | keycloak.service.healthPort | int | `9000` |  |
 | keycloak.service.targetPort | string | `"http"` |  |
-| keycloak.service.targetHealthPort | string | `"http"` |  |
+| keycloak.service.targetHealthPort | string | `"management"` |  |
 | keycloak.ingress.enabled | bool | `false` |  |
 | keycloak.ingress.className | string | `""` |  |
 | keycloak.ingress.annotations | string | `nil` |  |
@@ -470,23 +471,24 @@ helm install rapidfort chart/
 | keycloak.ingress.hosts[0].paths[0].path | string | `"/auth/"` |  |
 | keycloak.ingress.hosts[0].paths[0].pathType | string | `"Prefix"` |  |
 | keycloak.resources | object | `{}` |  |
-| keycloak.envVars | object | `{}` |  |
+| keycloak.envVars.KC_HTTP_ENABLED | string | `"true"` |  |
+| keycloak.envVars.KC_PROXY_HEADERS | string | `"xforwarded"` |  |
 | keycloak.envVarsSecret[0] | string | `"KC_DB_URL"` |  |
 | keycloak.envVarsSecret[1] | string | `"KEYCLOAK_ADMIN"` |  |
 | keycloak.envVarsSecret[2] | string | `"KEYCLOAK_ADMIN_PASSWORD"` |  |
 | keycloak.startupProbe | object | `{}` |  |
 | keycloak.livenessProbe.httpGet.path | string | `"/auth/health/live"` |  |
-| keycloak.livenessProbe.httpGet.port | int | `8080` |  |
+| keycloak.livenessProbe.httpGet.port | int | `9000` |  |
 | keycloak.livenessProbe.failureThreshold | int | `10` |  |
 | keycloak.livenessProbe.timeoutSeconds | int | `5` |  |
 | keycloak.readinessProbe.httpGet.path | string | `"/auth/health/ready"` |  |
-| keycloak.readinessProbe.httpGet.port | int | `8080` |  |
+| keycloak.readinessProbe.httpGet.port | int | `9000` |  |
 | keycloak.readinessProbe.failureThreshold | int | `10` |  |
 | keycloak.readinessProbe.timeoutSeconds | int | `5` |  |
 | lockredis.enabled | bool | `true` |  |
 | lockredis.replicaCount | int | `1` |  |
-| lockredis.image.repository | string | `"registry1.dso.mil/ironbank/bitnami/redis"` |  |
-| lockredis.image.tag | string | `"7.2.4"` |  |
+| lockredis.image.repository | string | `"registry1.dso.mil/ironbank/opensource/redis/redis7"` |  |
+| lockredis.image.tag | string | `"7.2.11"` |  |
 | lockredis.ports[0].containerPort | int | `6379` |  |
 | lockredis.ports[0].name | string | `"redis"` |  |
 | lockredis.volumeClaimTemplates[0].name | string | `"redis-data"` |  |
@@ -565,8 +567,8 @@ helm install rapidfort chart/
 | mysql.readinessProbe.timeoutSeconds | int | `16` |  |
 | redis.enabled | bool | `true` |  |
 | redis.replicaCount | int | `1` |  |
-| redis.image.repository | string | `"registry1.dso.mil/ironbank/bitnami/redis"` |  |
-| redis.image.tag | string | `"7.2.4"` |  |
+| redis.image.repository | string | `"registry1.dso.mil/ironbank/opensource/redis/redis7"` |  |
+| redis.image.tag | string | `"7.2.11"` |  |
 | redis.ports[0].containerPort | int | `6379` |  |
 | redis.ports[0].name | string | `"redis"` |  |
 | redis.volumeMounts[0].name | string | `"redis-data"` |  |
