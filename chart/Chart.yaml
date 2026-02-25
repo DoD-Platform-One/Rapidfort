@@ -2,7 +2,7 @@ apiVersion: v2
 name: rapidfort
 description: RapidFort Big Bang Helm Chart
 type: application
-version: 1.2.5-bb.200
+version: 1.2.5-bb.201
 appVersion: 1.1.409
 dependencies:
   - name: gluon

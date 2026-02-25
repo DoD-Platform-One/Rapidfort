@@ -5,6 +5,5 @@ frontrow
 backend
 rfapi
 rf-scan
-rfvdb
 aggregator
 runner

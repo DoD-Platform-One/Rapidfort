@@ -2,6 +2,10 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.5-bb.201]
+
+- Remove `rfvdb` service and references
+
 ## [1.2.5-bb.200]
 
 - Update Keycloak version to 25.0.6
