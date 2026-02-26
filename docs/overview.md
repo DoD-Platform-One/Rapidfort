@@ -105,3 +105,8 @@ Database updates may take up to 30 minutes to complete.
   * The vulnerability database may also be updated on demand via the RapidFort dashboard by a Super Admin user
 * **Option 2 - Airgapped**
   * A Super Admin user will need to download a vulnerability database file and upload this via the RapidFort dashboard
+
+
+### Keycloak Service Account Client Secret Update
+
+To update `keycloak_service_account_client_secret` after deployment, follow the steps in the [RapidFort Big Bang Helm Chart Keycloak Administrator User Setup guide](./RapidFort%20Big%20Bang%20Helm%20Chart%20Keycloak%20Administrator%20User%20Setup-290925-193106.pdf).
