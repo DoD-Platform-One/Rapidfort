@@ -32,7 +32,7 @@ global:
   #  storage: mi://rapidfort-bucket
   keycloak_admin: "keycloakAdmin"
   keycloak_admin_passwd: "Dz4HEhDCaEEoDPom"
-  keycloak_service_account_client_secret: ""
+  keycloak_service_account_client_secret: "5b97220c-838a-4186-bcdd-8cdb77d0e0f3"
   api_key: ""
 #Rapidfort Service Account
 serviceAccount:

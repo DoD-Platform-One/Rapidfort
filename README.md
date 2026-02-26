@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # rapidfort
 
-![Version: 1.2.5-bb.201](https://img.shields.io/badge/Version-1.2.5--bb.201-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.409](https://img.shields.io/badge/AppVersion-1.1.409-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.2.5-bb.202](https://img.shields.io/badge/Version-1.2.5--bb.202-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.409](https://img.shields.io/badge/AppVersion-1.1.409-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 RapidFort Big Bang Helm Chart
 
@@ -60,7 +60,7 @@ helm install rapidfort chart/
 | global.minio | object | `{}` |  |
 | global.keycloak_admin | string | `"keycloakAdmin"` |  |
 | global.keycloak_admin_passwd | string | `"Dz4HEhDCaEEoDPom"` |  |
-| global.keycloak_service_account_client_secret | string | `""` |  |
+| global.keycloak_service_account_client_secret | string | `"5b97220c-838a-4186-bcdd-8cdb77d0e0f3"` |  |
 | global.api_key | string | `""` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.automountServiceAccountToken | bool | `true` |  |

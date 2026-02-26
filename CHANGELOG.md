@@ -2,6 +2,11 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.2.5-bb.202]
+
+- Set a default value for `global.keycloak_service_account_client_secret`
+- Add documentation detailing how to update the `global.keycloak_service_account_client_secret` value
+  
 ## [1.2.5-bb.201]
 
 - Remove `rfvdb` service and references
